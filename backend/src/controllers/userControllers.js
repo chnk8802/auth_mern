@@ -1,4 +1,6 @@
 import User from "../models/userModel.js"
+import generateToken from "../utils/generateToken.js";
+// import logger from "../logs/logger.js";
 
 const register = async (req, res) => {
     try {
@@ -9,43 +11,65 @@ const register = async (req, res) => {
             return;
         }
        
-        const userExist = await User.findOne({$or: [{username}, {email}]})
+        const existingUser = await User.findOne({$or: [{username}, {email}]})
         
-        if (userExist) {
-            if (userExist.username === username && userExist.email === email) {
-                res.status(400).json({code:2,error: 'username & email already exist'});
-            return;
+        if (existingUser) {
+            let errorMessage
+            if (existingUser.username === username && existingUser.email === email) {
+                errorMessage = "Username & email already exist"
             } 
-            if ( userExist.username === username ) {
-                res.status(400).json({code:3,error:"username already exist"})
-                return
+            if ( existingUser.username === username ) {
+                errorMessage = "Username already exists"
             } 
-            if (userExist.email === email) {
-                res.status(400).json({code:4,error:"email already exist"})
-                return
+            if (existingUser.email === email) {
+                errorMessage = "Email already exists"
             }
+            return res.status(400).json({error:errorMessage})
         }
         
-        const user = new User({
+        const newUser = new User({
             username,
             fullname,
             email,
             password,
-            bio
+            bio,
         })
         
-        await user.save();
-        res.status(201).json(user)
-    } catch (e) {
-        res.status(500).send(e.toString())
+        await newUser.save();
+        res.status(201).json({
+            _id: newUser._id,
+            username: newUser.username,
+            fullname: newUser.fullname,
+            email: newUser.email,
+            bio: newUser.bio,
+            token: generateToken(newUser._id)
+        })
+    } catch (error) {
+        // logger.error("hello")
+        res.status(500).send(error.toString())
     }
 }
 
 
 
-const login = (req, res) => {
-    console.log("just a test")
-    res.send("just a test")
+const login = async (req, res) => {
+    
+    try {
+        const { email, password } = req.body
+        const user = await User.findOne({email})
+        if(user && user.matchPassword(password)) {
+            res.status(201).json({
+                _id: user._id,
+                username: user.username,
+                fullname: user.fullname,
+                email: user.email,
+                bio: user.bio,
+                token: generateToken(user._id)
+            })
+        }
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
 }
 const test = (req, res) => {
     res.send(`User Model: ${User}`)

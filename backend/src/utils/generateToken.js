@@ -1,3 +1,9 @@
 import jwt from 'jsonwebtoken'
 
-const generateToken = () => {}
+const generateToken = (payload) => {
+    return jwt.sign({payload}, process.env.JWT_SECRET, {
+        expiresIn: "30 days"
+    })
+}
+
+export default generateToken
