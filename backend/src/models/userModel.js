@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import bcrypt from 'bcryptjs'
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
@@ -32,12 +32,12 @@ const UserSchema = new mongoose.Schema({
     image: {
         type: String
     }
-}, 
+},
 {
     timestamps: true
 });
 
-UserSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
     if (!this.isModified) {
         next()
     }
@@ -45,10 +45,10 @@ UserSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, salt)
 })
 
-UserSchema.methods.matchPassword = async function (enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
 }
 
-const User = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User
