@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         minlength: 8,
-        maxlength: 16
+        maxlength: 330
     },
     fullname: {
         type: String,
@@ -31,7 +31,19 @@ const userSchema = new mongoose.Schema({
     },
     image: {
         type: String
-    }
+    },
+    otp: {
+        type: String
+    },
+    otpExpires: {
+        type: Date
+    },
+    resetPasswordToken: {
+        type: String
+    },
+    resetPasswordTokenExpires: {
+        type: Date
+    },
 },
 {
     timestamps: true

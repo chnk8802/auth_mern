@@ -1,5 +1,8 @@
 import User from "../models/userModel.js";
+import generateOTP from "../utils/generateOTP.js";
 import generateToken from "../utils/generateToken.js";
+import sendResetPasswordEmail from "../utils/email.js";
+import verifyResetPasswordUser from "../middlewares/verifyResetPasswordUserMiddleware.js";
 
 const register = async (req, res) => {
   try {
@@ -41,12 +44,14 @@ const register = async (req, res) => {
     await newUser.save();
 
     res.status(201).json({
-      _id: newUser._id,
-      token: generateToken(newUser._id),
+      user: {
+        _id: newUser._id,
+        token: generateToken(newUser._id),
+      },
     });
   } catch (error) {
-    console.error('User registration error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("User registration error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -57,26 +62,85 @@ const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({error:"User not Found"});
+      return res.status(404).json({ error: "User not Found" });
     }
 
     const isPasswordValid = await user.matchPassword(password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid password' });
+      return res.status(401).json({ message: "Invalid password" });
     }
 
     res.status(201).json({
+      user: {
         _id: user._id,
         token: generateToken(user._id),
-      });
+      },
+    });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
-const getUser = async (req , res) => {
-  res.send(`User Model: ${User}`);
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const otp = generateOTP(user._id);
+
+    user.otp = otp;
+    user.otpExpires = Date.now() + 3600000;
+    await user.save();
+
+    sendResetPasswordEmail(user.email, otp);
+
+    res.status(200).json({ message: "Password reset email sent" });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
 
-export default { register, login, getUser };
+const resetPassword = async (req, res) => {
+  try {
+    const { otp, newPassword } = req.body;
+
+    const user = await User.findOne({
+      otp,
+      otpExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: "Invalid or expired token" });
+    }
+    user.password = newPassword
+    user.otp = undefined
+    user.otpExpires = undefined
+    await user.save()
+
+    res.status(200).json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ data: user });
+  } catch (error) {
+    console.error("Get User error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export default { register, login, getUser, forgotPassword, resetPassword };
