@@ -106,9 +106,9 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-const resetPassword = async (req, res) => {
+const enterOtp = async (req, res) => {
   try {
-    const { otp, newPassword } = req.body;
+    const { otp } = req.body;
 
     const user = await User.findOne({
       otp,
@@ -117,6 +117,23 @@ const resetPassword = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ error: "Invalid or expired token" });
+    }
+
+    res.status(200).json({verifiedUser: user._id});
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { userId,newPassword } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({ error: "Error occuured try again" });
     }
     user.password = newPassword
     user.otp = undefined
@@ -143,4 +160,4 @@ const getUser = async (req, res) => {
   }
 };
 
-export default { register, login, getUser, forgotPassword, resetPassword };
+export default { register, login, getUser, forgotPassword, enterOtp, resetPassword };
