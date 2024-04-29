@@ -4,7 +4,7 @@ export const renderLoginSignupSlice = createSlice({
     name: 'renderLoginSignup',
     initialState: {
         showLogin: true,
-        showSignup: false
+        showSignup: false,
     },
     reducers:{
         showLogin: state => {
@@ -14,7 +14,7 @@ export const renderLoginSignupSlice = createSlice({
         showSignup: state => {
             state.showLogin = false
             state.showSignup = true 
-        }
+        },
     }
 })
 

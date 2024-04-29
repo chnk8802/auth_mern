@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Header from '../components/Header'
-import Login from './Login'
-import Signup from './Signup'
+import Login from '../components/authentication/Login'
+import Signup from '../components/authentication/Signup'
 import {useSelector} from 'react-redux'
 
 export default function Home () {

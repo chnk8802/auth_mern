@@ -1,55 +1,63 @@
-import { AppBar, Grid, Button, Typography } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
-import {showLogin, showSignup} from '../app/features/renderLoginSignup/renderLoginSignup'
+import { AppBar, Grid, Button, Typography, useMediaQuery } from "@mui/material";
+import { useDispatch } from "react-redux";
+import {
+  showLogin,
+  showSignup,
+} from "../app/features/renderLoginSignup/renderLoginSignup";
+import MobileMenu from "./MobileMenu";
+import useIsMobileView from "../hooks/useIsMobileView";
+import { Link } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
+  const isMobileView = useIsMobileView();
   return (
     <AppBar elevation={3} position="fixed" color="transparent" sx={{ p: 1.5 }}>
       <Grid container>
-        <Grid
-          container
-          item
-          xs
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Typography variant="h4">Google Workspace</Typography>
+        <Grid container item xs direction="row" alignItems="center">
+          <Typography variant={isMobileView ? "h5" : "h4"}>
+            Google Workspace
+          </Typography>
         </Grid>
 
-        <Grid item xs={6}></Grid>
+        {isMobileView ? (
+          <MobileMenu />
+        ) : (
+          <Grid
+            container
+            item
+            xs={6}
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            columnGap={1}
+          >
+            <Grid item>
+              <Link to="/login">
+                <Button
+                  variant="outlined"
+                  size="large"
+                  sx={{ px: 6 }}
+                  onClick={() => dispatch(showLogin())}
+                >
+                  Log In
+                </Button>
+              </Link>
+            </Grid>
 
-        <Grid
-          container
-          item
-          xs={3}
-          direction="row"
-          justifyContent="flex-end"
-          alignItems="center"
-          columnGap={2}
-        >
-          <Grid item>
-            <Button
-              variant="outlined"
-              size="large"
-              sx={{ px: 6 }}
-              onClick={dispatch(showLogin())}
-            >
-              Log In
-            </Button>
+            <Grid item>
+              <Link to="/register">
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={() => dispatch(showSignup())}
+                >
+                  Get Started
+                </Button>
+              </Link>
+            </Grid>
           </Grid>
-
-          <Grid item>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={dispatch(showSignup())}
-            >
-              Get Started
-            </Button>
-          </Grid>
-        </Grid>
+        )}
       </Grid>
     </AppBar>
   );

@@ -3,6 +3,6 @@ import renderLoginSignupReducer from './features/renderLoginSignup/renderLoginSi
 
 export default configureStore({
     reducer: {
-        renderLoginSignup: renderLoginSignupReducer
+        renderLoginSignup: renderLoginSignupReducer,
     }
 })
