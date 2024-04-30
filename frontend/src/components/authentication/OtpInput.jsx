@@ -32,7 +32,7 @@ const OtpInput = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Container component="main" maxWidth="xs">
         <Box
           marginTop={isMobileView ? 0 : 6}
@@ -44,9 +44,9 @@ const OtpInput = () => {
         >
           <Box component="form" noValidate sx={{ mt: 15 }}>
       <Grid container>
-        <Grid item container spacing={1} justifyContent="center">
+        <Grid item xs={12} container spacing={1} justifyContent="center">
         {otp.map((digit, index) => (
-        <Grid item>
+        <Grid item id={`otp-input-container-${index}`}>
           <TextField
               key={index}
               id={`otp-input-${index}`}

@@ -31,7 +31,7 @@ export default function ChangePassword() {
   };
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Container component="main" maxWidth="xs">
         <Box
           marginTop={isMobileView ? 0 : 6}

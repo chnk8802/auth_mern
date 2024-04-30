@@ -1,9 +1,20 @@
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, Container, Grid, TextField } from "@mui/material";
 import * as React from "react";
+import useIsMobileView from "../../hooks/useIsMobileView";
 
 export default function VerifyEmail() {
+  const isMobileView = useIsMobileView()
   return (
-    <Box component="form" noValidate sx={{ mt: 20 }}>
+    <Container component="main" maxWidth="xs">
+      <Box
+        marginTop={isMobileView ? 0 : 6}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Box component="form" noValidate sx={{ mt: 20 }}>
           <Grid container spacing={2}>
             <Grid item xs>
               <TextField
@@ -28,5 +39,7 @@ export default function VerifyEmail() {
             </Grid>
           </Grid>
         </Box>
+      </Box>
+    </Container>
   );
 }

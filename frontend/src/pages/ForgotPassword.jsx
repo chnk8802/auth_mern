@@ -20,8 +20,8 @@ export default function ForgotPassword() {
         }}
       >
         {/* <VerifyEmail/> */}
-        {/* <OtpInput/> */}
-        <ChangePassword/>
+        <OtpInput/>
+        {/* <ChangePassword/> */}
         <Link to="/login" ><Typography variant="body2">Back to login</Typography></Link>
       </Box>
     </Container>
