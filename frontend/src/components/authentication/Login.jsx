@@ -93,9 +93,12 @@ function Login() {
             </Grid>
           </Box>
           <Grid container item xs={12} justifyContent="center" mt={isMobileView ? 16 : 0}>
+              <Typography variant="body2">
+                Don't have an account?&nbsp;&nbsp;
+              </Typography>
             <Link to="/register">
               <Typography variant="body2">
-                Don't have an account? Create one.
+                Create an account
               </Typography>
             </Link>
           </Grid>

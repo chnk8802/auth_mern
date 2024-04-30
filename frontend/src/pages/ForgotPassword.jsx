@@ -4,6 +4,7 @@ import VerifyEmail from "../components/authentication/VerifyEmail";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import OtpInput from "../components/authentication/OtpInput";
+import ChangePassword from "../components/authentication/ChangePassword";
 
 export default function ForgotPassword() {
   return (
@@ -18,8 +19,9 @@ export default function ForgotPassword() {
           alignItems: "center",
         }}
       >
-        <OtpInput/>
         {/* <VerifyEmail/> */}
+        {/* <OtpInput/> */}
+        <ChangePassword/>
         <Link to="/login" ><Typography variant="body2">Back to login</Typography></Link>
       </Box>
     </Container>

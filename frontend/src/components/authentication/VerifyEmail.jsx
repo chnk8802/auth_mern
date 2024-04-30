@@ -3,7 +3,7 @@ import * as React from "react";
 
 export default function VerifyEmail() {
   return (
-    <Box component="form" noValidate sx={{ mt: 15 }}>
+    <Box component="form" noValidate sx={{ mt: 20 }}>
           <Grid container spacing={2}>
             <Grid item xs>
               <TextField
@@ -23,7 +23,7 @@ export default function VerifyEmail() {
                 fullWidth
                 sx={{ mt: 3, mb: 2 }}
               >
-                Continue
+                Verify Email
               </Button>
             </Grid>
           </Grid>

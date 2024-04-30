@@ -1,20 +1,18 @@
 import * as React from "react";
+import Header from "../Header";
 import {
   Box,
   Button,
   Container,
   Grid,
-  TextField,
-  InputAdornment,
   IconButton,
-  Typography,
+  InputAdornment,
+  TextField,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useIsMobileView from "../../hooks/useIsMobileView";
-import Header from "../Header";
 
-function Signup() {
+export default function ChangePassword() {
   const isMobileView = useIsMobileView();
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
@@ -44,29 +42,7 @@ function Signup() {
           }}
         >
           <Box component="form" noValidate sx={{ mt: 15 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="given-name"
-                  name="username"
-                  id="username"
-                  label="Username"
-                  variant="outlined"
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  name="email"
-                  id="Signup-email"
-                  label="Email Address"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  autoComplete="email"
-                />
-              </Grid>
+            <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
                   name="password"
@@ -74,7 +50,7 @@ function Signup() {
                   label="Password"
                   type={showPassword ? "text" : "password"}
                   variant="outlined"
-                  autoComplete="new-password"
+                  autoComplete="off"
                   required
                   fullWidth
                   InputProps={{
@@ -100,7 +76,7 @@ function Signup() {
                   name="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   variant="outlined"
-                  autoComplete="new-password"
+                  autoComplete="off"
                   required
                   fullWidth
                   InputProps={{
@@ -135,18 +111,8 @@ function Signup() {
               </Grid>
             </Grid>
           </Box>
-          <Typography variant="body2">
-              Already have an account?&nbsp;&nbsp;
-            </Typography>
-          <Link to="/login">
-            <Typography variant="body2">
-              Login
-            </Typography>
-          </Link>
         </Box>
       </Container>
     </>
   );
 }
-
-export default Signup;

@@ -10,6 +10,7 @@ import Home from "./pages/Home"
 import ForgotPassword from "./pages/ForgotPassword";
 import Signup from "./components/authentication/Signup";
 import Login from "./components/authentication/Login";
+import OtpInput from "./components/authentication/OtpInput";
 
 function App() {
   return (

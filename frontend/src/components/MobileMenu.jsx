@@ -21,13 +21,6 @@ export default function MobileMenu() {
             onClose={() => toggleDrawer()}
             onOpen={() => toggleDrawer()}
           >
-            sfsfsdfsfsdfs <br />
-            sfsfsdfsfsdfs <br />
-            sfsfsdsAAAAAAAAAAAAA<br />
-            sfsfsdfsfsdfs <br />
-            sfsfsdfsfsdfs <br />
-            sfsfsdfsfsdfs <br />
-            sfsfsdfsfsdfs <br />
             <LoginSignupButtons/>
           </SwipeableDrawer>
         </Box>
