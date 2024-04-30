@@ -4,7 +4,7 @@ import useIsMobileView from "../hooks/useIsMobileView";
 import { Link } from "react-router-dom";
 
 export function LoginSignupButtons() {
-  const isMobileView = useIsMobileView();
+  const isMobileView = useIsMobileView()
 
   return (
     <Grid

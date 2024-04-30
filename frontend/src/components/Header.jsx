@@ -12,7 +12,7 @@ function Header() {
   const dispatch = useDispatch();
   const isMobileView = useIsMobileView();
   return (
-    <AppBar elevation={3} position="fixed" color="transparent" sx={{ p: 1.5 }}>
+    <AppBar elevation={0} position="fixed" color="transparent" sx={{ p: 1.5, borderBottom: "1px solid #d2d2d2" }}>
       <Grid container>
         <Grid container item xs direction="row" alignItems="center">
           <Typography variant={isMobileView ? "h5" : "h4"}>
