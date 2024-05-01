@@ -32,7 +32,7 @@ export default function ChangePassword() {
   return (
     <>
       {/* <Header /> */}
-      <Container component="main" maxWidth="xs">
+      {/* <Container component="main" maxWidth="xs">
         <Box
           marginTop={isMobileView ? 0 : 6}
           sx={{
@@ -40,7 +40,7 @@ export default function ChangePassword() {
             flexDirection: "column",
             alignItems: "center",
           }}
-        >
+        > */}
           <Box component="form" noValidate sx={{ mt: 15 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -111,8 +111,8 @@ export default function ChangePassword() {
               </Grid>
             </Grid>
           </Box>
-        </Box>
-      </Container>
+        {/* </Box>
+      </Container> */}
     </>
   );
 }
