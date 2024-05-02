@@ -8,18 +8,27 @@ import {
   InputAdornment,
   IconButton,
   Typography,
+  Alert,
+  Slide,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Close, Visibility, VisibilityOff } from "@mui/icons-material";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import Header from "../Header";
 import Footer2 from "../Footer2";
-import api from '../../services/api'
+import api from "../../services/api";
 
 function Signup() {
   const isMobileView = useIsMobileView();
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [formData, setFormData] = React.useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = React.useState("");
+
   const handleClickShowPassword = () => {
     setShowPassword((showPassword) => !showPassword);
   };
@@ -34,15 +43,21 @@ function Signup() {
     event.preventDefault();
   };
 
-  React.useEffect(() => {
-    api.post('/register', {username: "dudde", email: "dudde@gmail.com", password: 'Frooti@30'})
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
-  },[])
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post("/register", formData);
+      console.log(response);
+    } catch (error) {
+      setErrorMessage(`Error: ${error.response.data.error}`);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -55,7 +70,51 @@ function Signup() {
             alignItems: "center",
           }}
         >
-          <Box component="form" noValidate sx={{ mt: 15 }}>
+          {errorMessage && (
+            <Box
+              sx={{
+                position: "fixed",
+                top: 20,
+                left: 0,
+                right: 0,
+                zIndex: 9999,
+                
+              }}
+            >
+              <Slide
+                in={errorMessage ? true : false}
+                direction="down"
+                mountOnEnter
+                unmountOnExit
+                timeout={200}
+              >
+                <Alert
+                  variant="filled"
+                  severity="error"
+                  action={
+                    <IconButton
+                      aria-label="close"
+                      color="inherit"
+                      size="small"
+                      onClick={() => {
+                        setErrorMessage("");
+                      }}
+                    >
+                      <Close fontSize="inherit" />
+                    </IconButton>
+                  }
+                >
+                  {errorMessage}
+                </Alert>
+              </Slide>
+            </Box>
+          )}
+          <Box
+            component="form"
+            noValidate
+            sx={{ mt: 15 }}
+            onSubmit={handleSubmit}
+          >
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -66,6 +125,8 @@ function Signup() {
                   variant="outlined"
                   required
                   fullWidth
+                  value={formData.username}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -77,6 +138,8 @@ function Signup() {
                   required
                   fullWidth
                   autoComplete="email"
+                  value={formData.email}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -89,6 +152,8 @@ function Signup() {
                   autoComplete="new-password"
                   required
                   fullWidth
+                  value={formData.password}
+                  onChange={handleChange}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="start">
@@ -148,16 +213,14 @@ function Signup() {
             </Grid>
           </Box>
           <Typography variant="body2">
-              Already have an account?&nbsp;&nbsp;
-            </Typography>
+            Already have an account?&nbsp;&nbsp;
+          </Typography>
           <Link to="/login">
-            <Typography variant="body2">
-              Login
-            </Typography>
+            <Typography variant="body2">Login</Typography>
           </Link>
         </Box>
       </Container>
-      <Footer2/>
+      <Footer2 />
     </>
   );
 }
