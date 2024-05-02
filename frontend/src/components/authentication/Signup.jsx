@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import Header from "../Header";
+import Footer2 from "../Footer2";
+import api from '../../services/api'
 
 function Signup() {
   const isMobileView = useIsMobileView();
@@ -31,12 +33,22 @@ function Signup() {
   const handleMouseClickShowConfirmPassword = (event) => {
     event.preventDefault();
   };
+
+  React.useEffect(() => {
+    api.post('/register', {username: "dudde", email: "dudde@gmail.com", password: 'Frooti@30'})
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+  },[])
   return (
     <>
       <Header />
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{ height: "92vh" }}>
         <Box
-          marginTop={isMobileView ? 0 : 6}
+          marginTop={8}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -145,6 +157,7 @@ function Signup() {
           </Link>
         </Box>
       </Container>
+      <Footer2/>
     </>
   );
 }

@@ -15,7 +15,7 @@ function Header() {
     <AppBar
       elevation={0}
       position="fixed"
-      color="transparent"
+      color="inherit"
       sx={{ p: 1.5, borderBottom: "1px solid #d2d2d2" }}
     >
       <Grid container>

@@ -15,6 +15,7 @@ const theme = createTheme({
     button: {
       textTransform: "none",
     },
+    fontFamily: "Poppins , sans-serif"
   },
   components: {
     MuiButton: {

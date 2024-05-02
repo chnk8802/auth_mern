@@ -2,12 +2,13 @@ import * as React from "react";
 import Header from "../components/Header";
 import { Box, Container, Grid, Typography } from "@mui/material";
 import GlitchText from "../components/misc/GlitchText";
+import Footer from "../components/Footer";
 
 export default function Home() {
   return (
     <>
       <Header />
-      <Container component="main" maxWidth="xl" >
+      <Container component="main" maxWidth="xl">
         <Box
         sx={{
           marginTop: 8.5,
@@ -18,7 +19,7 @@ export default function Home() {
         >
           <Grid container justifyContent="center">
             <Grid item xs={12} container justifyContent="center">
-              <GlitchText/>
+              {/* <GlitchText/> */}
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">Whatchu Gonna Do?</Typography>
@@ -26,6 +27,7 @@ export default function Home() {
           </Grid>
         </Box>
       </Container>
+      <Footer />
       {/* {showLogin && <Login/>}
             {showSignup && <Signup/>} */}
     </>

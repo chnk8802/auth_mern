@@ -1,6 +1,5 @@
-process.env.DEBUG = 'winston:*';
-
 import express from 'express'
+import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import dotenv from 'dotenv'
@@ -12,6 +11,7 @@ import _middlewares from './src/middlewares/errorHandler.js'
 dotenv.config()
 connectDB();
 const app = express()
+app.use(cors())
 app.use(express.json())
 app.use(helmet())
 app.use(morgan('dev'))

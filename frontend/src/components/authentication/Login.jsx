@@ -13,9 +13,11 @@ import { Link } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Header from "../Header";
 import useIsMobileView from "../../hooks/useIsMobileView";
+import Footer from "../Footer";
+import Footer2 from "../Footer2";
 
 function Login() {
-  const isMobileView = useIsMobileView()
+  const isMobileView = useIsMobileView();
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
     setShowPassword((show) => !show);
@@ -28,16 +30,24 @@ function Login() {
   return (
     <>
       <Header />
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{ height: "60vh" }}>
         <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+          sx={
+            {
+              my: 30,
+              display: "flex",
+              flexDirection: "column",
+            }
+          }
         >
-          <Box component="form" noValidate sx={{ mt: 15 }}>
+          <Box
+            component="form"
+            noValidate
+            // sx={{ mt: 15 }}
+            // display="flex"
+            // flexDirection="column"
+            // alignItems="center"
+          >
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -92,18 +102,23 @@ function Login() {
               </Grid>
             </Grid>
           </Box>
-          <Grid container item xs={12} justifyContent="center" mt={isMobileView ? 16 : 0}>
-              <Typography variant="body2">
-                Don't have an account?&nbsp;&nbsp;
-              </Typography>
+          <Grid
+            container
+            item
+            xs={12}
+            justifyContent="center"
+            mt={isMobileView ? 16 : 0}
+          >
+            <Typography variant="body2">
+              Don't have an account?&nbsp;&nbsp;
+            </Typography>
             <Link to="/register">
-              <Typography variant="body2">
-                Create an account
-              </Typography>
+              <Typography variant="body2">Create an account</Typography>
             </Link>
           </Grid>
         </Box>
       </Container>
+      <Footer2/>
     </>
   );
 }
