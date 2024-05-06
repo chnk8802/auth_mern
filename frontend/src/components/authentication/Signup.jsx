@@ -88,6 +88,10 @@ function Signup() {
     } catch (error) {
       console.log(error)
       setSuccessMessage(``);
+      if (error.code === "ERR_NETWORK") {
+        setErrorMessage(`Error: ${error.message}`);
+        return;  
+      }
       if (error.response.data.error==="Username & email already exists") {
         setUsernameError(true)
         setEmailError(true)

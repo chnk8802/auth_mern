@@ -6,7 +6,6 @@ import dotenv from 'dotenv'
 import connectDB from './src/config/db.js'
 import authRoutes from './src/routes/authRoutes.js'
 import userRoutes from './src/routes/userRoutes.js'
-// import _middlewares from './src/middlewares/errorHandler.js'
 import { notFound, errorHandler} from './src/middlewares/errorHandler.js'
 
 dotenv.config()
