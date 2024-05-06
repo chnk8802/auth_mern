@@ -1,16 +1,17 @@
-import { AppBar, Grid, Button, Typography, useMediaQuery } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { AppBar, Grid, Button, Typography, useMediaQuery } from "@mui/material"
+import { useDispatch } from "react-redux"
 import {
   showLogin,
   showSignup,
-} from "../app/features/renderLoginSignup/renderLoginSignup";
-import MobileMenu from "./MobileMenu";
-import useIsMobileView from "../hooks/useIsMobileView";
-import { Link } from "react-router-dom";
+} from "../app/features/renderLoginSignup/renderLoginSignup"
+import MobileMenu from "./MobileMenu"
+import useIsMobileView from "../hooks/useIsMobileView"
+import { Link } from "react-router-dom"
 
 function Header() {
-  const dispatch = useDispatch();
-  const isMobileView = useIsMobileView();
+  const dispatch = useDispatch()
+  const isMobileView = useIsMobileView()
+  
   return (
     <AppBar
       elevation={0}
@@ -21,7 +22,9 @@ function Header() {
       <Grid container>
         <Grid container item xs direction="row" alignItems="center">
           <Typography variant={isMobileView ? "h5" : "h4"}>
-            <Link style={{textDecoration: 'none', color: "#000"}} to="/">Google Workspace</Link>
+            <Link style={{ textDecoration: "none", color: "#000" }} to="/">
+              Google Workspace
+            </Link>
           </Typography>
         </Grid>
 

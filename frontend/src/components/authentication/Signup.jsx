@@ -7,16 +7,16 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Typography,
-  Alert,
-  Slide,
+  Typography
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Close, Visibility, VisibilityOff } from "@mui/icons-material";
+import { ContentCutOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import Header from "../Header";
 import Footer2 from "../Footer2";
 import api from "../../services/api";
+import BackdropLoader from "../BackdropLoader";
+import { ErrorMessage, SuccessMessage } from "../misc/AlertMessage";
 
 function Signup() {
   const isMobileView = useIsMobileView();
@@ -26,8 +26,15 @@ function Signup() {
     username: "",
     email: "",
     password: "",
-  });
+    confirmPassword: ""
+  })
+  const [usernameError, setUsernameError] = React.useState(false)
+  const [emailError, setEmailError] = React.useState(false)
+  const [passwordError, setPasswordError] = React.useState(false)
+  const [confirmPasswordError, setConfirmPasswordError] = React.useState(false)
+
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [successMessage, setSuccessMessage] = React.useState("");
 
   const handleClickShowPassword = () => {
     setShowPassword((showPassword) => !showPassword);
@@ -49,11 +56,48 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
+    setErrorMessage("")
+    setSuccessMessage("")
     e.preventDefault();
     try {
-      const response = await api.post("/register", formData);
-      console.log(response);
+      if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+        setErrorMessage("Error: Mandatory fields missing")
+        setUsernameError(true)
+        setEmailError(true)
+        setPasswordError(true)
+        setConfirmPasswordError(true)
+        return;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        setErrorMessage("Error: Confirm Password does not match with password")
+        setConfirmPasswordError(true)
+        return;
+      } else {
+        setConfirmPasswordError(false)
+      }
+      const response = await api.post("/users/register", formData)
+      
+      setErrorMessage("");
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+      });
+      setSuccessMessage(`Success: Registration Successfull`);
     } catch (error) {
+      console.log(error)
+      setSuccessMessage(``);
+      if (error.response.data.error==="Username & email already exists") {
+        setUsernameError(true)
+        setEmailError(true)
+      }
+      if (error.response.data.error==="Username already exists") {
+        setUsernameError(true)
+      }
+      if (error.response.data.error==="Email already exists") {
+        setEmailError(true)
+      }
       setErrorMessage(`Error: ${error.response.data.error}`);
     }
   };
@@ -61,6 +105,7 @@ function Signup() {
   return (
     <>
       <Header />
+      {/* <BackdropLoader/> */}
       <Container component="main" maxWidth="xs" sx={{ height: "92vh" }}>
         <Box
           marginTop={8}
@@ -70,44 +115,11 @@ function Signup() {
             alignItems: "center",
           }}
         >
+          {successMessage && (
+            <SuccessMessage successMessage={successMessage} setSuccessMessage={setSuccessMessage} />
+          )}
           {errorMessage && (
-            <Box
-              sx={{
-                position: "fixed",
-                top: 20,
-                left: 0,
-                right: 0,
-                zIndex: 9999,
-                
-              }}
-            >
-              <Slide
-                in={errorMessage ? true : false}
-                direction="down"
-                mountOnEnter
-                unmountOnExit
-                timeout={200}
-              >
-                <Alert
-                  variant="filled"
-                  severity="error"
-                  action={
-                    <IconButton
-                      aria-label="close"
-                      color="inherit"
-                      size="small"
-                      onClick={() => {
-                        setErrorMessage("");
-                      }}
-                    >
-                      <Close fontSize="inherit" />
-                    </IconButton>
-                  }
-                >
-                  {errorMessage}
-                </Alert>
-              </Slide>
-            </Box>
+            <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
           )}
           <Box
             component="form"
@@ -118,15 +130,19 @@ function Signup() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  autoComplete="given-name"
+                  autoComplete="off"
                   name="username"
                   id="username"
                   label="Username"
                   variant="outlined"
                   required
                   fullWidth
+                  error={usernameError}
                   value={formData.username}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e)
+                    setUsernameError(false)
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -137,9 +153,13 @@ function Signup() {
                   variant="outlined"
                   required
                   fullWidth
-                  autoComplete="email"
+                  autoComplete="off"
+                  error={emailError}
                   value={formData.email}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e)
+                    setEmailError(false)
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -152,8 +172,12 @@ function Signup() {
                   autoComplete="new-password"
                   required
                   fullWidth
+                  error={passwordError}
                   value={formData.password}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e)
+                    setPasswordError(false)
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="start">
@@ -180,6 +204,12 @@ function Signup() {
                   autoComplete="new-password"
                   required
                   fullWidth
+                  error={confirmPasswordError}
+                  value={formData.confirmPassword}
+                  onChange={(e) => {
+                    handleChange(e)
+                    setConfirmPasswordError(false)
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="start">

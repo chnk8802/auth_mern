@@ -24,7 +24,7 @@ const register = async (req, res) => {
     if (existingUser) {
       let errorMessage;
       if (existingUser.username === username && existingUser.email === email) {
-        errorMessage = "Username & email already exist";
+        errorMessage = "Username & email already exists";
       } else if (existingUser.username === username) {
         errorMessage = "Username already exists";
       } else if (existingUser.email === email) {
