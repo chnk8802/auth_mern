@@ -35,7 +35,7 @@ function Signup() {
 
   const [errorMessage, setErrorMessage] = React.useState("");
   const [successMessage, setSuccessMessage] = React.useState("");
-
+  const [isLoading, setIsLoading] = React.useState(false)
   const handleClickShowPassword = () => {
     setShowPassword((showPassword) => !showPassword);
   };
@@ -56,6 +56,7 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
+    setIsLoading(true)
     setErrorMessage("")
     setSuccessMessage("")
     e.preventDefault();
@@ -85,12 +86,14 @@ function Signup() {
         confirmPassword: ""
       });
       setSuccessMessage(`Success: Registration Successfull`);
+      setIsLoading(false)
     } catch (error) {
-      console.log(error)
+      console.log("error")
       setSuccessMessage(``);
       if (error.code === "ERR_NETWORK") {
         setErrorMessage(`Error: ${error.message}`);
-        return;  
+        setIsLoading(false)
+        return;
       }
       if (error.response.data.error==="Username & email already exists") {
         setUsernameError(true)
@@ -103,13 +106,16 @@ function Signup() {
         setEmailError(true)
       }
       setErrorMessage(`Error: ${error.response.data.error}`);
+      setIsLoading(false)
     }
+    
   };
 
   return (
     <>
       <Header />
-      {/* <BackdropLoader/> */}
+      {isLoading && <BackdropLoader/>}
+
       <Container component="main" maxWidth="xs" sx={{ height: "92vh" }}>
         <Box
           marginTop={8}

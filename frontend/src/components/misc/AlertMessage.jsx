@@ -3,11 +3,20 @@ import { Alert, IconButton, Snackbar } from "@mui/material";
 import * as React from "react";
 
 function ErrorMessage({errorMessage, setErrorMessage }) {
+  
+  const handleClose = (event, reason) => {
+    if(reason === "clickaway") {
+      return;
+    }
+    setErrorMessage("")
+  }
+
   return (
     <Snackbar
       open={!!errorMessage}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      autoHideDuration={5000}
+      autoHideDuration={6000}
+      onClose={handleClose}
     >
       <Alert
         severity="error"
@@ -31,11 +40,18 @@ function ErrorMessage({errorMessage, setErrorMessage }) {
   );
 }
 function SuccessMessage({ successMessage, setSuccessMessage }) {
+  const handleClose = (event, reason) => {
+    if(reason === "clickaway") {
+      return;
+    }
+    setSuccessMessage("")
+  }
   return (
     <Snackbar
       open={!!successMessage}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      autoHideDuration={5000}
+      autoHideDuration={6000}
+      onClose={handleClose}
     >
       <Alert
         severity="success"
