@@ -1,0 +1,3 @@
+PORT=3000
+JWT_SECRET=shakalaka_boom_boom
+MONGODB_URI=mongodb://localhost:27017

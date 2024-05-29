@@ -7,18 +7,20 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Typography
+  Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { ContentCutOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import Header from "../Header";
 import Footer2 from "../Footer2";
 import api from "../../services/api";
 import BackdropLoader from "../BackdropLoader";
 import { ErrorMessage, SuccessMessage } from "../misc/AlertMessage";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
+  const navigate = useNavigate();
   const isMobileView = useIsMobileView();
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
@@ -26,19 +28,20 @@ function Signup() {
     username: "",
     email: "",
     password: "",
-    confirmPassword: ""
-  })
-  const [usernameError, setUsernameError] = React.useState(false)
-  const [emailError, setEmailError] = React.useState(false)
-  const [passwordError, setPasswordError] = React.useState(false)
-  const [confirmPasswordError, setConfirmPasswordError] = React.useState(false)
-
+    confirmPassword: "",
+  });
+  const [usernameError, setUsernameError] = React.useState(false);
+  const [emailError, setEmailError] = React.useState(false);
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [successMessage, setSuccessMessage] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const handleClickShowPassword = () => {
     setShowPassword((showPassword) => !showPassword);
   };
+
   const handleMouseClickShowPassword = (event) => {
     event.preventDefault();
   };
@@ -46,6 +49,7 @@ function Signup() {
   const handleClickShowConfirmPassword = () => {
     setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword);
   };
+
   const handleMouseClickShowConfirmPassword = (event) => {
     event.preventDefault();
   };
@@ -56,65 +60,73 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
-    setIsLoading(true)
-    setErrorMessage("")
-    setSuccessMessage("")
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
     try {
-      if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
-        setErrorMessage("Error: Mandatory fields missing")
-        setUsernameError(true)
-        setEmailError(true)
-        setPasswordError(true)
-        setConfirmPasswordError(true)
+      if (
+        !formData.username ||
+        !formData.email ||
+        !formData.password ||
+        !formData.confirmPassword
+      ) {
+        setErrorMessage("Error: Mandatory fields missing");
+        setUsernameError(true);
+        setEmailError(true);
+        setPasswordError(true);
+        setConfirmPasswordError(true);
         return;
       }
       if (formData.password !== formData.confirmPassword) {
-        setErrorMessage("Error: Confirm Password does not match with password")
-        setConfirmPasswordError(true)
+        setErrorMessage("Error: Confirm Password does not match with password");
+        setConfirmPasswordError(true);
         return;
       } else {
-        setConfirmPasswordError(false)
+        setConfirmPasswordError(false);
       }
-      const response = await api.post("/users/register", formData)
-      
+      const response = await api.post("/users/register", formData);
+
       setErrorMessage("");
       setFormData({
         username: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
       });
       setSuccessMessage(`Success: Registration Successfull`);
-      setIsLoading(false)
+      setIsLoading(false);
+      // Store in redux instead of localStorage
+      localStorage.setItem("loggedInUser", JSON.stringify(response.data));
+      navigate("/");
     } catch (error) {
-      console.log("error")
+      console.log(error);
       setSuccessMessage(``);
+
       if (error.code === "ERR_NETWORK") {
         setErrorMessage(`Error: ${error.message}`);
-        setIsLoading(false)
+        setIsLoading(false);
         return;
       }
-      if (error.response.data.error==="Username & email already exists") {
-        setUsernameError(true)
-        setEmailError(true)
+      if (error.response.data.error === "Username & email already exists") {
+        setUsernameError(true);
+        setEmailError(true);
       }
-      if (error.response.data.error==="Username already exists") {
-        setUsernameError(true)
+      if (error.response.data.error === "Username already exists") {
+        setUsernameError(true);
       }
-      if (error.response.data.error==="Email already exists") {
-        setEmailError(true)
+      if (error.response.data.error === "Email already exists") {
+        setEmailError(true);
       }
       setErrorMessage(`Error: ${error.response.data.error}`);
-      setIsLoading(false)
+      setIsLoading(false);
     }
-    
   };
 
   return (
     <>
       <Header />
-      {isLoading && <BackdropLoader/>}
+      {isLoading && <BackdropLoader />}
 
       <Container component="main" maxWidth="xs" sx={{ height: "92vh" }}>
         <Box
@@ -126,10 +138,16 @@ function Signup() {
           }}
         >
           {successMessage && (
-            <SuccessMessage successMessage={successMessage} setSuccessMessage={setSuccessMessage} />
+            <SuccessMessage
+              successMessage={successMessage}
+              setSuccessMessage={setSuccessMessage}
+            />
           )}
           {errorMessage && (
-            <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
+            <ErrorMessage
+              errorMessage={errorMessage}
+              setErrorMessage={setErrorMessage}
+            />
           )}
           <Box
             component="form"
@@ -150,8 +168,8 @@ function Signup() {
                   error={usernameError}
                   value={formData.username}
                   onChange={(e) => {
-                    handleChange(e)
-                    setUsernameError(false)
+                    handleChange(e);
+                    setUsernameError(false);
                   }}
                 />
               </Grid>
@@ -167,8 +185,8 @@ function Signup() {
                   error={emailError}
                   value={formData.email}
                   onChange={(e) => {
-                    handleChange(e)
-                    setEmailError(false)
+                    handleChange(e);
+                    setEmailError(false);
                   }}
                 />
               </Grid>
@@ -185,8 +203,8 @@ function Signup() {
                   error={passwordError}
                   value={formData.password}
                   onChange={(e) => {
-                    handleChange(e)
-                    setPasswordError(false)
+                    handleChange(e);
+                    setPasswordError(false);
                   }}
                   InputProps={{
                     endAdornment: (
@@ -217,8 +235,8 @@ function Signup() {
                   error={confirmPasswordError}
                   value={formData.confirmPassword}
                   onChange={(e) => {
-                    handleChange(e)
-                    setConfirmPasswordError(false)
+                    handleChange(e);
+                    setConfirmPasswordError(false);
                   }}
                   InputProps={{
                     endAdornment: (

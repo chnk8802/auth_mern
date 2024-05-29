@@ -42,13 +42,8 @@ const register = async (req, res) => {
     });
 
     await newUser.save();
-
-    res.status(201).json({
-      user: {
-        _id: newUser._id,
-        token: generateToken(newUser._id),
-      },
-    });
+    newUser.password = undefined;
+    res.status(201).json(newUser);
   } catch (error) {
     console.error("User registration error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -67,15 +62,10 @@ const login = async (req, res) => {
 
     const isPasswordValid = await user.matchPassword(password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).json({ error: "Invalid password" });
     }
-
-    res.status(201).json({
-      user: {
-        _id: user._id,
-        token: generateToken(user._id),
-      },
-    });
+    user.password = undefined;
+    res.status(201).json(user);
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });
