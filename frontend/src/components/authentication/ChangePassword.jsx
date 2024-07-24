@@ -11,11 +11,17 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useIsMobileView from "../../hooks/useIsMobileView";
+import { useDispatch } from "react-redux";
 
 export default function ChangePassword() {
   const isMobileView = useIsMobileView();
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [formData, setFormData] = React.useState({
+    password: "",
+    confirmPassword: ""
+  })
+  const dispatch = useDispatch()
   const handleClickShowPassword = () => {
     setShowPassword((showPassword) => !showPassword);
   };
@@ -29,6 +35,10 @@ export default function ChangePassword() {
   const handleMouseClickShowConfirmPassword = (event) => {
     event.preventDefault();
   };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log(formData)
+  }
   return (
     <>
       {/* <Header /> */}
@@ -41,7 +51,7 @@ export default function ChangePassword() {
             alignItems: "center",
           }}
         > */}
-          <Box component="form" noValidate sx={{ mt: 15 }}>
+          <Box component="form" noValidate sx={{ mt: 15 }} onSubmit={(e)=> handleSubmit()}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
@@ -106,7 +116,7 @@ export default function ChangePassword() {
                   fullWidth
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Create account
+                  Change Password
                 </Button>
               </Grid>
             </Grid>

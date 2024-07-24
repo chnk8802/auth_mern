@@ -2,11 +2,15 @@ import React, { useRef, useState } from "react";
 import { Box, Button, Container, Grid, TextField } from "@mui/material";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import Header from "../Header";
+import { showChangePassword } from "../../app/features/resetPassword/resetpasswordSlice";
+import api from '../../services/api'
+import { useDispatch } from "react-redux";
 
 const OtpInput = () => {
   const isMobileView = useIsMobileView();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef();
+  const dispatch = useDispatch()
 
   const handleChange = (index, e) => {
     const value = e.target.value;
@@ -30,6 +34,19 @@ const OtpInput = () => {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    let otpNumber = parseInt(otp.join(""))
+    console.log(otpNumber)
+    try {
+      const response = await api.post("/users/enter-otp", {otp: otpNumber});
+      console.log(response.data)
+      dispatch(showChangePassword())
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
       {/* <Header /> */}
@@ -42,13 +59,12 @@ const OtpInput = () => {
             alignItems: "center",
           }}
         > */}
-          <Box component="form" noValidate sx={{ mt: 15 }}>
+          <Box component="form" noValidate sx={{ mt: 15 }} onSubmit={(e) => handleSubmit(e)}>
             <Grid container>
               <Grid item xs={12} container spacing={1} justifyContent="center">
                 {otp.map((digit, index) => (
-                  <Grid item id={`otp-input-container-${index}`}>
+                  <Grid item id={`otp-input-container-${index}`} key={`otp-input-key-${index}`}>
                     <TextField
-                      key={index}
                       id={`otp-input-${index}`}
                       type="number"
                       variant="standard"
@@ -85,11 +101,11 @@ const OtpInput = () => {
                   Continue
                 </Button>
               </Grid>
-              <Grid item xs={12}>
-                <Button variant="outlined" fullWidth sx={{ mt: 3, mb: 2 }}>
+              {/* <Grid item xs={12}>
+                <Button variant="outlined" color='success' fullWidth sx={{ mt: 3, mb: 2 }}>
                   Resend OTP in 1:59 mins
                 </Button>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
         {/* </Box>

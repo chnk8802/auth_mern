@@ -64,6 +64,7 @@ function Signup() {
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
+    
     try {
       if (
         !formData.username ||
@@ -108,16 +109,20 @@ function Signup() {
         setIsLoading(false);
         return;
       }
+
       if (error.response.data.error === "Username & email already exists") {
         setUsernameError(true);
         setEmailError(true);
       }
+      
       if (error.response.data.error === "Username already exists") {
         setUsernameError(true);
       }
+      
       if (error.response.data.error === "Email already exists") {
         setEmailError(true);
       }
+      
       setErrorMessage(`Error: ${error.response.data.error}`);
       setIsLoading(false);
     }

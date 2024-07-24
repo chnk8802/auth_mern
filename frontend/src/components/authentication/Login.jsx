@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../Header";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import Footer2 from "../Footer2";
-import api from '../../services/api'
+import api from "../../services/api";
 import { ErrorMessage, SuccessMessage } from "../misc/AlertMessage";
 import BackdropLoader from "../BackdropLoader";
 
@@ -25,7 +25,7 @@ function Login() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [formData, setFormData] = React.useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
@@ -42,22 +42,22 @@ function Login() {
   };
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
-    setFormData({...formData, [name]: value})
-  }
-  
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true)
-    setErrorMessage("")
-    setSuccessMessage("")
+    setIsLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
     try {
-      const response = await api.post('/users/login', formData)
-      console.log(response)
+      const response = await api.post("/users/login", formData);
+      console.log(response);
       setErrorMessage("");
       setFormData({
         email: "",
-        password: ""
+        password: "",
       });
       setSuccessMessage(`Success: Login Successfull`);
       setIsLoading(false);
@@ -68,14 +68,13 @@ function Login() {
     } catch (error) {
       console.log(error);
       setSuccessMessage(``);
-      if (error.response.data.error = "Invalid password")
-        {
-          setPasswordError(true)
-        }
+      if ((error.response.data.error = "Invalid password")) {
+        setPasswordError(true);
+      }
       setErrorMessage(`Error: ${error.response.data.error}`);
       setIsLoading(false);
-    }
-  }
+    }       
+  };
 
   return (
     <>
@@ -83,13 +82,11 @@ function Login() {
       {isLoading && <BackdropLoader />}
       <Container component="main" maxWidth="xs" sx={{ height: "60vh" }}>
         <Box
-          sx={
-            {
-              my: 30,
-              display: "flex",
-              flexDirection: "column",
-            }
-          }
+          sx={{
+            my: 30,
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
           {successMessage && (
             <SuccessMessage
@@ -103,11 +100,7 @@ function Login() {
               setErrorMessage={setErrorMessage}
             />
           )}
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-          >
+          <Box component="form" noValidate onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -119,10 +112,10 @@ function Login() {
                   fullWidth
                   autoComplete="off"
                   value={formData.email}
-                  onChange={(e)=>{
-                    handleChange(e)
-                    setEmailError(false)
-                    setErrorMessage('')
+                  onChange={(e) => {
+                    handleChange(e);
+                    setEmailError(false);
+                    setErrorMessage("");
                   }}
                 />
               </Grid>
@@ -138,10 +131,10 @@ function Login() {
                   autoComplete="off"
                   error={passwordError}
                   value={formData.password}
-                  onChange={(e)=>{
+                  onChange={(e) => {
                     handleChange(e);
-                    setPasswordError(false)
-                    setErrorMessage('')
+                    setPasswordError(false);
+                    setErrorMessage("");
                   }}
                   InputProps={{
                     endAdornment: (
@@ -192,7 +185,7 @@ function Login() {
           </Grid>
         </Box>
       </Container>
-      <Footer2/>
+      <Footer2 />
     </>
   );
 }
