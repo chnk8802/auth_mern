@@ -40,8 +40,8 @@ const OtpInput = () => {
     console.log(otpNumber)
     try {
       const response = await api.post("/users/enter-otp", {otp: otpNumber});
-      console.log(response.data)
-      dispatch(showChangePassword())
+      console.log(response.data.verifiedUser)
+      dispatch(showChangePassword(response.data.verifiedUser))
     } catch (error) {
       console.log(error)
     }

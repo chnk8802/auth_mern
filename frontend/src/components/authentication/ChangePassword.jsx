@@ -1,5 +1,4 @@
 import * as React from "react";
-import Header from "../Header";
 import {
   Box,
   Button,
@@ -10,10 +9,16 @@ import {
   TextField,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Header from "../Header";
 import useIsMobileView from "../../hooks/useIsMobileView";
-import { useDispatch } from "react-redux";
+import api from '../../services/api'
+import { showVerifyEmail } from "../../app/features/resetPassword/resetpasswordSlice";
 
 export default function ChangePassword() {
+  const { otpVerifiedUser } = useSelector((state) => state.resetPassword)
+  const navigate = useNavigate()
   const isMobileView = useIsMobileView();
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
@@ -22,7 +27,9 @@ export default function ChangePassword() {
     confirmPassword: ""
   })
   const dispatch = useDispatch()
+
   const handleClickShowPassword = () => {
+    console.log(2, otpVerifiedUser)
     setShowPassword((showPassword) => !showPassword);
   };
   const handleMouseClickShowPassword = (event) => {
@@ -35,9 +42,36 @@ export default function ChangePassword() {
   const handleMouseClickShowConfirmPassword = (event) => {
     event.preventDefault();
   };
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleChange = (e) => {
+    const {name, value} = e.target
+    console.log(name, value)
+    setFormData({...formData, [name]: value})
     console.log(formData)
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const password = formData.password
+    const confirmPassword = formData.confirmPassword
+
+    if (password !== confirmPassword) {
+        console.log("Password is not matching");
+        return;
+      }
+
+    const resetPasswordObj = {
+    userId: otpVerifiedUser.payload,
+    newPassword: password
+    }
+    console.log({"resetPasswordObj":resetPasswordObj})
+
+    try {
+      const response = await api.post("/users/reset-password", resetPasswordObj)
+      console.log(response)
+      dispatch(showVerifyEmail())
+      navigate('/')
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <>
@@ -51,7 +85,7 @@ export default function ChangePassword() {
             alignItems: "center",
           }}
         > */}
-          <Box component="form" noValidate sx={{ mt: 15 }} onSubmit={(e)=> handleSubmit()}>
+          <Box component="form" noValidate sx={{ mt: 15 }} onSubmit={(e)=> handleSubmit(e)}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
@@ -63,6 +97,7 @@ export default function ChangePassword() {
                   autoComplete="off"
                   required
                   fullWidth
+                  onChange={(e)=>handleChange(e)}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="start">
@@ -89,6 +124,7 @@ export default function ChangePassword() {
                   autoComplete="off"
                   required
                   fullWidth
+                  onChange={(e)=>handleChange(e)}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="start">

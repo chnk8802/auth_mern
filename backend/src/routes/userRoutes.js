@@ -10,6 +10,7 @@ router.post('/forgot-password', userControllers.forgotPassword)
 router.post('/enter-otp', userControllers.enterOtp)
 router.post('/reset-password', userControllers.resetPassword)
 
+router.get('/all-users', auth, userControllers.getUsers)
 router.get('/:id', auth, userControllers.getUser)
 
 export default router

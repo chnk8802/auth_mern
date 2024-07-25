@@ -64,8 +64,9 @@ const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid password" });
     }
+    const token = generateToken(user._id);
     user.password = undefined;
-    res.status(201).json(user);
+    res.status(201).json({ user: user, accessToken: token });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -89,7 +90,7 @@ const forgotPassword = async (req, res) => {
 
     sendResetPasswordEmail(user.email, otp);
 
-    res.status(200).json({message: "Password reset email sent" });
+    res.status(200).json({ message: "Password reset email sent" });
   } catch (error) {
     console.error("Forgot password error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -109,7 +110,7 @@ const enterOtp = async (req, res) => {
       return res.status(400).json({ error: "Invalid or expired token" });
     }
 
-    res.status(200).json({verifiedUser: user._id});
+    res.status(200).json({ verifiedUser: user._id });
   } catch (error) {
     console.error("Reset password error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -118,19 +119,19 @@ const enterOtp = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { userId,newPassword } = req.body;
+    const { userId, newPassword } = req.body;
 
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(400).json({ error: "Error occuured try again" });
     }
-    user.password = newPassword
-    user.otp = undefined
-    user.otpExpires = undefined
-    await user.save()
+    user.password = newPassword;
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
 
-    res.status(200).json({ message: 'Password reset successfully' });
+    res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
     console.error("Reset password error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -150,4 +151,33 @@ const getUser = async (req, res) => {
   }
 };
 
-export default { register, login, getUser, forgotPassword, enterOtp, resetPassword };
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({});
+    const userMap = {};
+    
+    users.forEach((user) => {
+      userMap[user._id] = user;
+    });
+
+    if (Object.keys(userMap).length > 0) {
+      res.status(200).json(userMap); // Use 200 for OK
+    } else {
+      res.status(204).json(); // Use 204 if no users found
+    }
+  } catch (error) {
+    console.error("Get User error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+export default {
+  register,
+  login,
+  getUser,
+  getUsers,
+  forgotPassword,
+  enterOtp,
+  resetPassword,
+};

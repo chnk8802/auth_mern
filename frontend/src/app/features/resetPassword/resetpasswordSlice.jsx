@@ -13,17 +13,19 @@ export const resetPasswordSlice = createSlice({
             state.showVerifyEmail = true,
             state.showOtpInput = false,
             state.showChangePassword = false
+            state.otpVerifiedUser = ""
         },
-        showOtpInput: (state, otpVerifiedUser) => {
+        showOtpInput: (state) => {
             state.showVerifyEmail = false,
             state.showOtpInput = true,
             state.showChangePassword = false
-            state.otpVerifiedUser = otpVerifiedUser
+            state.otpVerifiedUser = ""
         },
-        showChangePassword: state => {
+        showChangePassword: (state, otpVerifiedUser) => {
             state.showVerifyEmail = false,
             state.showOtpInput = false,
             state.showChangePassword = true
+            state.otpVerifiedUser = otpVerifiedUser
         }
     }
 })

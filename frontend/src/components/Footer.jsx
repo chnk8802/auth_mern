@@ -14,7 +14,7 @@ import useIsMobileView from "../hooks/useIsMobileView";
 export default function Footer() {
   const isMobileView = useIsMobileView();
   return (
-    <Container maxWidth="xl" sx={{position: "absolute", bottom: 0}}>
+    <Container maxWidth="xl" sx={{position: "absolute", bottom: 0, border: "1px solid red"}}>
       <Box
         sx={{
           marginTop: 8.5,

@@ -18,9 +18,12 @@ import Footer2 from "../Footer2";
 import api from "../../services/api";
 import { ErrorMessage, SuccessMessage } from "../misc/AlertMessage";
 import BackdropLoader from "../BackdropLoader";
+import { useDispatch } from "react-redux";
+import { login } from "../../app/features/verifyLogin/verifyLoginSlice";
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isMobileView = useIsMobileView();
   const [showPassword, setShowPassword] = React.useState(false);
   const [formData, setFormData] = React.useState({
@@ -63,7 +66,8 @@ function Login() {
       setIsLoading(false);
 
       // Store in redux instead of localStorage
-      localStorage.setItem("loggedInUser", JSON.stringify(response.data));
+      dispatch(login(response.data))
+      // localStorage.setItem("loggedInUser", JSON.stringify(response.data));
       navigate("/");
     } catch (error) {
       console.log(error);

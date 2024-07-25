@@ -5,6 +5,7 @@ const auth = async (req, res, next) => {
     try {
     let token
     if ( req.headers.authorization && req.headers.authorization.startsWith('Bearer') ) {
+        console.log(req.headers.authorization)
             token = req.headers.authorization.split(" ")[1]
             
             const decoded = jwt.verify(token, process.env.JWT_SECRET)

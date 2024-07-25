@@ -12,7 +12,10 @@ dotenv.config()
 connectDB();
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',  // Allow requests from this origin
+    credentials: true,  // Allow sending cookies and other credentials
+}))
 app.use(express.json())
 app.use(helmet())
 app.use(morgan('dev'))
