@@ -55,7 +55,12 @@ function Login() {
     setErrorMessage("");
     setSuccessMessage("");
     try {
-      const response = await api.post("/users/login", formData);
+      const config =  {
+        header: {
+            "Content-type": "application/json"
+        }
+      };
+      const response = await api.post("/users/login", formData, config);
       console.log(response);
       setErrorMessage("");
       setFormData({

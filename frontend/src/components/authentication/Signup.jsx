@@ -86,7 +86,12 @@ function Signup() {
       } else {
         setConfirmPasswordError(false);
       }
-      const response = await api.post("/users/register", formData);
+      const config =  {
+        header: {
+            "Content-type": "application/json"
+        }
+      };
+      const response = await api.post("/users/register", formData, config);
 
       setErrorMessage("");
       setFormData({

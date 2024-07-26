@@ -153,11 +153,11 @@ const getUser = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({});
-    const userMap = {};
+    const users = await User.find({}).select("-password -__v");
+    const userMap = [];
     
     users.forEach((user) => {
-      userMap[user._id] = user;
+      userMap.push(user);
     });
 
     if (Object.keys(userMap).length > 0) {
