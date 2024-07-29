@@ -4,12 +4,13 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Header from "../components/Header";
-import Footer2 from "../components/Footer2";
 import api from "../services/api";
+import ReportHeader from "../components/ReportHeader";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
-  const accessToken = useSelector((state) => state.verifyLogin.accessToken);
+  const [selectionModel, setSelectionModel] = useState([]); // State to track selected rows
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -20,7 +21,6 @@ export default function Users() {
           },
         };
         const response = await api.get("/users/all-users", config);
-        console.log(response.data)
         setUsers(response.data);
       } catch (error) {
         console.error(
@@ -55,6 +55,12 @@ export default function Users() {
     ...user, // Spread the user object to include all properties
   }));
 
+    // Log the number of selected rows whenever the selection model changes
+    const handleSelectionModelChange = (newSelection) => {
+      setSelectionModel(newSelection); // Update the selection state
+      console.log("Number of selected rows:", newSelection); // Log the number of selected rows
+    };
+
   return (
     <>
       <Header />
@@ -69,15 +75,18 @@ export default function Users() {
           }}
         >
           <Box style={{ height: "95%", width: "100%" }}>
+          <ReportHeader docName="User" isReport={false}/>
             <DataGrid
               rows={rows}
               columns={columns}
-              checkboxSelection // Optional, if you want to include checkboxes for row selection
+              density="compact"
+              checkboxSelection
+              selectionModel={selectionModel} // Bind the selection model to the DataGrid
+              onSelectionModelChange={handleSelectionModelChange} // Add selection model change handler
             />
           </Box>
         </Box>
       </Container>
-      {/* <Footer2 /> */}
     </>
   );
 }

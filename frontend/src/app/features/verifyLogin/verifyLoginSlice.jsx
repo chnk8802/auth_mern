@@ -22,5 +22,5 @@ export const verifyLoginSlice = createSlice({
     }
 })
 
-export const {login, logout} = verifyLoginSlice.actions
-export default verifyLoginSlice.reducer
+// export const {login, logout} = verifyLoginSlice.actions
+// export default verifyLoginSlice.reducer

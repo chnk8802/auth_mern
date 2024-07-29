@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Email,
   Instagram,
@@ -8,13 +9,12 @@ import {
   X,
 } from "@mui/icons-material";
 import { Avatar, Box, Container, Grid, Typography } from "@mui/material";
-import * as React from "react";
 import useIsMobileView from "../hooks/useIsMobileView";
 
 export default function Footer() {
   const isMobileView = useIsMobileView();
   return (
-    <Container maxWidth="xl" sx={{position: "absolute", bottom: 0, border: "1px solid red"}}>
+    <Container maxWidth="xl" sx={{position: "absolute", bottom: 0}}>
       <Box
         sx={{
           marginTop: 8.5,

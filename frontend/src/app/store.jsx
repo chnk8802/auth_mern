@@ -1,12 +1,12 @@
 import {configureStore} from '@reduxjs/toolkit'
 import renderLoginSignupReducer from './features/renderLoginSignup/renderLoginSignup'
 import resetPasswordReducer from './features/resetPassword/resetpasswordSlice'
-import verifyLoginReducer from './features/verifyLogin/verifyLoginSlice'
+import authReducer from './features/authentication/authenticationSlice'
 
 export default configureStore({
     reducer: {
-        renderLoginSignup: renderLoginSignupReducer,
+        auth: authReducer,
         resetPassword: resetPasswordReducer,
-        verifyLogin: verifyLoginReducer
+        renderLoginSignup: renderLoginSignupReducer,
     }
 })

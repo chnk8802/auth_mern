@@ -3,8 +3,8 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import {Menu} from '@mui/icons-material/';
 import { Grid, Box, IconButton, Link, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import {logout} from '../app/features/verifyLogin/verifyLoginSlice'
-import { LoginSignupButtons } from './LoginSignupButtons';
+import {logout} from '../app/features/authentication/authenticationSlice'
+// import { LoginSignupButtons } from './LoginSignupButtons';
 import {
   showLogin,
   showSignup,
@@ -12,7 +12,7 @@ import {
 
 export default function MobileMenu() {
   const dispatch = useDispatch()
-  const {isLoggedIn} = useSelector((state) => state.verifyLogin)
+  const {isLoggedIn} = useSelector((state) => state.auth)
   const [openDrawer, setOpenDrawer] = React.useState(false)
   const toggleDrawer = (event) => {
     // if ( event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift') ) {

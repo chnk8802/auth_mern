@@ -1,6 +1,6 @@
+import * as React from "react";
 import { Instagram, X, YouTube } from "@mui/icons-material";
 import { Box, Container, Grid, Link, Typography } from "@mui/material";
-import * as React from "react";
 import useIsMobileView from "../hooks/useIsMobileView";
 import demoLogo from '../assets/demo_logo.png'
 

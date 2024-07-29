@@ -19,7 +19,7 @@ import api from "../../services/api";
 import { ErrorMessage, SuccessMessage } from "../misc/AlertMessage";
 import BackdropLoader from "../BackdropLoader";
 import { useDispatch } from "react-redux";
-import { login } from "../../app/features/verifyLogin/verifyLoginSlice";
+import { login } from "../../app/features/authentication/authenticationSlice";
 
 function Login() {
   const navigate = useNavigate();

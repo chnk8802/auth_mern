@@ -102,9 +102,8 @@ function Signup() {
       });
       setSuccessMessage(`Success: Registration Successfull`);
       setIsLoading(false);
-      // Store in redux instead of localStorage
-      localStorage.setItem("loggedInUser", JSON.stringify(response.data));
-      navigate("/");
+      // Redirect to login
+      navigate("/login");
     } catch (error) {
       console.log(error);
       setSuccessMessage(``);

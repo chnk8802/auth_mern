@@ -1,18 +1,27 @@
-import { AppBar, Grid, Button, Typography, useMediaQuery } from "@mui/material"
+import * as React from "react";
+import {
+  AppBar,
+  Grid,
+  Button,
+  Typography
+} from "@mui/material";
 import {
   showLogin,
   showSignup,
-} from "../app/features/renderLoginSignup/renderLoginSignup"
-import MobileMenu from "./MobileMenu"
-import useIsMobileView from "../hooks/useIsMobileView"
-import { Link } from "react-router-dom"
-import { useDispatch, useSelector} from "react-redux"
-import { logout } from "../app/features/verifyLogin/verifyLoginSlice"
+} from "../app/features/renderLoginSignup/renderLoginSignup";
+import MobileMenu from "./MobileMenu";
+import useIsMobileView from "../hooks/useIsMobileView";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../app/features/authentication/authenticationSlice";
+import GlitchText from "./misc/GlitchText";
+import UserMenu from "./UserMenu";
 
 function Header() {
-  const isMobileView = useIsMobileView()
-  const dispatch = useDispatch()
-  const {isLoggedIn} = useSelector((state) => state.verifyLogin)
+
+  const isMobileView = useIsMobileView();
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   return (
     <AppBar
       elevation={0}
@@ -22,11 +31,9 @@ function Header() {
     >
       <Grid container>
         <Grid container item xs direction="row" alignItems="center">
-          <Typography variant={isMobileView ? "h5" : "h4"}>
-            <Link style={{ textDecoration: "none", color: "#000" }} to="/">
-              Scooby
-            </Link>
-          </Typography>
+          <Link style={{ textDecoration: "none", color: "#000" }} to="/">
+            <Typography variant={isMobileView ? "h5" : "h4"}>Scooby</Typography>
+          </Link>
         </Grid>
 
         {isMobileView ? (
@@ -41,49 +48,39 @@ function Header() {
             alignItems="center"
             columnGap={1}
           >
-            {isLoggedIn ?  
-            <>
-            <Grid item>
-              <Link to="/login">
-                <Button
-                  variant="outlined"
-                  size="large"
-                  color="error"
-                  sx={{ px: 6 }}
-                  onClick={() => dispatch(logout())}
-                >
-                  Logout
-                </Button>
-              </Link>
-            </Grid>
-            </> : 
-            <>
-            <Grid item>
-              <Link to="/login">
-                <Button
-                  variant="outlined"
-                  size="large"
-                  sx={{ px: 6 }}
-                  onClick={() => dispatch(showLogin())}
-                >
-                  Log In
-                </Button>
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link to="/register">
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => dispatch(showSignup())}
-                >
-                  Get Started
-                </Button>
-              </Link>
-            </Grid>
-            </>
-            }
-
+            {isLoggedIn ? (
+              <>
+                <Grid item>
+                  <UserMenu />
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item>
+                  <Link to="/login">
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      sx={{ px: 6 }}
+                      onClick={() => dispatch(showLogin())}
+                    >
+                      Log In
+                    </Button>
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link to="/register">
+                    <Button
+                      variant="contained"
+                      size="large"
+                      onClick={() => dispatch(showSignup())}
+                    >
+                      Get Started
+                    </Button>
+                  </Link>
+                </Grid>
+              </>
+            )}
           </Grid>
         )}
       </Grid>

@@ -10,10 +10,10 @@
 
 .glitch {
   position: relative;
-  font-size: 80px;
+  font-size: 84px;
   font-weight: 700;
   line-height: 1.2;
-  color: rgba(53, 53, 53, 0.91);
+  /* color: rgba(53, 53, 53, 0.91); */
   letter-spacing: 5px;
   animation: shift 4s ease-in-out infinite alternate;
   z-index: 1;

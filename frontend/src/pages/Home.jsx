@@ -1,8 +1,10 @@
 import * as React from "react";
 import Header from "../components/Header";
-import { Box, Container, Grid, Typography } from "@mui/material";
-import GlitchText from "../components/misc/GlitchText";
+import { Box, Button, Container, Grid, IconButton, Typography } from "@mui/material";
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
+import ReportHeader from "../components/ReportHeader";
 
 export default function Home() {
   return (
@@ -22,12 +24,18 @@ export default function Home() {
               {/* <GlitchText/> */}
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">Whatchu Gonna Do?</Typography>
+              <ReportHeader/>
+              <Link to="/all-users">
+                <Button variant="primary">Users <ArrowOutwardIcon/></Button>
+              </Link>
+              <Link to="/helllo">
+                <Button variant="primary">helllo <ArrowOutwardIcon/></Button>
+              </Link>
             </Grid>
           </Grid>
         </Box>
       </Container>
-      <Footer />
+      <Box display="flex" justifyContent="center"><Footer /></Box>
       {/* {showLogin && <Login/>}
             {showSignup && <Signup/>} */}
     </>
