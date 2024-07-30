@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import ReportHeader from '../components/ReportHeader'
 import {Container, Box, Grid, Typography} from "@mui/material"
 import { useSelector } from "react-redux"
+import Footer2 from "../components/Footer2"
 export default function UserProfile() {
     const loggedInUser = useSelector(state => state.auth.loggedInUser)
   return (
@@ -29,6 +30,7 @@ export default function UserProfile() {
             </Grid>
           </Grid>
         </Box>
+        <Footer2/>
       </Container>
     </>
   );

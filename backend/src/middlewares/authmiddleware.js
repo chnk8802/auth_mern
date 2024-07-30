@@ -1,23 +1,24 @@
-import jwt from 'jsonwebtoken'
-import User from '../models/userModel.js'
+import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
 
 const auth = async (req, res, next) => {
-    try {
-    let token
-    if ( req.headers.authorization && req.headers.authorization.startsWith('Bearer') ) {
-        console.log(req.headers.authorization)
-            token = req.headers.authorization.split(" ")[1]
-            
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            req.user = await User.findById(decoded.userId).select('-password')
+  try {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
 
-            next()
-        } else {
-            throw new Error("Authorization header missing or invalid")
-        }
-    } catch (error) {
-        res.status(401).json({ error: 'Not authorized. ' + error.message })
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await User.findById(decoded.userId).select("-password");
+
+      next();
+    } else {
+      throw new Error("Authorization header missing or invalid");
     }
-
-}
-export default auth
+  } catch (error) {
+    res.status(401).json({ error: "Not authorized. " + error.message });
+  }
+};
+export default auth;

@@ -12,5 +12,7 @@ router.post('/reset-password', userControllers.resetPassword)
 
 router.get('/all-users', auth, userControllers.getUsers)
 router.get('/:id', auth, userControllers.getUser)
+// router.patch('/:id', auth, userControllers.updateUser)
+// router.delete('/:id', auth, userControllers.deleteUser)
 
 export default router

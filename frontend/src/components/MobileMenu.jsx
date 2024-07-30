@@ -1,78 +1,106 @@
-import * as React from 'react';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import {Menu} from '@mui/icons-material/';
-import { Grid, Box, IconButton, Link, Button } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import {logout} from '../app/features/authentication/authenticationSlice'
-// import { LoginSignupButtons } from './LoginSignupButtons';
+import * as React from "react";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
-  showLogin,
-  showSignup,
-} from "../app/features/renderLoginSignup/renderLoginSignup"
+  Grid,
+  Box,
+  IconButton,
+  Button,
+  Link,
+  Tooltip,
+  Divider,
+  Typography,
+} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../app/features/authentication/authenticationSlice";
+import "../App.css";
 
 export default function MobileMenu() {
-  const dispatch = useDispatch()
-  const {isLoggedIn} = useSelector((state) => state.auth)
-  const [openDrawer, setOpenDrawer] = React.useState(false)
+  const dispatch = useDispatch();
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
   const toggleDrawer = (event) => {
     // if ( event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift') ) {
-      //     return;
-      // }
-      setOpenDrawer(open=> !open)
-    };
-    
+    //     return;
+    // }
+    setOpenDrawer((open) => !open);
+  };
+
   return (
-        <Box>
-          <IconButton onClick={() => toggleDrawer()}><Menu /></IconButton>
-          <SwipeableDrawer
-            open={openDrawer}
-            onClose={() => toggleDrawer()}
-            onOpen={() => toggleDrawer()}
-          >
-            {isLoggedIn ?  
-            <>
-            <Grid item>
-              <Link to="/login">
-                <Button
+    <Box>
+      <IconButton onClick={() => toggleDrawer()}>
+        <MenuIcon />
+      </IconButton>
+      <SwipeableDrawer
+        open={openDrawer}
+        onClose={() => toggleDrawer()}
+        onOpen={() => toggleDrawer()}
+      >
+        {isLoggedIn ? (
+          <Grid container mt={5}>
+            <Grid item xs={12}>
+              <Divider />
+              <Button variant="text" fullWidth href="/all-users">
+                Users
+              </Button>
+              <Divider />
+            </Grid>
+            <Grid item xs={12}>
+              <Button variant="text" fullWidth href="/logasdain">
+                Hello
+              </Button>
+              <Divider />
+            </Grid>
+            <Grid item xs={12}>
+              <Button variant="text" fullWidth href="/my-profile">
+                My Profile
+              </Button>
+              <Divider />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "center" }}
+            >
+              <Tooltip title="Logout">
+                <IconButton
                   variant="outlined"
                   size="large"
                   color="error"
-                  sx={{ px: 6 }}
+                  href="/login"
                   onClick={() => dispatch(logout())}
                 >
-                  Logout
-                </Button>
-              </Link>
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
             </Grid>
-            </> : 
-            <>
-            <Grid item>
-              <Link to="/login">
-                <Button
-                  variant="outlined"
-                  size="large"
-                  sx={{ px: 6 }}
-                  onClick={() => dispatch(showLogin())}
-                >
-                  Log In
-                </Button>
-              </Link>
+          </Grid>
+        ) : (
+          <Grid container mt={5}>
+            <Grid item xs={12}>
+              <Divider />
+              <Button variant="text" fullWidth href="/login" sx={{ px: 6 }}>
+                Log In
+              </Button>
+              <Divider />
             </Grid>
-            <Grid item>
-              <Link to="/register">
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => dispatch(showSignup())}
-                >
-                  Get Started
-                </Button>
-              </Link>
+            <Grid item xs={12}>
+              <Button
+                variant="text"
+                fullWidth
+                href="/register"
+                sx={{ px: 6 }}
+                onClick={() => dispatch(showSignup())}
+              >
+                Register
+              </Button>
+              <Divider />
             </Grid>
-            </>
-            }
-            {/* <LoginSignupButtons/> */}
-          </SwipeableDrawer>
-        </Box>
-  )
+          </Grid>
+        )}
+        {/* <LoginSignupButtons/> */}
+      </SwipeableDrawer>
+    </Box>
+  );
 }

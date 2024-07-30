@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Container } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -9,7 +9,6 @@ import ReportHeader from "../components/ReportHeader";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
-  const [selectionModel, setSelectionModel] = useState([]); // State to track selected rows
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
@@ -55,12 +54,6 @@ export default function Users() {
     ...user, // Spread the user object to include all properties
   }));
 
-    // Log the number of selected rows whenever the selection model changes
-    const handleSelectionModelChange = (newSelection) => {
-      setSelectionModel(newSelection); // Update the selection state
-      console.log("Number of selected rows:", newSelection); // Log the number of selected rows
-    };
-
   return (
     <>
       <Header />
@@ -71,20 +64,29 @@ export default function Users() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            height: 600, // Set height to ensure grid is visible
           }}
         >
-          <Box style={{ height: "95%", width: "100%" }}>
-          <ReportHeader docName="User" isReport={false}/>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              density="compact"
-              checkboxSelection
-              selectionModel={selectionModel} // Bind the selection model to the DataGrid
-              onSelectionModelChange={handleSelectionModelChange} // Add selection model change handler
-            />
-          </Box>
+          <Grid container>
+            <Grid item xs={12} container justifyContent="center">
+              <ReportHeader docName="User" isReport={false} />
+            </Grid>
+            <Grid item xs={12} sx={{height: "500px" }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                density="compact"
+                checkboxSelection
+                pageSizeOptions={[10, 50, 100]}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 10,
+                    },
+                  },
+                }}
+              />
+            </Grid>
+          </Grid>
         </Box>
       </Container>
     </>

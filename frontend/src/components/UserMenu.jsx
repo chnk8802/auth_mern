@@ -1,17 +1,20 @@
 import * as React from "react";
-import {Menu,
-    MenuItem,
-    IconButton,
-    Tooltip,
-    Container,
-    Box,
-    Typography
-} from '@mui/material'
+import {
+  Menu,
+  MenuItem,
+  IconButton,
+  Tooltip,
+  Container,
+  Box,
+  Typography,
+} from "@mui/material";
 import Person2Icon from "@mui/icons-material/Person2";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../app/features/authentication/authenticationSlice";
 
 export default function UserMenu() {
-    
+  const dispatch = useDispatch();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -36,7 +39,7 @@ export default function UserMenu() {
         </IconButton>
       </Tooltip>
       <Menu
-      sx={{mt: -4.8}}
+        sx={{ mt: 7 }}
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",

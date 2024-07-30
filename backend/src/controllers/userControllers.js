@@ -1,6 +1,9 @@
 import User from "../models/userModel.js";
 import generateOTP from "../utils/generateOTP.js";
-import generateToken from "../utils/generateToken.js";
+import {
+  generateAccessToken,
+  generateRefreshToken
+} from "../utils/generateToken.js";
 import sendResetPasswordEmail from "../utils/email.js";
 import verifyResetPasswordUser from "../middlewares/verifyResetPasswordUserMiddleware.js";
 

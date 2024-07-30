@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const itemSchema = new mongoose.Schema(
+const repairItemSchema = new mongoose.Schema(
   {
     docname: {
       type: String,
@@ -33,11 +33,15 @@ const itemSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "Technician",
     },
+    lock: {
+      type: String,
+      enum: ["Password/PIN","Pattern"],
+    },
   },
   {
     timestamps: true,
   }
 );
-const Item = mongoose.model("Item", itemSchema);
+const Repair_Item = mongoose.model("Repair_Item", repairItemSchema);
 
-export default Item;
+export default Repair_Item;
