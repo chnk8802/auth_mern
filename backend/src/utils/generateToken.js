@@ -11,7 +11,7 @@ const generateRefreshToken = (userId) => {
     })
 }
 
-export default {
+export {
     generateAccessToken,
     generateRefreshToken
 }

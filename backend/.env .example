@@ -1,3 +1,6 @@
 PORT=3000
-JWT_SECRET=shakalaka_boom_boom
 MONGODB_URI=mongodb://localhost:27017
+ACCESS_TOKEN_SECRET=ffffffffffffffff
+ACCESS_TOKEN_EXPIRY = 1hr
+REFRESH_TOKEN_SECRET=qqqqqqqqqqqqqqqqqqqq
+REFRESH_TOKEN_EXPIRY = 30d

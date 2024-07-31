@@ -37,7 +37,7 @@ export default function Users() {
 
     // Extract the keys from the first object
     const keys = Object.keys(data[0]);
-
+    console.log(keys)
     // Create column definitions
     return keys.map((key) => ({
       field: key,

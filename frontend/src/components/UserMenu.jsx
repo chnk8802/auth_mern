@@ -39,7 +39,6 @@ export default function UserMenu() {
         </IconButton>
       </Tooltip>
       <Menu
-        sx={{ mt: 7 }}
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",
@@ -47,7 +46,7 @@ export default function UserMenu() {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem onClick={handleCloseUserMenu}>
+        <MenuItem sx={{ pr: 8 }} onClick={handleCloseUserMenu}>
           <Link
             style={{ textDecoration: "none", color: "#000" }}
             to="/my-profile"
@@ -56,6 +55,7 @@ export default function UserMenu() {
           </Link>
         </MenuItem>
         <MenuItem
+          sx={{ pr: 8 }}
           onClick={(e) => {
             handleCloseUserMenu(e);
             dispatch(logout());

@@ -10,12 +10,12 @@ const auth = async (req, res, next) => {
     ) {
       token = req.headers.authorization.split(" ")[1];
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.user = await User.findById(decoded.userId).select("-password");
 
       next();
     } else {
-      throw new Error("Authorization header missing or invalid");
+      throw next(new Error("Authorization header missing or invalid"));
     }
   } catch (error) {
     res.status(401).json({ error: "Not authorized. " + error.message });

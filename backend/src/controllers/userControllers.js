@@ -1,9 +1,7 @@
+import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import generateOTP from "../utils/generateOTP.js";
-import {
-  generateAccessToken,
-  generateRefreshToken
-} from "../utils/generateToken.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/generateToken.js";
 import sendResetPasswordEmail from "../utils/email.js";
 import verifyResetPasswordUser from "../middlewares/verifyResetPasswordUserMiddleware.js";
 
@@ -53,6 +51,43 @@ const register = async (req, res) => {
   }
 };
 
+const refreshToken = async (req, res) => {
+  const {refreshToken}= req.cookies;
+  
+  if (!refreshToken) {
+    return res.status(401).json({ error: "Refresh token not provided" });
+  }
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decoded.userId);
+    if (!user) return res.status(403).json({ error: "User not found" });
+
+    const storedToken = user.refreshTokens.filter(
+      (t) => t.token !== refreshToken
+    );
+    if (!storedToken)
+      return res.status(403).json({ error: "Invalid refresh token" });
+
+    const newAccessToken = generateAccessToken(user._id);
+    const newRefreshToken = generateRefreshToken(user._id);
+
+    user.refreshTokens = user.refreshTokens.filter(
+      (t) => t.token !== refreshToken
+    );
+    user.refreshTokens.push({ token: newRefreshToken });
+    await user.save();
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    res.json({ accessToken: newAccessToken });
+  } catch (error) {
+    console.error("Refresh token error:", error);
+    res.status(403).json({ error: "Invalid or expired refresh token" });
+  }
+};
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -67,12 +102,37 @@ const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid password" });
     }
-    const token = generateToken(user._id);
+
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    user.refreshTokens.push({ token: refreshToken });
     user.password = undefined;
-    res.status(201).json({ user: user, accessToken: token });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+    res.status(201).json({ user: user, accessToken: accessToken });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const logout = async (req, res) => {
+  const { refreshToken } = req.cookies || req.body;
+  if (!refreshToken) return res.status(204).json({ message: "No refresh token provided" });
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(403).json({ error: "User not found" });
+
+    user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
+    await user.save();
+
+    res.clearCookie('refreshToken');
+    res.status(204).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    res.status(403).json({ error: "Invalid or expired refresh token" });
   }
 };
 
@@ -143,7 +203,7 @@ const resetPassword = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password");
+    const user = await User.findById(req.params.id).select("-password -__v -refreshTokens");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -156,7 +216,7 @@ const getUser = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select("-password -__v");
+    const users = await User.find({}).select("-password -__v -refreshTokens");
     const userMap = [];
     
     users.forEach((user) => {
@@ -177,7 +237,9 @@ const getUsers = async (req, res) => {
 
 export default {
   register,
+  refreshToken,
   login,
+  logout,
   getUser,
   getUsers,
   forgotPassword,
