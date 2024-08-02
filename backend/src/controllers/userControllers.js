@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import generateOTP from "../utils/generateOTP.js";
-import { generateAccessToken, generateRefreshToken } from "../utils/generateToken.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../utils/generateToken.js";
 import sendResetPasswordEmail from "../utils/email.js";
 import verifyResetPasswordUser from "../middlewares/verifyResetPasswordUserMiddleware.js";
 
@@ -52,8 +55,7 @@ const register = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-  const {refreshToken}= req.cookies;
-  
+  const { refreshToken } = req.cookies;
   if (!refreshToken) {
     return res.status(401).json({ error: "Refresh token not provided" });
   }
@@ -81,6 +83,10 @@ const refreshToken = async (req, res) => {
       httpOnly: true,
       secure: true,
     });
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: true,
+    });
     res.json({ accessToken: newAccessToken });
   } catch (error) {
     console.error("Refresh token error:", error);
@@ -92,7 +98,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ error: "User not Found" });
@@ -108,8 +114,14 @@ const login = async (req, res) => {
 
     user.refreshTokens.push({ token: refreshToken });
     user.password = undefined;
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    res.status(201).json({ user: user, accessToken: accessToken });
+    user = {
+      _id:user._id,
+      username: user.username,
+      email: user.email
+    }
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
+    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true });
+    res.status(201).json({ user, accessToken: accessToken,});
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -118,17 +130,20 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   const { refreshToken } = req.cookies || req.body;
-  if (!refreshToken) return res.status(204).json({ message: "No refresh token provided" });
+  if (!refreshToken)
+    return res.status(204).json({ message: "No refresh token provided" });
 
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decoded.id);
     if (!user) return res.status(403).json({ error: "User not found" });
 
-    user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
+    user.refreshTokens = user.refreshTokens.filter(
+      (t) => t.token !== refreshToken
+    );
     await user.save();
 
-    res.clearCookie('refreshToken');
+    res.clearCookie("refreshToken");
     res.status(204).json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error:", error);
@@ -203,11 +218,13 @@ const resetPassword = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password -__v -refreshTokens");
+    const user = await User.findById(req.params.id).select(
+      "-password -__v -refreshTokens"
+    );
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.status(200).json({ data: user });
+    res.status(200).json({ user });
   } catch (error) {
     console.error("Get User error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -218,7 +235,7 @@ const getUsers = async (req, res) => {
   try {
     const users = await User.find({}).select("-password -__v -refreshTokens");
     const userMap = [];
-    
+
     users.forEach((user) => {
       userMap.push(user);
     });
@@ -233,7 +250,6 @@ const getUsers = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 export default {
   register,

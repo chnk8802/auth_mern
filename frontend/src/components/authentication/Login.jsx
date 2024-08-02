@@ -56,12 +56,12 @@ function Login() {
     setSuccessMessage("");
     try {
       const config =  {
-        header: {
+        headers: {
             "Content-type": "application/json"
         }
       };
       const response = await api.post("/users/login", formData, config);
-      console.log(response);
+      console.log(response)
       setErrorMessage("");
       setFormData({
         email: "",

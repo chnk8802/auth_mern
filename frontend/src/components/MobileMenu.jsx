@@ -41,6 +41,12 @@ export default function MobileMenu() {
           <Grid container mt={5}>
             <Grid item xs={12}>
               <Divider />
+              <Grid item xs={12}>
+                <Button variant="text" fullWidth href="/my-profile">
+                  My Profile
+                </Button>
+                <Divider />
+              </Grid>
               <Button variant="text" fullWidth href="/all-users">
                 Users
               </Button>
@@ -48,13 +54,7 @@ export default function MobileMenu() {
             </Grid>
             <Grid item xs={12}>
               <Button variant="text" fullWidth href="/logasdain">
-                Hello
-              </Button>
-              <Divider />
-            </Grid>
-            <Grid item xs={12}>
-              <Button variant="text" fullWidth href="/my-profile">
-                My Profile
+                Not Found
               </Button>
               <Divider />
             </Grid>

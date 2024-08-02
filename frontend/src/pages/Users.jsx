@@ -14,12 +14,7 @@ export default function Users() {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        };
-        const response = await api.get("/users/all-users", config);
+        const response = await api.get("/users/all-users");
         setUsers(response.data);
       } catch (error) {
         console.error(
@@ -37,7 +32,6 @@ export default function Users() {
 
     // Extract the keys from the first object
     const keys = Object.keys(data[0]);
-    console.log(keys)
     // Create column definitions
     return keys.map((key) => ({
       field: key,
@@ -76,6 +70,7 @@ export default function Users() {
                 columns={columns}
                 density="compact"
                 checkboxSelection
+                /*
                 pageSizeOptions={[10, 50, 100]}
                 initialState={{
                   pagination: {
@@ -83,7 +78,7 @@ export default function Users() {
                       pageSize: 10,
                     },
                   },
-                }}
+                }}*/
               />
             </Grid>
           </Grid>

@@ -7,29 +7,9 @@ import {
 
 const instance = axios.create({
   baseURL: "http://localhost:3000/api",
+  withCredentials: true,
 });
-
-instance.defaults.withCredentials = true
-
-const refreashToken = async () => {
-  try {
-    const response = await instance.post("users/refresh-token");
-    console.log({response})
-  } catch (error) {
-    console.error("Token refresh failed", error);
-  }
-};
-
-instance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    // await refreashToken()
-    if (error.response.status === 401) {
-      await refreashToken()
-      console.log(401)
-    }
-    console.log({"response_interceptor_error": error})
-  }
-);
-
+instance.interceptors.response.use(null, (error)=>{
+  console.log(error)
+})
 export default instance;
