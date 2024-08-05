@@ -55,12 +55,12 @@ function Login() {
     setErrorMessage("");
     setSuccessMessage("");
     try {
-      const config =  {
-        headers: {
-            "Content-type": "application/json"
-        }
-      };
-      const response = await api.post("/users/login", formData, config);
+      // const config =  {
+      //   headers: {
+      //       "content-type": "application/json"
+      //   }
+      // };
+      const response = await api.post("/users/login", formData);
       console.log(response)
       setErrorMessage("");
       setFormData({

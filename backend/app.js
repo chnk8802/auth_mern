@@ -1,41 +1,43 @@
-import express from 'express'
-import cookieParser from 'cookie-parser'
-import cors from 'cors'
-import helmet from 'helmet'
-import morgan from 'morgan'
-import dotenv from 'dotenv'
-import connectDB from './src/config/db.js'
-import userRoutes from './src/routes/userRoutes.js'
-import customerRoutes from './src/routes/customerRoutes.js' 
-import { notFound, errorHandler} from './src/middlewares/errorHandler.js'
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import dotenv from "dotenv";
+import connectDB from "./src/config/db.js";
+import userRoutes from "./src/routes/userRoutes.js";
+import customerRoutes from "./src/routes/customerRoutes.js";
+import { notFound, errorHandler } from "./src/middlewares/errorHandler.js";
 
 // .env configuration
-dotenv.config()
+dotenv.config();
 
 // Initialize MongoDB Database
-connectDB()
+connectDB();
 
 // Initailize Express Server
-const app = express()
+const app = express();
 
 // Use Cookie parser
-app.use(cookieParser())
+app.use(cookieParser());
 
 // Handle CORS
-app.use(cors({
-    origin: ['http://localhost:5173','http://192.168.1.4:5173'],  // Allow requests from this origin
-    credentials: true,  // Allow sending cookies and other credentials
-}))
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://192.168.1.4:5173"], // Allow requests from this origin
+    credentials: true, // Allow sending cookies and other credentials
+  })
+);
 
-app.use(express.json())
-app.use(helmet())
-app.use(morgan("dev"))
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(helmet());
+app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/users', userRoutes)
-app.use('/api/customer', customerRoutes)
+app.use("/api/users", userRoutes);
+app.use("/api/customer", customerRoutes);
 
-app.use(notFound)
-app.use(errorHandler)
+app.use(notFound);
+app.use(errorHandler);
 
-export default app
+export default app;

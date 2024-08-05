@@ -7,11 +7,17 @@ import Footer2 from "../components/Footer2";
 import api from "../services/api";
 export default function UserProfile() {
   const [user, setUser] = React.useState({});
+  const accessToken = useSelector((state) => state.auth.accessToken)
   const loggedInUser = useSelector((state) => state.auth.loggedInUser);
   React.useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await api.get(`/users/${loggedInUser._id}`);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+        const response = await api.get(`/users/${loggedInUser._id}`, config);
         setUser(response.data.user)
       } catch (error) {
         console.error(

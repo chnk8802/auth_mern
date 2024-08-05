@@ -7,20 +7,20 @@ import Header from "../components/Header";
 import api from "../services/api";
 import ReportHeader from "../components/ReportHeader";
 
-export default function Users() {
-  const [users, setUsers] = useState([]);
+export default function Customers() {
+  const [customers , setCustomers] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
-    const getUsers = async () => {
+    const getCustomers = async () => {
       try {
         const config = {
           headers: {
             Authorization: `Bearer ${accessToken}`
           }
         }
-        const response = await api.get("/users/all-users", config);
-        setUsers(response.data);
+        const response = await api.get("/customer/all-customers", config);
+        setCustomers(response.data);
       } catch (error) {
         console.error(
           "Error fetching users:",
@@ -29,7 +29,7 @@ export default function Users() {
       }
     };
     if (accessToken) {
-      getUsers();
+        getCustomers();
     }
   }, [accessToken]);
 
@@ -49,10 +49,10 @@ export default function Users() {
   };
 
   // Generate columns and format rows
-  const columns = generateColumns(users);
-  const rows = users.map((user) => ({
-    id: user._id, // Ensure you provide a unique ID field
-    ...user, // Spread the user object to include all properties
+  const columns = generateColumns(customers);
+  const rows = customers.map((customer) => ({
+    id: customer._id, // Ensure you provide a unique ID field
+    ...customer, // Spread the user object to include all properties
   }));
 
   return (

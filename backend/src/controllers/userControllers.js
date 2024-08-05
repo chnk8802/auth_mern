@@ -115,13 +115,13 @@ const login = async (req, res) => {
     user.refreshTokens.push({ token: refreshToken });
     user.password = undefined;
     user = {
-      _id:user._id,
+      _id: user._id,
       username: user.username,
-      email: user.email
-    }
+      email: user.email,
+    };
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true });
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true });
-    res.status(201).json({ user, accessToken: accessToken,});
+    res.cookie("accessToken", accessToken, { httpOnly: true });
+    res.status(201).json({ user, accessToken: accessToken });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -231,23 +231,16 @@ const getUser = async (req, res) => {
   }
 };
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find({}).select("-password -__v -refreshTokens");
-    const userMap = [];
-
-    users.forEach((user) => {
-      userMap.push(user);
-    });
-
-    if (Object.keys(userMap).length > 0) {
-      res.status(200).json(userMap); // Use 200 for OK
-    } else {
-      res.status(204).json(); // Use 204 if no users found
+    const users = await User.find({}).select("-password -__v -refreshTokens")
+    if (!users) {
+      throw next(new Error("No users Found!"))
     }
+    res.status(200).json(users)
   } catch (error) {
-    console.error("Get User error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.log({error: error})
+    res.status(500).json({message: "Internal Server Error"})
   }
 };
 

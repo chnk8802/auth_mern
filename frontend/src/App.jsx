@@ -18,6 +18,7 @@ import { login, logout } from "./app/features/authentication/authenticationSlice
 import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
 import UserForm from "./pages/UserProfile";
+import Customers from "./pages/Customers";
 
 function PrivateRoute({ children, requireAuth = true}) {
   const location = useLocation()
@@ -43,6 +44,7 @@ function App() {
         <Route path="/" element={<PrivateRoute children={<Home />}/>} />
         <Route path="/my-profile" element={<PrivateRoute children={<UserForm />}/>} />
         <Route path="/all-users" element={<PrivateRoute children={<Users />}/>} />
+        <Route path="/all-customers" element={<PrivateRoute children={<Customers />}/>} />
         <Route path="/forgot-password" element={<PrivateRoute children={<ForgotPassword/>} requireAuth={false}/>}/>
         <Route path="/register" element={<PrivateRoute children={<Signup/>} requireAuth={false}/>}/>
         <Route path="/login" element={<PrivateRoute children={<Login />} requireAuth={false}/>}/>

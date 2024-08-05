@@ -39,10 +39,12 @@ export default function UserMenu() {
         </IconButton>
       </Tooltip>
       <Menu
+        anchorEl={anchorElUser}
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",
         }}
+        sx={{mt: 7}}
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
