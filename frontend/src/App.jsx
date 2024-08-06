@@ -19,6 +19,7 @@ import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
 import UserForm from "./pages/UserProfile";
 import Customers from "./pages/Customers";
+import AddCustomer from "./pages/AddCustomer";
 
 function PrivateRoute({ children, requireAuth = true}) {
   const location = useLocation()
@@ -45,6 +46,7 @@ function App() {
         <Route path="/my-profile" element={<PrivateRoute children={<UserForm />}/>} />
         <Route path="/all-users" element={<PrivateRoute children={<Users />}/>} />
         <Route path="/all-customers" element={<PrivateRoute children={<Customers />}/>} />
+        <Route path="/add-customer" element={<PrivateRoute children={<AddCustomer />}/>} />
         <Route path="/forgot-password" element={<PrivateRoute children={<ForgotPassword/>} requireAuth={false}/>}/>
         <Route path="/register" element={<PrivateRoute children={<Signup/>} requireAuth={false}/>}/>
         <Route path="/login" element={<PrivateRoute children={<Login />} requireAuth={false}/>}/>

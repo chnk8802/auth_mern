@@ -1,37 +1,33 @@
 import * as React from "react";
-import { Box, Container, Grid } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import Header from "../components/Header";
 import api from "../services/api";
-import ReportHeader from "../components/ReportHeader";
+import DataTable from "../components/DataTable";
+import MainComponent from "../components/MainComponent";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
-  const accessToken = useSelector((state) => state.auth.accessToken);
+  const [totalRecords, setTotalRecords] = React.useState(0);
+  const [paginationModel, setPaginationModel] = React.useState({
+    pageSize: 100,
+    page: 0,
+  });
+
+  const getUsers = async () => {
+    try {
+      const response = await api.get("/users/all-users");
+      setUsers(response.data.data);
+      setTotalRecords(response.data.totalRecords);
+    } catch (error) {
+      console.error(
+        "Error fetching users:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-        const response = await api.get("/users/all-users", config);
-        setUsers(response.data);
-      } catch (error) {
-        console.error(
-          "Error fetching users:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    };
-    if (accessToken) {
       getUsers();
-    }
-  }, [accessToken]);
+  }, [ paginationModel.page, paginationModel.pageSize]);
 
   // Dynamically generate columns based on the keys of the first user object
   const generateColumns = (data) => {
@@ -56,41 +52,8 @@ export default function Users() {
   }));
 
   return (
-    <>
-      <Header />
-      <Container component="main" maxWidth="xl">
-        <Box
-          sx={{
-            marginTop: 8.5,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Grid container>
-            <Grid item xs={12} container justifyContent="center">
-              <ReportHeader docName="User" isReport={false} />
-            </Grid>
-            <Grid item xs={12} sx={{ height: "500px" }}>
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                density="compact"
-                checkboxSelection
-                /*
-                pageSizeOptions={[10, 50, 100]}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 10,
-                    },
-                  },
-                }}*/
-              />
-            </Grid>
-          </Grid>
-        </Box>
-      </Container>
-    </>
+    <MainComponent>
+      <DataTable rows={rows} columns={columns} totalRecords={totalRecords} paginationModel={paginationModel} setPaginationModel={setPaginationModel}/>
+    </MainComponent>
   );
 }

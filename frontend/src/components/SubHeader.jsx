@@ -7,8 +7,10 @@ import IconButton from "@mui/material/IconButton";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
 
-export default function ReportHeader({ docName, isReport=false}) {
+// Need Some kind of global Object To store current docname, isReport so that page name and other subheader option can be shown accordingly
+export default function SubHeader({ docName, isReport = false }) {
   const navigate = useNavigate();
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -25,6 +27,9 @@ export default function ReportHeader({ docName, isReport=false}) {
             >
               <KeyboardBackspaceIcon />
             </IconButton>
+          </Box>
+          <Box>
+            <Typography variant="h5">{docName}</Typography>
           </Box>
           <Box>
             {isReport && (
@@ -47,9 +52,9 @@ export default function ReportHeader({ docName, isReport=false}) {
                 >
                   <Edit />
                 </IconButton>
-            <Button color="primary" variant="contained">
-              {"Add " + docName}
-            </Button>
+                <Button color="primary" variant="contained">
+                  {"Add " + docName}
+                </Button>
               </>
             )}
           </Box>

@@ -233,14 +233,26 @@ const getUser = async (req, res) => {
 
 const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find({}).select("-password -__v -refreshTokens")
+    const { page, pageSize } = req.query;
+    const totalRecords = await User.countDocuments({})
+    const users = await User.find({}, null, {
+      limit: pageSize,
+      skip: page * pageSize,
+    }).select("-password -__v -refreshTokens");
     if (!users) {
-      throw next(new Error("No users Found!"))
+      throw next(new Error("No users Found!"));
     }
-    res.status(200).json(users)
+    res.status(200).json({
+      status: "Success",
+      totalRecords: totalRecords,
+      dataCount: users.length,
+      data: users,
+      message: "Users fetched successfully",
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    console.log({error: error})
-    res.status(500).json({message: "Internal Server Error"})
+    console.log({ error: error });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

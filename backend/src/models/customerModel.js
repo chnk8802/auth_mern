@@ -5,9 +5,12 @@ const customerSchema = new mongoose.Schema(
     docname: {
       type: String,
     },
-    customerName: {
+    name: {
       type: String,
       require: true
+    },
+    email: {
+      type: String,
     },
     phone: {
       type: Number,
