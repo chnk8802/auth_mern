@@ -7,7 +7,7 @@ const customerSchema = new mongoose.Schema(
     },
     name: {
       type: String,
-      require: true
+      require: true,
     },
     email: {
       type: String,
@@ -16,8 +16,26 @@ const customerSchema = new mongoose.Schema(
       type: Number,
     },
     address: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Address",
+      addressLine1: {
+        type: String,
+      },
+      addressLine2: {
+        type: String,
+      },
+      city: {
+        type: String,
+      },
+      state: {
+        type: String,
+      },
+      pincode: {
+        type: Number,
+      },
+      country: {
+        type: String,
+        enum: ["India", "USA"],
+        default: "India",
+      },
     },
   },
   {

@@ -3,8 +3,12 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import DataTable from "../components/DataTable";
 import MainComponent from "../components/MainComponent";
+import { useDispatch } from "react-redux";
+import { clearCurrentPageInfo, setCurrentPageInfo } from "../app/features/currentPage/currentPageSlice";
+import { showNotification } from "../app/features/notification/notificationSlice";
 
 export default function Customers() {
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [totalRecords, setTotalRecords] = React.useState(0);
@@ -12,23 +16,24 @@ export default function Customers() {
     pageSize: 100,
     page: 0,
   });
-
+  React.useEffect(()=>{
+    dispatch(clearCurrentPageInfo())
+    dispatch(setCurrentPageInfo({type: "report", docName: "Customer", pageHeading: "All Customers", isReport: true}))
+  })
   const getCustomers = async () => {
     try {
       setLoading(true);
-      const response = await api.get(
-        `/customers/all-customers?page=${paginationModel.page}&pageSize=${paginationModel.pageSize}`
-      );
-      console.log(response);
+      const response = await api.get(`/customers/all-customers?page=${paginationModel.page}&pageSize=${paginationModel.pageSize}`);
       setCustomers(response.data.data);
       setTotalRecords(response.data.totalRecords);
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
       console.error(
         "Error fetching users:",
         error.response ? error.response.data : error.message
       );
+      dispatch(showNotification({open: true, message: "Unable to fetch data", type: "error" }))
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -38,15 +43,12 @@ export default function Customers() {
   // Dynamically generate columns based on the keys of the first user object
   const generateColumns = (data) => {
     if (data.length === 0) return [];
-
-    // Extract the keys from the first object
     const keys = Object.keys(data[0]);
-    // Create column definitions
     return keys.map((key) => ({
       field: key,
       headerName: key.charAt(0).toUpperCase() + key.slice(1),
       width: 200,
-      // valueFormatter: key.includes('At') ? ({ value }) => new Date(value).toLocaleDateString() : undefined
+      valueFormatter: key.includes('At') ? ({ value }) => value : undefined
     }));
   };
 

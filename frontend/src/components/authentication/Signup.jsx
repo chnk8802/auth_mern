@@ -64,7 +64,7 @@ function Signup() {
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-    
+
     try {
       if (
         !formData.username ||
@@ -86,10 +86,10 @@ function Signup() {
       } else {
         setConfirmPasswordError(false);
       }
-      const config =  {
+      const config = {
         header: {
-            "Content-type": "application/json"
-        }
+          "Content-type": "application/json",
+        },
       };
       const response = await api.post("/users/register", formData, config);
 
@@ -118,15 +118,15 @@ function Signup() {
         setUsernameError(true);
         setEmailError(true);
       }
-      
+
       if (error.response.data.error === "Username already exists") {
         setUsernameError(true);
       }
-      
+
       if (error.response.data.error === "Email already exists") {
         setEmailError(true);
       }
-      
+
       setErrorMessage(`Error: ${error.response.data.error}`);
       setIsLoading(false);
     }

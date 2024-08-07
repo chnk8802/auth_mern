@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const customerSchema = new mongoose.Schema(
+const addressSchema = new mongoose.Schema(
   {
     docname: {
       type: String,
@@ -11,29 +11,26 @@ const customerSchema = new mongoose.Schema(
     addressLine2: {
       type: String,
     },
-    landmark: {
-      type: String,
-    },
     city: {
       type: String,
     },
     state: {
       type: String,
     },
+    pincode: {
+      type: Number,
+    },
     country: {
       type: String,
       enum: ["India", "USA"],
       default: "India",
-    },
-    pincode: {
-      type: Number,
-    },
+    }
   },
   {
     timestamps: true,
   }
 );
 
-const Customer = mongoose.model("Customer", customerSchema);
+const Address = mongoose.model("Address", addressSchema);
 
-export default Customer;
+export default Address;

@@ -4,9 +4,15 @@ import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { Link } from "react-router-dom";
 import MainComponent from "../components/MainComponent";
 import useIsMobileView from "../hooks/useIsMobileView";
+import { useDispatch } from "react-redux";
+import { clearCurrentPageInfo, setCurrentPageInfo } from "../app/features/currentPage/currentPageSlice";
 
 export default function Home() {
   const isMobileView = useIsMobileView();
+  const dispatch = useDispatch()
+  React.useEffect(()=>{
+    dispatch(clearCurrentPageInfo())
+  })
   return (
     <MainComponent>
       <Grid container spacing={1}>

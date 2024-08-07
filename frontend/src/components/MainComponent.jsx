@@ -3,8 +3,10 @@ import Header from "./Header";
 import { Box, Container, Grid } from "@mui/material";
 import Footer2 from "./Footer2";
 import SubHeader from "./SubHeader";
+import { useSelector } from "react-redux";
 
 export default function MainComponent({ children }) {
+  const {isReport} = useSelector(state => state.currentPage)
   return (
     <>
       <Header />
@@ -28,7 +30,7 @@ export default function MainComponent({ children }) {
         </Box>
       </Container>
       <Box display="flex" justifyContent="center">
-        <Footer2 />
+        {!isReport && <Footer2 />}
       </Box>
     </>
   );

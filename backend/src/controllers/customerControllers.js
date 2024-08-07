@@ -30,7 +30,7 @@ const getAllCustomers = async (req, res, next) => {
     let { page, pageSize } = req.query;
     
     const totalRecords = await Customer.countDocuments({})
-    const customers = await Customer.find({})
+    const customers = await Customer.find({}).select("-__v")
       .limit(pageSize)
       .skip(page * pageSize);
     res.status(201).json({

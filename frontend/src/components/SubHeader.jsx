@@ -5,13 +5,15 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 
 // Need Some kind of global Object To store current docname, isReport so that page name and other subheader option can be shown accordingly
-export default function SubHeader({ docName, isReport = false }) {
+export default function SubHeader() {
   const navigate = useNavigate();
+  const {type, docName, pageHeading, isReport} = useSelector((state) => state.currentPage)
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent" elevation={0}>
@@ -29,7 +31,7 @@ export default function SubHeader({ docName, isReport = false }) {
             </IconButton>
           </Box>
           <Box>
-            <Typography variant="h5">{docName}</Typography>
+            <Typography variant="h5">{pageHeading}</Typography>
           </Box>
           <Box>
             {isReport && (
@@ -41,18 +43,9 @@ export default function SubHeader({ docName, isReport = false }) {
                   aria-label="menu"
                   sx={{ mr: 2 }}
                 >
-                  <Delete />
+                  <Delete/>
                 </IconButton>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="primary"
-                  aria-label="menu"
-                  sx={{ mr: 2 }}
-                >
-                  <Edit />
-                </IconButton>
-                <Button color="primary" variant="contained">
+                <Button color="primary" variant="contained" size="small" disableElevation>
                   {"Add " + docName}
                 </Button>
               </>

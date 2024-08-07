@@ -7,7 +7,7 @@ import api from "../services/api";
 import Address from "../components/fieldComponents/Address";
 import { useNavigate } from "react-router-dom";
 
-export default function AddCustomer() {
+export default function UpdateCustomer() {
   const navigate = useNavigate()
   const dispatch = useDispatch();
   const [customerData, setCustomerData] = React.useState({
