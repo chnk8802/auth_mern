@@ -4,9 +4,16 @@ import { Link } from "react-router-dom";
 import GlitchText from "../components/misc/GlitchText";
 import Header from "../components/Header";
 import MainComponent from "../components/MainComponent";
+import { useDispatch } from "react-redux";
+import { clearCurrentPageInfo, setCurrentPageInfo } from "../app/features/currentPage/currentPageSlice";
 
 export default function NotFound() {
+  const dispatch = useDispatch()
     const style={display:'flex', justifyContent:"center"}
+    React.useEffect(()=>{
+      dispatch(clearCurrentPageInfo())
+      dispatch(setCurrentPageInfo({type: "page"}))
+    })
   return (
     <MainComponent>
       <Grid item xs={12}>

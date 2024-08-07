@@ -16,7 +16,7 @@ export default function Users() {
   });
   React.useEffect(()=>{
     dispatch(clearCurrentPageInfo())
-    dispatch(setCurrentPageInfo({type: "report", docName: "User", pageHeading: "All Users", isReport: true}))
+    dispatch(setCurrentPageInfo({type: "report", doctype: "User", pageHeading: "All Users", isReport: true}))
   })
 
   const getUsers = async () => {

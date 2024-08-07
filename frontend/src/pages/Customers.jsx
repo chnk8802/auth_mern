@@ -18,7 +18,7 @@ export default function Customers() {
   });
   React.useEffect(()=>{
     dispatch(clearCurrentPageInfo())
-    dispatch(setCurrentPageInfo({type: "report", docName: "Customer", pageHeading: "All Customers", isReport: true}))
+    dispatch(setCurrentPageInfo({type: "report", doctype: "Customer", pageHeading: "All Customers", isReport: true}))
   })
   const getCustomers = async () => {
     try {

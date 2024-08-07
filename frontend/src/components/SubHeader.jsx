@@ -13,7 +13,10 @@ import { useSelector } from "react-redux";
 // Need Some kind of global Object To store current docname, isReport so that page name and other subheader option can be shown accordingly
 export default function SubHeader() {
   const navigate = useNavigate();
-  const {type, docName, pageHeading, isReport} = useSelector((state) => state.currentPage)
+  const {type, doctype, docname, pageHeading, isReport} = useSelector((state) => state.currentPage)
+  const addRecord = () => {
+    navigate(`/add-${doctype.toLowerCase()}`)
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent" elevation={0}>
@@ -45,8 +48,8 @@ export default function SubHeader() {
                 >
                   <Delete/>
                 </IconButton>
-                <Button color="primary" variant="contained" size="small" disableElevation>
-                  {"Add " + docName}
+                <Button color="primary" variant="contained" size="small" disableElevation onClick={addRecord}>
+                  {"Add " + doctype}
                 </Button>
               </>
             )}

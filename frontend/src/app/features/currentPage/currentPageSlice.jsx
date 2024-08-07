@@ -14,7 +14,8 @@ import { createSlice } from "@reduxjs/toolkit";
 */
 const initialState =  {
     type: "",
-    docName: "",
+    doctype: "",
+    docname: "",
     pageHeading:"",
     isReport: false
 }
@@ -24,7 +25,8 @@ export const currentPageSlice = createSlice({
     reducers: {
         setCurrentPageInfo: (state, action) => {
             state.type = action.payload.type;
-            state.docName = action.payload.docName,
+            state.doctype = action.payload.doctype,
+            state.docname = action.payload.docname,
             state.pageHeading = action.payload.pageHeading,
             state.isReport = action.payload.isReport
         },
