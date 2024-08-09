@@ -25,6 +25,7 @@ const addCustomer = async (req, res, next) => {
     });
   }
 };
+
 const getAllCustomers = async (req, res, next) => {
   try {
     let { page, pageSize } = req.query;
@@ -48,7 +49,22 @@ const getAllCustomers = async (req, res, next) => {
     });
   }
 };
-const getCustomer = async (req, res, next) => {};
+
+const getCustomer = async (req, res, next) => {
+  try {
+    const customerId = req.params.id
+    const customer = await Customer.findById(customerId)
+    if (!customer) {
+      throw next(new Error("No customer found"))
+    }
+    res.status(200).json({customer}) 
+  } catch (error) {
+    res.status(500).json({
+      error: error.message || "An error occurred while fetching the customer.",
+    });
+  }
+}
+
 const updateCustomer = async (req, res, next) => {};
 const deleteCustomer = async (req, res, next) => {};
 

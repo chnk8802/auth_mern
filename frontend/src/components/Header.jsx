@@ -25,14 +25,14 @@ function Header() {
   return (
     <AppBar
       elevation={0}
-      position="fixed"
+      position="sticky"
       color="inherit"
       sx={{ p: 1.5, borderBottom: "1px solid #d2d2d2" }}
     >
       <Grid container>
         <Grid container item xs direction="row" alignItems="center">
           <Link style={{ textDecoration: "none", color: "#000" }} to="/">
-            <Typography variant={isMobileView ? "h5" : "h4"}>Scooby</Typography>
+            <Typography variant="h5">Scooby</Typography>
           </Link>
         </Grid>
 

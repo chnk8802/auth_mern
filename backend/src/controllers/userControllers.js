@@ -216,13 +216,14 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).select(
+    const userId = req.params.id
+    const user = await User.findById(userId).select(
       "-password -__v -refreshTokens"
     );
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      throw next(new Error("User not found"))
     }
     res.status(200).json({ user });
   } catch (error) {

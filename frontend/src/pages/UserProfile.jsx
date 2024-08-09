@@ -1,14 +1,20 @@
 import * as React from "react";
-import Header from "../components/Header";
-import SubHeader from "../components/SubHeader";
-import { Container, Box, Grid, Typography } from "@mui/material";
-import { useSelector } from "react-redux";
-import Footer2 from "../components/Footer2";
+import { Grid, Typography } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import api from "../services/api";
 import MainComponent from "../components/MainComponent";
+import { clearCurrentPageInfo, setCurrentPageInfo } from "../app/features/currentPage/currentPageSlice";
+
 export default function UserProfile() {
+  const dispatch = useDispatch()
   const [user, setUser] = React.useState({});
   const loggedInUser = useSelector((state) => state.auth.loggedInUser);
+
+  React.useEffect(()=>{
+    dispatch(clearCurrentPageInfo())
+    dispatch(setCurrentPageInfo({type: 'page'}))
+  },[])
+
   const getUser = async () => {
     try {
       const response = await api.get(`/users/${loggedInUser._id}`);
@@ -20,11 +26,13 @@ export default function UserProfile() {
       );
     }
   };
+  
   React.useEffect(() => {
     if (loggedInUser) {
       getUser();
     }
-  }, [loggedInUser]);
+  }, [loggedInUser])
+
   return (
     <MainComponent>
       <Grid item xs={12}>

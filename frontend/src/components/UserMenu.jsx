@@ -29,7 +29,7 @@ export default function UserMenu() {
       <Tooltip title="Open settings">
         <IconButton
           variant="outlined"
-          size="large"
+          size="small"
           color="default"
           onClick={(e) => {
             handleOpenUserMenu(e);

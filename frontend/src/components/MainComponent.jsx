@@ -13,15 +13,15 @@ export default function MainComponent({ children }) {
       <Container component="main" maxWidth="xl">
         <Box
           sx={{
-            marginTop: 8.5,
+            marginTop: 1.5,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
-          <Grid container justifyContent="center" mb={5}>
+          <Grid container justifyContent="center" mb={1}>
             <Grid item xs={12} container justifyContent="center">
-              <SubHeader />
+              {/* <SubHeader /> */}
             </Grid>
             <Grid container item>
               {children}
@@ -29,9 +29,9 @@ export default function MainComponent({ children }) {
           </Grid>
         </Box>
       </Container>
-      <Box display="flex" justifyContent="center">
+      {/* <Box display="flex" justifyContent="center">
         {!isReport && <Footer2 />}
-      </Box>
+      </Box> */}
     </>
   );
 }

@@ -42,38 +42,29 @@ export default function MobileMenu() {
             <Grid item xs={12}>
               <Divider />
               <Grid item xs={12}>
-                <Button variant="text" fullWidth href="/my-profile">
-                  My Profile
+                <Button variant="text" fullWidth href="/">
+                  Home
                 </Button>
                 <Divider />
               </Grid>
-              <Button variant="text" fullWidth href="/all-users">
-                Users
+              <Button variant="text" fullWidth href="/my-profile">
+                My Profile
               </Button>
               <Divider />
             </Grid>
+
             <Grid item xs={12}>
               <Button variant="text" fullWidth href="/logasdain">
                 Not Found
               </Button>
               <Divider />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sx={{ display: "flex", justifyContent: "center" }}
-            >
-              <Tooltip title="Logout">
-                <IconButton
-                  variant="outlined"
-                  size="large"
-                  color="error"
-                  href="/login"
-                  onClick={() => dispatch(logout())}
-                >
-                  <LogoutIcon />
-                </IconButton>
-              </Tooltip>
+
+            <Grid item xs={12}>
+              <Button color="error" variant="text" fullWidth href="/login" onClick={() => dispatch(logout())}>
+                Logout
+              </Button>
+              <Divider />
             </Grid>
           </Grid>
         ) : (
@@ -99,7 +90,6 @@ export default function MobileMenu() {
             </Grid>
           </Grid>
         )}
-        {/* <LoginSignupButtons/> */}
       </SwipeableDrawer>
     </Box>
   );

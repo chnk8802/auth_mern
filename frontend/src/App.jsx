@@ -58,19 +58,19 @@ function App() {
           element={<PrivateRoute children={<UserForm />} />}
         />
         <Route
-          path="/all-users"
+          path="users/all-users"
           element={<PrivateRoute children={<Users />} />}
         />
         <Route
-          path="/all-customers"
+          path="customers/all-customers"
           element={<PrivateRoute children={<Customers />} />}
         />
         <Route
-          path="/add-customer"
+          path="customers/add-customer"
           element={<PrivateRoute children={<AddCustomer />} />}
         />
         <Route
-          path="/edit-customer"
+          path="customers/edit-customer"
           element={<PrivateRoute children={<UpdateCustomer />} />}
         />
         
