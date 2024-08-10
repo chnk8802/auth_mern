@@ -32,10 +32,10 @@ export default function DataTable({
     );
     const isMobileView = useIsMobileView();
     const addRecord = () => {
-      navigate(`/add-${doctype.toLowerCase()}`);
+      navigate(`/${doctype.toLowerCase()}s/add-${doctype.toLowerCase()}`);
     };
     const editRecord = () => {
-      navigate(`/${doctype.toLowerCase()}/update/${rowSelectionModel[0]}`);
+      navigate(`/${doctype.toLowerCase()}s/update/${rowSelectionModel[0]}`);
     };
     React.useEffect(() => {
       if (rowSelectionModel.length === 1) {

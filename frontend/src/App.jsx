@@ -54,7 +54,7 @@ function App() {
         />
         <Route path="/" element={<PrivateRoute children={<Home />} />} />
         <Route
-          path="/my-profile"
+          path="/users/my-profile"
           element={<PrivateRoute children={<UserForm />} />}
         />
         <Route
@@ -70,7 +70,7 @@ function App() {
           element={<PrivateRoute children={<AddCustomer />} />}
         />
         <Route
-          path="customers/edit-customer"
+          path="customers/update/:id"
           element={<PrivateRoute children={<UpdateCustomer />} />}
         />
         

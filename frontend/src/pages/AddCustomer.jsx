@@ -66,7 +66,7 @@ export default function AddCustomer() {
           country: "India",
         },
       });
-      navigate("/all-customers")
+      navigate("/customers/all-customers")
     } catch (error) {
       dispatch(
         showNotification({

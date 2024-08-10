@@ -8,7 +8,7 @@ import Address from "../components/fieldComponents/Address";
 import { useNavigate } from "react-router-dom";
 
 export default function UpdateCustomer() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [customerData, setCustomerData] = React.useState({
     name: "",
@@ -24,6 +24,9 @@ export default function UpdateCustomer() {
     },
   });
 
+  React.useEffect(() => {
+    // const getCustomer =  
+  })
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name in customerData.address) {
@@ -66,7 +69,7 @@ export default function UpdateCustomer() {
           country: "India",
         },
       });
-      navigate("/all-customers")
+      navigate("/all-customers");
     } catch (error) {
       dispatch(
         showNotification({
@@ -117,7 +120,7 @@ export default function UpdateCustomer() {
             onChange={handleChange}
           />
         </Grid>
-        <Address formData={customerData} handleChange={handleChange}/>
+        <Address formData={customerData} handleChange={handleChange} />
         <Grid item xs={12}>
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
             Add Customer

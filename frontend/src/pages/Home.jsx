@@ -18,14 +18,14 @@ export default function Home() {
       <Grid container spacing={1}>
         <Grid container item xs={isMobileView ? 12 : 4}>
           <Grid item xs={12}>
-            <Link to="/all-users">
+            <Link to="/users/all-users">
               <Button variant="primary">
                 Users <ArrowOutwardIcon />
               </Button>
             </Link>
           </Grid>
           <Grid item xs={12}>
-            <Link to="/my-profile">
+            <Link to="/users/my-profile">
               <Button variant="primary">
                 My Profile <ArrowOutwardIcon />
               </Button>
@@ -35,14 +35,14 @@ export default function Home() {
 
         <Grid item xs={isMobileView ? 12 : 4}>
           <Grid item xs={12}>
-            <Link to="/all-customers">
+            <Link to="/customers/all-customers">
               <Button variant="primary">
                 Customers <ArrowOutwardIcon />
               </Button>
             </Link>
           </Grid>
           <Grid item xs={12}>
-            <Link to="/add-customer">
+            <Link to="/customers/add-customer">
               <Button variant="primary">
                 Add Customers <ArrowOutwardIcon />
               </Button>

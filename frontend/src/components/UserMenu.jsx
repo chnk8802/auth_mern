@@ -51,7 +51,7 @@ export default function UserMenu() {
         <MenuItem sx={{ pr: 8 }} onClick={handleCloseUserMenu}>
           <Link
             style={{ textDecoration: "none", color: "#000" }}
-            to="/my-profile"
+            to="/users/my-profile"
           >
             <Typography textalign="center">My Profile</Typography>
           </Link>
