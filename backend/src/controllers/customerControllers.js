@@ -6,7 +6,7 @@ const addCustomer = async (req, res, next) => {
     const existingCustomer = await Customer.findOne({
       name: payload.name,
     });
-    console.log({existingCustomer})
+    console.log({ existingCustomer });
     if (existingCustomer) {
       return next(new Error("Duplicate Customer name not allowed."));
     }
@@ -29,9 +29,10 @@ const addCustomer = async (req, res, next) => {
 const getAllCustomers = async (req, res, next) => {
   try {
     let { page, pageSize } = req.query;
-    
-    const totalRecords = await Customer.countDocuments({})
-    const customers = await Customer.find({}).select("-__v")
+
+    const totalRecords = await Customer.countDocuments({});
+    const customers = await Customer.find({})
+      .select("-__v")
       .limit(pageSize)
       .skip(page * pageSize);
     res.status(201).json({
@@ -52,20 +53,30 @@ const getAllCustomers = async (req, res, next) => {
 
 const getCustomer = async (req, res, next) => {
   try {
-    const customerId = req.params.id
-    const customer = await Customer.findById(customerId)
+    const customerId = req.params.id;
+    const customer = await Customer.findById(customerId);
     if (!customer) {
-      throw next(new Error("No customer found"))
+      throw next(new Error("No customer found"));
     }
-    res.status(200).json({customer}) 
+    res.status(200).json({ customer });
   } catch (error) {
     res.status(500).json({
       error: error.message || "An error occurred while fetching the customer.",
     });
   }
-}
+};
 
-const updateCustomer = async (req, res, next) => {};
+const updateCustomer = async (req, res, next) => {
+  try {
+    const customerId = req.params.id;
+    const customerData = req.body;
+    const customer = await Customer.findById(customerId);
+    if (!customer) {
+      throw next(new Error("No customer found"));
+    }
+    const updatedCustomer = await Customer.updateOne({ id }, customerData);
+  } catch (error) {}
+};
 const deleteCustomer = async (req, res, next) => {};
 
 export default {

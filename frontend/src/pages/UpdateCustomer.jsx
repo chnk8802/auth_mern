@@ -1,15 +1,22 @@
 import * as React from "react";
 import MainComponent from "../components/MainComponent";
 import { Button, Grid, TextField, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showNotification } from "../app/features/notification/notificationSlice";
 import api from "../services/api";
 import Address from "../components/fieldComponents/Address";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  clearCurrentPageInfo,
+  setCurrentPageInfo,
+} from "../app/features/currentPage/currentPageSlice";
 
 export default function UpdateCustomer() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { type, doctype, docname } = useSelector((state) => state.currentPage);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const userId = location.pathname.split("/")[3];
   const [customerData, setCustomerData] = React.useState({
     name: "",
     email: "",
@@ -25,8 +32,44 @@ export default function UpdateCustomer() {
   });
 
   React.useEffect(() => {
-    // const getCustomer =  
-  })
+    dispatch(clearCurrentPageInfo());
+    dispatch(setCurrentPageInfo({type: "form", doctype: "Customer", docname:"", pageHeading: "", isReport: true}))
+  },[]);
+
+  const getCustomer = async () => {
+    try {
+      const response = await api.get(`/customers/${userId}`);
+      const customer = response.data.customer;
+      setCustomerData({
+        name: customer.name || "",
+        email: customer.email || "",
+        phone: customer.phone || "",
+        address: {
+          addressLine1: customer.address.addressLine1 || "",
+          addressLine2: customer.address.addressLine2 || "",
+          city: customer.address.city || "",
+          state: customer.address.state || "",
+          pincode: customer.address.pincode || "",
+          country: customer.address.country || "",
+        },
+      });
+    } catch (error) {
+      dispatch(
+        showNotification({
+          message: "Failed to add customer",
+          type: "error",
+        })
+      );
+      console.log(
+        error.response ? error.response.data : "Failed to add customer"
+      );
+    }
+  };
+
+  React.useEffect(() => {
+    getCustomer();
+  }, [userId]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name in customerData.address) {
@@ -123,123 +166,10 @@ export default function UpdateCustomer() {
         <Address formData={customerData} handleChange={handleChange} />
         <Grid item xs={12}>
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Add Customer
+            update Customer
           </Button>
         </Grid>
       </Grid>
     </MainComponent>
   );
 }
-
-// import * as React from "react";
-// import MainComponent from "../components/MainComponent";
-// import { Button, Grid, TextField } from "@mui/material";
-// import { useDispatch } from "react-redux";
-// import { showNotification } from "../app/features/notification/notificationSlice";
-// import api from "../services/api";
-
-// export default function AddCustomer() {
-//   const dispatch = useDispatch();
-//   const [customerData, setCustomerData] = React.useState({
-//     name: "",
-//     email: "",
-//     phone: "",
-//     addressline1: "",
-//   });
-
-//   const handleChange = (e) => {
-//     setCustomerData({
-//       ...customerData,
-//       [e.target.name]: e.target.value,
-//     });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     console.log(customerData)
-//     try {
-//       const response = await api.post("/customers/add-customer", customerData);
-//       dispatch(
-//         showNotification({
-//           message: "Customer created successfully!",
-//           type: "success",
-//         })
-//       );
-//       setCustomerData({
-//         name: "",
-//         email: "",
-//         phone: "",
-//         addressline1: "",
-//       });
-//     } catch (error) {
-//       dispatch(
-//         showNotification({
-//           message: error.response
-//             ? error.response.data.message
-//             : "Failed to add customer",
-//           type: "error",
-//         })
-//       );
-//       console.log(
-//         error.response ? error.response.data : "Failed to add customer"
-//       );
-//     }
-//   };
-
-//   return (
-//     <MainComponent>
-//       <Grid item component="h1">
-//         Add Customer
-//       </Grid>
-//       <Grid container item component="form" spacing={2} onSubmit={handleSubmit}>
-//         <Grid item xs={12} sm={6}>
-//           <TextField
-//             required
-//             fullWidth
-//             id="name"
-//             label="Customer Name"
-//             name="name"
-//             value={customerData.name}
-//             onChange={handleChange}
-//           />
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <TextField
-//             fullWidth
-//             id="email"
-//             label="Email"
-//             name="email"
-//             type="email"
-//             value={customerData.email}
-//             onChange={handleChange}
-//           />
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <TextField
-//             fullWidth
-//             id="phone"
-//             label="Phone"
-//             name="phone"
-//             value={customerData.phone}
-//             onChange={handleChange}
-//           />
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <TextField
-//             fullWidth
-//             id="addressline1"
-//             label="Address Line 1"
-//             name="addressline1"
-//             value={customerData.addressline1}
-//             onChange={handleChange}
-//           />
-//         </Grid>
-//         <Grid item xs={12}>
-//           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-//             Add Customer
-//           </Button>
-//         </Grid>
-//       </Grid>
-//     </MainComponent>
-//   );
-// }

@@ -47,7 +47,7 @@ export default function MobileMenu() {
                 </Button>
                 <Divider />
               </Grid>
-              <Button variant="text" fullWidth href="/my-profile">
+              <Button variant="text" fullWidth href="/users/my-profile">
                 My Profile
               </Button>
               <Divider />
