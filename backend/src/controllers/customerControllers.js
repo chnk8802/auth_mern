@@ -19,10 +19,7 @@ const addCustomer = async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      error: error.message || "An error occurred while adding the customer.",
-    });
+    next(error)
   }
 };
 
@@ -44,10 +41,7 @@ const getAllCustomers = async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      error: error.message || "An error occurred while fetching the customers.",
-    });
+    next(error)
   }
 };
 
@@ -60,9 +54,7 @@ const getCustomer = async (req, res, next) => {
     }
     res.status(200).json({ customer });
   } catch (error) {
-    res.status(500).json({
-      error: error.message || "An error occurred while fetching the customer.",
-    });
+    next(error)
   }
 };
 
@@ -70,14 +62,31 @@ const updateCustomer = async (req, res, next) => {
   try {
     const customerId = req.params.id;
     const customerData = req.body;
+    
     const customer = await Customer.findById(customerId);
     if (!customer) {
       throw next(new Error("No customer found"));
     }
-    const updatedCustomer = await Customer.updateOne({ id }, customerData);
-  } catch (error) {}
+    await Customer.updateOne({ _id: customerId }, customerData);
+    
+    res.status(200).json({})
+  } catch (error) {
+    next(error)
+  }
 };
-const deleteCustomer = async (req, res, next) => {};
+const deleteCustomer = async (req, res, next) => {
+  try {
+    const customerId = req.params.id;
+    const customer = await Customer.findById(customerId);
+    if (!customer) {
+      throw new next(Error("No customer found"));
+    }
+    await Customer.deleteOne({_id: customerId})
+    res.status(201).json({})
+  } catch (error) {
+    next(error)
+  }
+};
 
 export default {
   addCustomer,

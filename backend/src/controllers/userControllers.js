@@ -6,9 +6,8 @@ import {
   generateRefreshToken,
 } from "../utils/generateToken.js";
 import sendResetPasswordEmail from "../utils/email.js";
-import verifyResetPasswordUser from "../middlewares/verifyResetPasswordUserMiddleware.js";
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
   try {
     const { username, fullname, email, password, bio } = req.body;
 
@@ -49,12 +48,11 @@ const register = async (req, res) => {
     newUser.password = undefined;
     res.status(201).json(newUser);
   } catch (error) {
-    console.error("User registration error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    next(error)
   }
 };
 
-const refreshToken = async (req, res) => {
+const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.cookies;
   if (!refreshToken) {
     return res.status(401).json({ error: "Refresh token not provided" });
@@ -89,8 +87,7 @@ const refreshToken = async (req, res) => {
     });
     res.json({ accessToken: newAccessToken });
   } catch (error) {
-    console.error("Refresh token error:", error);
-    res.status(403).json({ error: "Invalid or expired refresh token" });
+    next(error)
   }
 };
 
@@ -227,8 +224,7 @@ const getUser = async (req, res, next) => {
     }
     res.status(200).json({ user });
   } catch (error) {
-    console.error("Get User error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    next(error)
   }
 };
 
@@ -252,8 +248,7 @@ const getUsers = async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.log({ error: error });
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error)
   }
 };
 

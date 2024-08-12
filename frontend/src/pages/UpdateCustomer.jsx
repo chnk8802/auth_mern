@@ -72,6 +72,7 @@ export default function UpdateCustomer() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log({name, value})
     if (name in customerData.address) {
       setCustomerData({
         ...customerData,
@@ -92,10 +93,10 @@ export default function UpdateCustomer() {
     e.preventDefault();
     console.log(customerData);
     try {
-      const response = await api.post("/customers/add-customer", customerData);
+      const response = await api.patch(`/customers/${userId}`, customerData);
       dispatch(
         showNotification({
-          message: "Customer created successfully!",
+          message: "Customer Updated successfully!",
           type: "success",
         })
       );
@@ -112,18 +113,18 @@ export default function UpdateCustomer() {
           country: "India",
         },
       });
-      navigate("/all-customers");
+      navigate("/customers/all-customers");
     } catch (error) {
       dispatch(
         showNotification({
           message: error.response
             ? error.response.data.message
-            : "Failed to add customer",
+            : "Failed to update customer",
           type: "error",
         })
       );
       console.log(
-        error.response ? error.response.data : "Failed to add customer"
+        error.response ? error.response.data : "Failed to Update customer"
       );
     }
   };

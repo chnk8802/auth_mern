@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Grid, Button, Typography, Divider, Box } from "@mui/material";
+import {
+  Grid,
+  Button,
+  Typography,
+  Divider,
+  Box,
+  IconButton,
+} from "@mui/material";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -8,6 +15,8 @@ import {
 import { useSelector } from "react-redux";
 import useIsMobileView from "../hooks/useIsMobileView";
 import { useNavigate } from "react-router-dom";
+import { Delete } from "@mui/icons-material";
+import AlertDialog from "./AlertDialog";
 
 export default function DataTable({
   loading,
@@ -62,14 +71,17 @@ export default function DataTable({
             {!isMobileView && <Box sx={{ flexGrow: 1 }} />}
             <GridToolbarFilterButton />
             {isEditable ? (
-              <Button
-                variant="contained"
-                size="small"
-                disableElevation
-                onClick={editRecord}
-              >
-                Edit {doctype}
-              </Button>
+              <>
+                <AlertDialog/>
+                <Button
+                  variant="contained"
+                  size="small"
+                  disableElevation
+                  onClick={editRecord}
+                >
+                  Edit {doctype}
+                </Button>
+              </>
             ) : (
               <Button
                 variant="contained"

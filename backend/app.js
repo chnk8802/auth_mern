@@ -34,10 +34,11 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 
+
 app.use("/api/users", userRoutes);
 app.use("/api/customers", customerRoutes);
-
 app.use(notFound);
 app.use(errorHandler);
+
 
 export default app;
