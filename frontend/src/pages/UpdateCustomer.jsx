@@ -33,7 +33,7 @@ export default function UpdateCustomer() {
 
   React.useEffect(() => {
     dispatch(clearCurrentPageInfo());
-    dispatch(setCurrentPageInfo({type: "form", doctype: "Customer", docname:"", pageHeading: "", isReport: true}))
+    dispatch(setCurrentPageInfo({type: "form", doctype: "Customer", docname: userId, pageHeading: "", isReport: false}))
   },[]);
 
   const getCustomer = async () => {
@@ -56,12 +56,12 @@ export default function UpdateCustomer() {
     } catch (error) {
       dispatch(
         showNotification({
-          message: "Failed to add customer",
+          message: "Failed to fetch customer",
           type: "error",
         })
       );
       console.log(
-        error.response ? error.response.data : "Failed to add customer"
+        error.response ? error.response.data : "Failed to fetch customer"
       );
     }
   };
@@ -117,9 +117,7 @@ export default function UpdateCustomer() {
     } catch (error) {
       dispatch(
         showNotification({
-          message: error.response
-            ? error.response.data.message
-            : "Failed to update customer",
+          message: "Failed to update customer",
           type: "error",
         })
       );

@@ -48,7 +48,7 @@ const register = async (req, res, next) => {
     newUser.password = undefined;
     res.status(201).json(newUser);
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -87,7 +87,7 @@ const refreshToken = async (req, res, next) => {
     });
     res.json({ accessToken: newAccessToken });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -215,27 +215,27 @@ const resetPassword = async (req, res) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const userId = req.params.id
+    const userId = req.params.id;
     const user = await User.findById(userId).select(
       "-password -__v -refreshTokens"
     );
     if (!user) {
-      throw next(new Error("User not found"))
+      throw next(new Error("User not found"));
     }
     res.status(200).json({ user });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
 const getUsers = async (req, res, next) => {
   try {
     const { page, pageSize } = req.query;
-    const totalRecords = await User.countDocuments({})
-    const users = await User.find({}, null, {
-      limit: pageSize,
-      skip: page * pageSize,
-    }).select("-password -__v -refreshTokens");
+    const totalRecords = await User.countDocuments({});
+    const users = await User.find({})
+      .select("-password -__v -refreshTokens")
+      .limit(pageSize)
+      .skip(page * pageSize);
     if (!users) {
       throw next(new Error("No users Found!"));
     }
@@ -248,7 +248,7 @@ const getUsers = async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 

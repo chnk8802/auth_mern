@@ -1,50 +1,35 @@
 import * as React from "react";
-import {
-  Grid,
-  Button,
-  Typography,
-  Divider,
-  Box,
-  IconButton,
-} from "@mui/material";
+import { Grid, Button, Typography, Divider, Box } from "@mui/material";
 import {
   DataGrid,
   GridToolbarContainer,
   GridToolbarFilterButton,
 } from "@mui/x-data-grid";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useIsMobileView from "../hooks/useIsMobileView";
 import { useNavigate } from "react-router-dom";
-import { Delete } from "@mui/icons-material";
 import AlertDialog from "./AlertDialog";
+import { setCurrentPageInfo } from "../app/features/currentPage/currentPageSlice";
 
 export default function DataTable({
   loading,
-  rows,
-  columns,
+  data,
   totalRecords,
   paginationModel,
   setPaginationModel,
 }) {
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  const [isEditable, setIsEditable] = React.useState(false);
-
-  const handleRowSelectionChange = (newRowSelectionModel) => {
-    setRowSelectionModel(newRowSelectionModel);
-    // console.log(rowSelectionModel)
-  };
   // <------------Toolbar component----------->
   const DataTableToolbar = () => {
+    const isMobileView = useIsMobileView();
     const navigate = useNavigate();
-    const { type, doctype, docname, pageHeading } = useSelector(
+    const { type, doctype, docname, pageHeading, path } = useSelector(
       (state) => state.currentPage
     );
-    const isMobileView = useIsMobileView();
     const addRecord = () => {
-      navigate(`/${doctype.toLowerCase()}s/add-${doctype.toLowerCase()}`);
+      navigate(`/${doctype?.toLowerCase()}s/add-${doctype.toLowerCase()}`);
     };
     const editRecord = () => {
-      navigate(`/${doctype.toLowerCase()}s/update/${rowSelectionModel[0]}`);
+      navigate(`${path}/update/${rowSelectionModel[0]}`);
     };
     React.useEffect(() => {
       if (rowSelectionModel.length === 1) {
@@ -56,7 +41,7 @@ export default function DataTable({
       } else {
         setIsEditable(false);
       }
-    }, []);
+    }, [rowSelectionModel.length]);
     return (
       <>
         <GridToolbarContainer sx={{ pb: 0.5 }}>
@@ -72,7 +57,11 @@ export default function DataTable({
             <GridToolbarFilterButton />
             {isEditable ? (
               <>
-                <AlertDialog/>
+                <AlertDialog
+                  doctype={doctype}
+                  path={path}
+                  id={rowSelectionModel}
+                />
                 <Button
                   variant="contained"
                   size="small"
@@ -99,6 +88,46 @@ export default function DataTable({
     );
   };
   // <------------Toolbar component----------->
+
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  const [isEditable, setIsEditable] = React.useState(false);
+
+  const handleRowSelectionChange = (newRowSelectionModel) => {
+    setRowSelectionModel(newRowSelectionModel);
+  };
+  // Row and Column Generators
+  const generateColumns = (data) => {
+    if (data.length === 0) return [];
+    const dataObj = data[0];
+
+    const createColumn = (dataObj) => {
+      return Object.keys(dataObj).reduce((accumulator, key) => {
+        accumulator.push(key);
+        if (typeof dataObj[key] === "object" && dataObj[key] !== null) {
+          accumulator.push(...createColumn(dataObj[key]));
+        }
+        console.log(accumulator)
+        return accumulator;
+      }, []);
+    };
+    createColumn(dataObj);
+    // // console.log(k)
+    const column = Object.keys(dataObj).map((key) => ({
+      field: key,
+      headerName: key.charAt(0).toUpperCase() + key.slice(1),
+      width: 200,
+      // valueFormatter: key.includes('At') ? ({ value }) => new Date(value).toLocaleDateString() : undefined
+    }));
+    return column;
+  };
+  const generateRows = (data) => {
+    return data.map((datum) => ({
+      id: datum._id,
+      ...datum,
+    }));
+  };
+  const columns = generateColumns(data);
+  const rows = generateRows(data);
 
   return (
     <Grid container>

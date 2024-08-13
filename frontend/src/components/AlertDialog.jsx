@@ -7,10 +7,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import api from '../services/api'
+import { showNotification } from "../app/features/notification/notificationSlice";
 
-export default function AlertDialog() {
+export default function AlertDialog({doctype, path, id}) {
   const [open, setOpen] = React.useState(false);
-
+  const dispatch = useDispatch()
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -18,8 +21,29 @@ export default function AlertDialog() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const confirmDeleteRecord = async (path, id) => {
+    try {
+      const response = await api.delete(`${path}/${id}`)
+      if (response.status === 201) {
+        dispatch(showNotification({
+          type: "success",
+          open: true,
+          message: `${doctype} deleted successfully`
+        }))
+      }
+    } catch (error) {
+      dispatch(showNotification({
+        type: "error",
+        open: true,
+        message: `Something went wrong`
+      }))
+    }
+  }
+
   const handleDelete = () => {
-    
+    confirmDeleteRecord(path, id)
+    setOpen(false);
   }
 
   return (
@@ -47,7 +71,7 @@ export default function AlertDialog() {
             color="error"
             variant="contained"
             disableElevation
-            onClick={handleClose}
+            onClick={handleDelete}
             autoFocus
           >
             Delete
