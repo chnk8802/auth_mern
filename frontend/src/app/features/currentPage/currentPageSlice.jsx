@@ -13,10 +13,20 @@ import { createSlice } from "@reduxjs/toolkit";
 
 */
 const pluralizeDoctype = (doctype) => {
-    // Basic pluralization logic; you might replace this with a more robust solution
-    if (doctype.endsWith("y")) return doctype.slice(0, -1) + "ies";
-    return doctype + "s";
+    if (!doctype || typeof doctype !== 'string') {
+        console.error('Invalid doctype:', doctype, typeof doctype);  // Log the error for debugging
+        return '';  // Return an empty string or handle it appropriately
+      }
+
+    if (doctype.endsWith("y") && !doctype.endsWith("ay") && !doctype.endsWith("ey") && !doctype.endsWith("iy") && !doctype.endsWith("oy") && !doctype.endsWith("uy")) {
+      return doctype.slice(0, -1) + "ies";  // Change "y" to "ies"
+    } else if (doctype.endsWith("s") || doctype.endsWith("x") || doctype.endsWith("z") || doctype.endsWith("ch") || doctype.endsWith("sh")) {
+      return doctype + "es";  // Add "es" for words ending in "s", "x", "z", "ch", or "sh"
+    } else {
+      return doctype + "s";  // Regular plural form by adding "s"
+    }
   };
+  
 
 const initialState =  {
     type: "",
@@ -36,7 +46,7 @@ export const currentPageSlice = createSlice({
             state.docname = action.payload.docname,
             state.pageHeading = action.payload.pageHeading,
             state.isReport = action.payload.isReport
-            state.path = `/${action.payload.doctype?.toLowerCase()}s`
+            state.path = `/${pluralizeDoctype(action.payload.doctype)?.toLowerCase()}`
         },
         clearCurrentPageInfo: () => initialState
     }

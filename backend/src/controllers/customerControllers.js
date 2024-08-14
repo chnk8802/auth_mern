@@ -19,10 +19,9 @@ const addCustomer = async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
-
 const getAllCustomers = async (req, res, next) => {
   try {
     let { page, pageSize } = req.query;
@@ -32,7 +31,7 @@ const getAllCustomers = async (req, res, next) => {
       .select("-__v")
       .limit(pageSize)
       .skip(page * pageSize);
-    res.status(201).json({
+    res.status(200).json({
       status: "Success",
       totalRecords: totalRecords,
       dataCount: customers.length,
@@ -41,10 +40,9 @@ const getAllCustomers = async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
-
 const getCustomer = async (req, res, next) => {
   try {
     const customerId = req.params.id;
@@ -54,7 +52,7 @@ const getCustomer = async (req, res, next) => {
     }
     res.status(200).json({ customer });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -62,16 +60,18 @@ const updateCustomer = async (req, res, next) => {
   try {
     const customerId = req.params.id;
     const customerData = req.body;
-    
+
     const customer = await Customer.findById(customerId);
     if (!customer) {
       throw next(new Error("No customer found"));
     }
-    await Customer.updateOne({ _id: customerId }, customerData);
-    
-    res.status(200).json({})
+    await Customer.updateOne({ _id: customerId }, customerData, {
+      runValidators: true,
+    });
+
+    res.status(200).json({});
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 const deleteCustomer = async (req, res, next) => {
@@ -81,10 +81,10 @@ const deleteCustomer = async (req, res, next) => {
     if (!customer) {
       throw new next(Error("No customer found"));
     }
-    await Customer.deleteOne({_id: customerId})
-    res.status(201).json({})
+    await Customer.deleteOne({ _id: customerId });
+    res.status(200).json({});
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 

@@ -5,11 +5,10 @@ import {
   GridToolbarContainer,
   GridToolbarFilterButton,
 } from "@mui/x-data-grid";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import useIsMobileView from "../hooks/useIsMobileView";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "./AlertDialog";
-import { setCurrentPageInfo } from "../app/features/currentPage/currentPageSlice";
 
 export default function DataTable({
   loading,
@@ -33,10 +32,6 @@ export default function DataTable({
     };
     React.useEffect(() => {
       if (rowSelectionModel.length === 1) {
-        console.log({
-          rowSelectionModel_length: rowSelectionModel.length,
-          rowSelectionModel,
-        });
         setIsEditable(true);
       } else {
         setIsEditable(false);
@@ -99,33 +94,35 @@ export default function DataTable({
   const generateColumns = (data) => {
     if (data.length === 0) return [];
     const dataObj = data[0];
-
-    const createColumn = (dataObj) => {
-      return Object.keys(dataObj).reduce((accumulator, key) => {
-        accumulator.push(key);
-        if (typeof dataObj[key] === "object" && dataObj[key] !== null) {
-          accumulator.push(...createColumn(dataObj[key]));
-        }
-        console.log(accumulator)
-        return accumulator;
-      }, []);
-    };
-    createColumn(dataObj);
-    // // console.log(k)
     const column = Object.keys(dataObj).map((key) => ({
       field: key,
       headerName: key.charAt(0).toUpperCase() + key.slice(1),
       width: 200,
-      // valueFormatter: key.includes('At') ? ({ value }) => new Date(value).toLocaleDateString() : undefined
+      valueFormatter: (value) => {
+        if (key.includes("At")) {
+          return `${value.substring(0, 10)} ${value.substring(11, 19)}`;
+        }
+      },
     }));
     return column;
   };
+
   const generateRows = (data) => {
-    return data.map((datum) => ({
-      id: datum._id,
-      ...datum,
-    }));
+    return data.map((item) => {
+      return Object.entries(item).reduce((acc, [key, value]) => {
+        if (typeof value === "object" && value !== null) {
+          acc[key] = Object.values(value).join(" ");
+        } else if (key === "_id") {
+          acc["id"] = value;
+          acc["_id"] = value;
+        } else {
+          acc[key] = value;
+        }
+        return acc;
+      }, {});
+    });
   };
+
   const columns = generateColumns(data);
   const rows = generateRows(data);
 

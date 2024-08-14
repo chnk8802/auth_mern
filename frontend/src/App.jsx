@@ -17,6 +17,8 @@ import UserForm from "./pages/UserProfile";
 import Customers from "./pages/Customers";
 import AddCustomer from "./pages/AddCustomer";
 import UpdateCustomer from "./pages/UpdateCustomer"
+import Addresses from "./pages/Addresses";
+import UpdateAddress from "./pages/UpdateAddresses";
 
 function PrivateRoute({ children, requireAuth = true }) {
   const location = useLocation();
@@ -72,6 +74,18 @@ function App() {
         <Route
           path="customers/update/:id"
           element={<PrivateRoute children={<UpdateCustomer />} />}
+        />
+        <Route
+          path="addresses/all-addresses"
+          element={<PrivateRoute children={<Addresses />} />}
+        />
+        <Route
+          path="addresses/add-addresses"
+          element={<PrivateRoute children={<AddCustomer />} />}
+        />
+        <Route
+          path="addresses/update/:id"
+          element={<PrivateRoute children={<UpdateAddress />} />}
         />
         
       </Routes>

@@ -14,7 +14,7 @@ export default function Address({ formData, handleChange }) {
             id="addressLine1"
             label="Address Line 1"
             name="addressLine1"
-            value={formData.address.addressLine1}
+            value={formData?.address?.addressLine1 || formData.addressLine1}
             onChange={handleChange}
           />
         </Grid>
@@ -24,7 +24,7 @@ export default function Address({ formData, handleChange }) {
             id="addressLine2"
             label="Address Line 2"
             name="addressLine2"
-            value={formData.address.addressLine2}
+            value={formData?.address?.addressLine2 || formData.addressLine2}
             onChange={handleChange}
           />
         </Grid>
@@ -34,7 +34,7 @@ export default function Address({ formData, handleChange }) {
             id="city"
             label="City"
             name="city"
-            value={formData.address.city}
+            value={formData?.address?.city || formData.city}
             onChange={handleChange}
           />
         </Grid>
@@ -44,7 +44,7 @@ export default function Address({ formData, handleChange }) {
             id="state"
             label="State"
             name="state"
-            value={formData.address.state}
+            value={formData?.address?.state || formData.state}
             onChange={handleChange}
           />
         </Grid>
@@ -55,7 +55,7 @@ export default function Address({ formData, handleChange }) {
             label="Pincode"
             type="number"
             name="pincode"
-            value={formData.address.pincode}
+            value={formData?.address?.pincode || formData.pincode}
             onChange={handleChange}
           />
         </Grid>
@@ -65,7 +65,7 @@ export default function Address({ formData, handleChange }) {
             id="country"
             label="Country"
             name="country"
-            value={formData.address.country}
+            value={formData?.address?.country || formData.country}
             onChange={handleChange}
             select
             SelectProps={{

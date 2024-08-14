@@ -13,7 +13,7 @@ import {
 
 export default function UpdateCustomer() {
   const dispatch = useDispatch();
-  const { type, doctype, docname } = useSelector((state) => state.currentPage);
+  const { type, doctype, docname, path } = useSelector((state) => state.currentPage);
   const navigate = useNavigate();
   const location = useLocation();
   const userId = location.pathname.split("/")[3];
@@ -34,11 +34,12 @@ export default function UpdateCustomer() {
   React.useEffect(() => {
     dispatch(clearCurrentPageInfo());
     dispatch(setCurrentPageInfo({type: "form", doctype: "Customer", docname: userId, pageHeading: "", isReport: false}))
-  },[]);
+    getCustomer();
+  },[userId]);
 
   const getCustomer = async () => {
     try {
-      const response = await api.get(`/customers/${userId}`);
+      const response = await api.get(`${path}/${userId}`);
       const customer = response.data.customer;
       setCustomerData({
         name: customer.name || "",
@@ -64,11 +65,7 @@ export default function UpdateCustomer() {
         error.response ? error.response.data : "Failed to fetch customer"
       );
     }
-  };
-
-  React.useEffect(() => {
-    getCustomer();
-  }, [userId]);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;

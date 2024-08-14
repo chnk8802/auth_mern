@@ -48,6 +48,20 @@ export default function Home() {
               </Button>
             </Link>
           </Grid>
+          <Grid item xs={12}>
+            <Link to="/addresses/all-addresses">
+              <Button variant="primary">
+              Addresses <ArrowOutwardIcon />
+              </Button>
+            </Link>
+          </Grid>
+          <Grid item xs={12}>
+            <Link to="/addresses/add-address">
+              <Button variant="primary">
+                Add Address <ArrowOutwardIcon />
+              </Button>
+            </Link>
+          </Grid>
         </Grid>
 
         <Grid item xs={isMobileView ? 12 : 4}>
