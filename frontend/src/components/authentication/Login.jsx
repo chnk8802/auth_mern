@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+
 import Header from "../Header";
 import useIsMobileView from "../../hooks/useIsMobileView";
 import Footer2 from "../Footer2";
@@ -55,13 +56,7 @@ function Login() {
     setErrorMessage("");
     setSuccessMessage("");
     try {
-      // const config =  {
-      //   headers: {
-      //       "content-type": "application/json"
-      //   }
-      // };
       const response = await api.post("/users/login", formData);
-      console.log(response)
       setErrorMessage("");
       setFormData({
         email: "",

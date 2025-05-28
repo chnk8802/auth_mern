@@ -1,45 +1,72 @@
-import nodemailer from 'nodemailer'
+import nodemailer from "nodemailer";
+import oAuth2Client from "./googleOAuthClient.js";
 
-const sendResetPasswordEmail = (email, otp) => {
-    /* Send an email to user
-        1. Which must contain a link which redirect the user to a page which have fields to enter new password.
-        2. When user is successfully redirected to that page user should be verified using the token
-        3. When user enter the new password and click reset password a request to server is made to set new password
-    */
-   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // Use `true` for port 465, `false` for all other ports
-    auth: {
-      user: "smtpsmtp13@gmail.com",
-      pass: "fcguoslltajccvny",
-    },
-  })
+/**
+ * Sends a reset password email containing an OTP to the specified user email.
+ *
+ * Uses Google's OAuth2 for secure SMTP authentication.
+ *
+ * @param {string} email - The recipient's email address.
+ * @param {string} otp - The one-time password/token for password reset.
+ * @returns {Promise<{success: string} | {error: string}>} - Promise resolving to success or error info.
+ */
+async function sendResetPasswordEmail(email, otp) {
+  try {
+    // Retrieve the refresh token from environment variables
+    const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
 
-  // HTML content
-const htmlContent = `
-<h1>Hello from Node.js</h1>
-<p>This is a your token <b>${otp}</b></p>
-`;
+    // Set OAuth2 client's refresh token
+    oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-  const mailOptions = {
-    from: "smtpsmtp13@gmail.com",
-    to: email,
-    subject: "Reset password",
-    html: htmlContent
-  }
+    // Obtain a fresh access token using the refresh token
+    const accessToken = await oAuth2Client.getAccessToken();
 
-  // Send email
-transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error('Error occurred:', error.message);
-      return {error: error.message};
+    // If access token retrieval fails, throw an error
+    if (!accessToken.token) {
+      throw new Error(
+        "Failed to obtain access token. Please check your credentials."
+      );
     }
-    console.log('Email sent:', info.messageId);
-    return {success: info.messageId}
-  });
 
+    // Create a Nodemailer transporter using Gmail and OAuth2 authentication
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: process.env.SMTP_USER || "smtpsmtp13@gmail.com", // Email address you're sending from
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: REFRESH_TOKEN,
+        accessToken: accessToken.token,
+      },
+    });
+
+    // HTML content of the email including the OTP token
+    const htmlContent = `
+      <h1>Hello from Node.js</h1>
+      <p>This is your token <b>${otp}</b></p>
+    `;
+
+    // Email message options
+    const mailOptions = {
+      from: "smtpsmtp13@gmail.com", // Sender address
+      to: email,                    // Recipient address
+      subject: "Reset password",    // Email subject line
+      html: htmlContent,            // Email body in HTML format
+    };
+
+    // Send the email asynchronously and wait for response
+    const info = await transporter.sendMail(mailOptions);
+
+    // Log and return success message id
+    console.log("Email sent: " + info.messageId);
+    return { success: info.messageId };
+
+  } catch (error) {
+    // Log any error during the process and return a user-friendly error message
+    console.error("Error sending email:", error);
+    return { error: "Failed to send email. Please try again later." };
+  }
 }
 
-
-export default sendResetPasswordEmail
+export default sendResetPasswordEmail;

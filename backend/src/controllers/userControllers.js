@@ -12,6 +12,7 @@ const register = async (req, res, next) => {
     const { username, fullname, email, password, bio } = req.body;
 
     if (!username || !email || !password) {
+      console.log("test");
       return res.status(400).json({ error: "Missing mandatory fields" });
     }
 
@@ -19,6 +20,7 @@ const register = async (req, res, next) => {
 
     const regex = /^[a-z0-9]+$/;
     if (!regex.test(username)) {
+      console.log("test-2");
       return res.status(400).json({
         error: "Username should only contain lowercase alphabet and numbers",
       });
@@ -33,6 +35,7 @@ const register = async (req, res, next) => {
       } else if (existingUser.email === email) {
         errorMessage = "Email already exists";
       }
+      console.log("test3");
       return res.status(400).json({ error: errorMessage });
     }
 
@@ -65,7 +68,8 @@ const refreshToken = async (req, res, next) => {
     const storedToken = user.refreshTokens.filter(
       (t) => t.token !== refreshToken
     );
-    if (!storedToken)
+    const tokenExists = storedToken.some((t) => t.token === refreshToken);
+    if (!tokenExists)
       return res.status(403).json({ error: "Invalid refresh token" });
 
     const newAccessToken = generateAccessToken(user._id);
@@ -163,9 +167,12 @@ const forgotPassword = async (req, res) => {
     user.otpExpires = Date.now() + 3600000;
     await user.save();
 
-    sendResetPasswordEmail(user.email, otp);
+    const emailResult = await sendResetPasswordEmail(user.email, otp);
+    if (!emailResult.success) {
+      return res.status(500).json({ error: "Failed to send email" });
+    }
 
-    res.status(200).json({ message: "Password reset email sent" });
+    res.status(200).json({ message: "OTP sent to mail." });
   } catch (error) {
     console.error("Forgot password error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -219,9 +226,12 @@ const getUser = async (req, res, next) => {
     const user = await User.findById(userId).select(
       "-password -__v -refreshTokens"
     );
-    if (!user) {
-      throw next(new Error("User not found"));
-    }
+    user = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+    };
+    if (!user) return res.status(404).json({ error: "User not found" });
     res.status(200).json({ user });
   } catch (error) {
     next(error);
@@ -230,10 +240,11 @@ const getUser = async (req, res, next) => {
 
 const getUsers = async (req, res, next) => {
   try {
-    const { page, pageSize } = req.query;
+    const page = parseInt(req.query.page) || 0;
+    const pageSize = parseInt(req.query.pageSize) || 10;
     const totalRecords = await User.countDocuments({});
     const users = await User.find({})
-      .select("-password -__v -refreshTokens")
+      .select("_id username fullname email bio createdAt")
       .limit(pageSize)
       .skip(page * pageSize);
     if (!users) {
