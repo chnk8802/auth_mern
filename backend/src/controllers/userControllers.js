@@ -9,10 +9,9 @@ import sendResetPasswordEmail from "../utils/email.js";
 
 const register = async (req, res, next) => {
   try {
-    const { username, fullname, email, password, bio } = req.body;
+    const { username, email, password, role, fullname, bio } = req.body;
 
-    if (!username || !email || !password) {
-      console.log("test");
+    if (!username || !email || !password || !role) {
       return res.status(400).json({ error: "Missing mandatory fields" });
     }
 
@@ -20,7 +19,6 @@ const register = async (req, res, next) => {
 
     const regex = /^[a-z0-9]+$/;
     if (!regex.test(username)) {
-      console.log("test-2");
       return res.status(400).json({
         error: "Username should only contain lowercase alphabet and numbers",
       });
@@ -65,10 +63,9 @@ const refreshToken = async (req, res, next) => {
     const user = await User.findById(decoded.userId);
     if (!user) return res.status(403).json({ error: "User not found" });
 
-    const storedToken = user.refreshTokens.filter(
-      (t) => t.token !== refreshToken
+    const tokenExists = user.refreshTokens.some(
+      (t) => t.token === refreshToken
     );
-    const tokenExists = storedToken.some((t) => t.token === refreshToken);
     if (!tokenExists)
       return res.status(403).json({ error: "Invalid refresh token" });
 
@@ -83,11 +80,11 @@ const refreshToken = async (req, res, next) => {
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
     });
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
     });
     res.json({ accessToken: newAccessToken });
   } catch (error) {
@@ -223,7 +220,7 @@ const resetPassword = async (req, res) => {
 const getUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId).select(
+    let user = await User.findById(userId).select(
       "-password -__v -refreshTokens"
     );
     user = {
@@ -258,6 +255,52 @@ const getUsers = async (req, res, next) => {
       message: "Users fetched successfully",
       timestamp: new Date().toISOString(),
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateUser = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const { fullname, bio, image } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update fields
+    if (fullname !== undefined) user.fullname = fullname;
+    if (bio !== undefined) user.bio = bio;
+    if (image !== undefined) user.image = image;
+
+    await user.save();
+    const updatedUser = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      fullname: user.fullname,
+      bio: user.bio,
+      image: user.image,
+    };
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteUser = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     next(error);
   }
