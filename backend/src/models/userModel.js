@@ -39,12 +39,12 @@ const userSchema = new mongoose.Schema(
       maxlength: 330,
       validate: {
         validator: function (v) {
-          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(v);
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/i.test(v);
         },
         message: (props) =>
           `Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number!`,
       },
-      select: false,
+      select: false, // Exclude password from queries by default
     },
     fullname: {
       type: String,
@@ -64,17 +64,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    otp: {
-      type: String,
-    },
-    otpExpires: {
-      type: Date,
-    },
     resetPasswordToken: {
       type: String,
     },
-    resetPasswordTokenExpires: {
-      type: Date,
+    isResetPasswordTokenExpired: {
+      type: Boolean,
+      default: false,
     },
     refreshTokens: [
       { token: { type: String }, createdAt: { type: Date, default: Date.now } },
@@ -93,6 +88,8 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
+  console.log("Entered Password:", enteredPassword);
+  console.log("Stored Password:", this);
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
