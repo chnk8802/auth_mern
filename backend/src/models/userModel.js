@@ -1,22 +1,15 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { generateModuleId } from "../utils/generateModuleId.js";
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
+    usercode: {
       type: String,
       trim: true,
-      required: true,
-      lowercase: true,
       unique: true,
       minlength: 3,
       maxlength: 30,
-      validate: {
-        validator: function (v) {
-          return /^[a-zA-Z0-9_]+$/.test(v);
-        },
-        message: (props) => `${props.value} is not a valid username!`,
-      },
     },
     email: {
       type: String,
@@ -29,6 +22,16 @@ const userSchema = new mongoose.Schema(
           return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
         },
         message: (props) => `${props.value} is not a valid email address!`,
+      },
+    },
+    phone: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return /^(\+91[\-\s]?)?[0-9]{10}$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid phone number!`,
       },
     },
     password: {
@@ -48,21 +51,91 @@ const userSchema = new mongoose.Schema(
     },
     fullname: {
       type: String,
+      trim: true,
     },
     bio: {
       type: String,
+      trim: true,
+      maxlength: 500, // Limit bio length to 500 characters
     },
     image: {
       type: String,
+      trim: true,
+    },
+    address: {
+      addressLine1: {
+        type: String,
+        trim: true,
+      },
+      addressLine2: {
+        type: String,
+        trim: true,
+      },
+      city: {
+        type: String,
+        trim: true,
+      },
+      state: {
+        type: String,
+        enum: [
+          // States
+          "Andhra Pradesh",
+          "Arunachal Pradesh",
+          "Assam",
+          "Bihar",
+          "Chhattisgarh",
+          "Goa",
+          "Gujarat",
+          "Haryana",
+          "Himachal Pradesh",
+          "Jharkhand",
+          "Karnataka",
+          "Kerala",
+          "Madhya Pradesh",
+          "Maharashtra",
+          "Manipur",
+          "Meghalaya",
+          "Mizoram",
+          "Nagaland",
+          "Odisha",
+          "Punjab",
+          "Rajasthan",
+          "Sikkim",
+          "Tamil Nadu",
+          "Telangana",
+          "Tripura",
+          "Uttar Pradesh",
+          "Uttarakhand",
+          "West Bengal",
+
+          // Union Territories
+          "Andaman and Nicobar Islands",
+          "Chandigarh",
+          "Dadra and Nagar Haveli and Daman and Diu",
+          "Delhi",
+          "Jammu and Kashmir",
+          "Ladakh",
+          "Lakshadweep",
+          "Puducherry",
+        ],
+        default: "Uttar Pradesh",
+        required: true,
+        trim: true,
+      },
+      zip: {
+        type: String,
+        trim: true,
+      },
+      country: {
+        type: String,
+        enum: ["India"],
+        default: "India",
+      },
     },
     role: {
       type: String,
-      enum: ["admin", "manager", "technicinian", "user"],
+      enum: ["admin", "manager", "technician", "user", "customer", "guest"],
       default: "user",
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
     },
     resetPasswordToken: {
       type: String,
@@ -81,10 +154,28 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  try {
+    if (this.isModified("password")) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    }
+    // Generate usercode if not provided
+    if (this.isNew && !this.usercode) {
+       const prefixMap = {
+        admin: "ADM",
+        manager: "MGR",
+        technician: "TECH",
+        user: "USR",
+        customer: "CUST",
+        guest: "GST",
+      };
+      const prefix = prefixMap[this.role] || "USR";
+      this.usercode = await generateModuleId("user", prefix);
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {

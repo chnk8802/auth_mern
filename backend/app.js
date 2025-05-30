@@ -8,7 +8,6 @@ import connectDB from "./src/config/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import customerRoutes from "./src/routes/customerRoutes.js";
-import addressRoutes from "./src/routes/addressRoutes.js"
 import { notFound } from "./src/middlewares/routeNotFound.js";
 import {errorHandler } from "./src/middlewares/errorHandler.js";
 
@@ -41,7 +40,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/customers", customerRoutes);
-app.use("/api/addresses", addressRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

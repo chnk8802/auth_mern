@@ -7,14 +7,49 @@ const getUsers = async (req, res, next) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const totalRecords = await User.countDocuments({});
     const users = await User.find({})
-      .select("_id username fullname email bio createdAt")
+      .select("_id usercode fullname email bio image address role createdAt updatedAt")
       .limit(pageSize)
       .skip(page * pageSize);
     if (!users) {
-      throw next(new Error("No users Found!"));
+      res.status(404);
+      throw next(new Error("Invalid Operation: No users Found!"));
     }
     // Format the response using the utility function
-    sendFormattedResponse(res, users, "Users fetched successfully", totalRecords);
+    sendFormattedResponse(
+      res,
+      users,
+      "Users fetched successfully",
+      totalRecords
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    let user = await User.findById(userId).select(
+      "-password -__v -refreshTokens"
+    );
+    user = {
+      _id: user._id,
+      usercode: user.usercode,
+      email: user.email,
+      fullname: user.fullname,
+      bio: user.bio,
+      image: user.image,
+      address: user.address,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+    if (!user) {
+      res.status(404);
+      throw new Error("Invalid Operation: User not found");
+    }
+
+    sendFormattedResponse(res, user, "User fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -28,15 +63,21 @@ const getUser = async (req, res, next) => {
     );
     user = {
       _id: user._id,
-      username: user.username,
+      usercode: user.usercode,
       email: user.email,
       fullname: user.fullname,
       bio: user.bio,
       image: user.image,
+      address: user.address,
+      role: user.role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
-    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (!user) {
+      res.status(404);
+      throw new Error("Invalid Operation: User not found");
+    }
     sendFormattedResponse(res, user, "User fetched successfully");
   } catch (error) {
     next(error);
@@ -46,30 +87,45 @@ const getUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const { fullname, bio, image } = req.body;
+    const { fullname, bio, image, address, role } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      res.status(404);
+      throw new Error("Invalid Operation: User not found");
     }
 
     // Update fields
     if (fullname !== undefined) user.fullname = fullname;
     if (bio !== undefined) user.bio = bio;
     if (image !== undefined) user.image = image;
+    if (role !== undefined) user.role = role;
+
+    if (address !== undefined) {
+      const addressFields = Object.keys(user.address);
+      addressFields.forEach((field) => {
+        if (address.hasOwnProperty(field)) {
+          if (address[field] !== user.address?.[field]) {
+            user.address[field] = address[field];
+          }
+        }
+      });
+    }
 
     await user.save();
     const updatedUser = {
       _id: user._id,
-      username: user.username,
+      usercode: user.usercode,
       email: user.email,
       fullname: user.fullname,
       bio: user.bio,
       image: user.image,
+      address: user.address,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
-    res
-      .status(200)
-      .json({ message: "User updated successfully", user: updatedUser });
+    sendFormattedResponse(res, updatedUser, "User updated successfully");
   } catch (error) {
     next(error);
   }
@@ -78,12 +134,18 @@ const updateUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const user = await User.findByIdAndDelete(userId);
+    let user = await User.findByIdAndDelete(userId);
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      res.status(404);
+      throw new Error("Invalid Operation: User not found");
     }
-    res.status(200).json({ message: "User deleted successfully" });
+
+    user = {
+      _id: user._id,
+      usercode: user.usercode,
+    };
+    sendFormattedResponse(res, user, "User deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -91,6 +153,7 @@ const deleteUser = async (req, res, next) => {
 
 export default {
   getUser,
+  getCurrentUser,
   getUsers,
   updateUser,
   deleteUser,

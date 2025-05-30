@@ -8,56 +8,41 @@ import {
 import { sendFormattedResponse } from "../utils/responseFormatter.js";
 import sendResetPasswordEmail from "../utils/email.js";
 
+
 const register = async (req, res, next) => {
   try {
-    const { username, email, password, role, fullname, bio } = req.body;
+    const { email, password, fullname, role } = req.body;
 
-    if (!username || !email || !password) {
+    if (!email || !password || !role) {
       res.status(400);
       throw new Error("Missing mandatory fields");
     }
 
-    const regex = /^[a-z0-9]+$/;
-    if (!regex.test(username)) {
-      res.status(400);
-      throw new Error(
-        "Username should only contain lowercase alphabets and numbers"
-      );
-    }
-
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       res.status(400);
-      let errorMessage;
-      if (existingUser.username === username && existingUser.email === email) {
-        errorMessage = "Username and email already exist";
-      } else if (existingUser.username === username) {
-        errorMessage = "Username already exists";
-      } else {
-        errorMessage = "Email already exists";
-      }
-      throw new Error(errorMessage);
+      throw new Error("User already exists");
     }
 
     let newUser = new User({
-      username,
-      fullname,
       email,
       password,
-      bio,
       role,
     });
 
     await newUser.save();
-
     newUser = {
       _id: newUser._id,
-      username: newUser.username,
+      usercode: newUser.usercode,
       email: newUser.email,
       fullname: newUser.fullname,
       bio: newUser.bio,
+      image: newUser.image,
+      address: newUser.address,
       role: newUser.role,
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt,
     };
     sendFormattedResponse(res, newUser, "User registered successfully");
   } catch (error) {
@@ -94,16 +79,22 @@ const refreshToken = async (req, res, next) => {
 
     user.refreshTokens.push({ token: newRefreshToken });
     await user.save();
+    const isProd = process.env.NODE_ENV === "production";
 
+    res.status(200);
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: isProd,
     });
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: isProd,
     });
-    res.json({ accessToken: newAccessToken });
+    sendFormattedResponse(
+      res,
+      { accessToken: newAccessToken },
+      "Tokens refreshed successfully"
+    );
   } catch (error) {
     next(error);
   }
@@ -130,19 +121,24 @@ const login = async (req, res, next) => {
     const refreshToken = generateRefreshToken(user._id);
 
     user.refreshTokens.push({ token: refreshToken });
+
     await user.save();
     user = {
       _id: user._id,
-      username: user.username,
+      usercode: user.usercode,
       email: user.email,
     };
     const isProd = process.env.NODE_ENV === "production";
 
+    res.status(200);
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
     });
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: isProd });
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: isProd,
+    });
     sendFormattedResponse(res, user, "Login successful");
   } catch (error) {
     next(error);
@@ -170,6 +166,8 @@ const logout = async (req, res, next) => {
     await user.save();
 
     res.clearCookie("refreshToken");
+    res.clearCookie("accessToken");
+    res.status(200);
     sendFormattedResponse(res, null, "Logout successful");
   } catch (error) {
     next(error);
@@ -256,8 +254,7 @@ const resetPassword = async (req, res, next) => {
 
     user.password = newPassword;
     await user.save();
-
-    res.status(200).json({ message: "Password reset successfully" });
+    sendFormattedResponse(res, null, "Password reset successfully");
   } catch (error) {
     next(error);
   }
