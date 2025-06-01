@@ -60,7 +60,7 @@ const refreshToken = async (req, res, next) => {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decoded.userId);
     if (!user) {
-      res.status(403);
+      res.status(404);
       throw new Error("User not found");
     }
 
@@ -90,11 +90,7 @@ const refreshToken = async (req, res, next) => {
       httpOnly: true,
       secure: isProd,
     });
-    sendFormattedResponse(
-      res,
-      { accessToken: newAccessToken },
-      "Tokens refreshed successfully"
-    );
+    sendFormattedResponse(res, null, "Tokens refreshed successfully");
   } catch (error) {
     next(error);
   }

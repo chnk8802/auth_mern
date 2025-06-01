@@ -10,6 +10,7 @@ const getUsers = async (req, res, next) => {
       .select("_id usercode fullname email bio image address role createdAt updatedAt")
       .limit(pageSize)
       .skip(page * pageSize);
+
     if (!users) {
       res.status(404);
       throw next(new Error("Invalid Operation: No users Found!"));

@@ -38,6 +38,7 @@ const getAuthUrl = () => {
   return authUrl;
 };
 
+// console.log("Google OAuth URL: ", getAuthUrl());
 /* 
 Example usage:
 console.log("Google OAuth URL: ", getAuthUrl());
@@ -46,8 +47,7 @@ Visit the logged URL to get your authorization code.
 
 // Hardcoded authorization code obtained after visiting the auth URL
 // Replace this with your actual authorization code before running getTokens()
-const AUTHORIZATION_CODE =
-  "4/0AUJR-x6eXncvoW2vsnCPPA99N3PoAL4_XWuxWMUzlLNsZKYMgmVB-lsg7lCtzYzbS_g5lA";
+const AUTHORIZATION_CODE ="4/0AUJR-x6VwuQC96cLqNuoqwJhNJP5OcjQSv53bzaqHiamOkDZbMFQ__M6S-Jf-FLrtTv9_w";
 
 /**
  * Exchanges the authorization code for access and refresh tokens.

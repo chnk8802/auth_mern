@@ -5,9 +5,11 @@ import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
+
 import authRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
-import customerRoutes from "./src/routes/customerRoutes.js";
+import repairJobRoutes from "./src/routes/repairJobRoutes.js";
+
 import { notFound } from "./src/middlewares/routeNotFound.js";
 import {errorHandler } from "./src/middlewares/errorHandler.js";
 
@@ -30,17 +32,21 @@ app.use(
     credentials: true, // Allow sending cookies and other credentials
   })
 );
-
+// Middleware
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 
-
+// Define Routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/customers", customerRoutes);
+app.use("/api/repairjobs", repairJobRoutes);
+
+
+// Handle 404 Not Found
 app.use(notFound);
+// Handle Errors
 app.use(errorHandler);
 
 
