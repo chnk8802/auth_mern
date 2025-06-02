@@ -26,8 +26,8 @@ const RepairJobSchema = new mongoose.Schema({
 
     sparePartsUsed: [{
         sparePart: { type: mongoose.Schema.Types.ObjectId, ref: "SparePart", required: true },
-        sparePartUnitCost: { type: Number, required: true },
         sparePartShop: { type: mongoose.Schema.Types.ObjectId, ref: "Supplier", required: true },
+        sparePartUnitCost: { type: Number, required: true },
     }],
 
     totalSparePartsCost: { type: Number, default: 0 }, // This will be computed in pre-save hook

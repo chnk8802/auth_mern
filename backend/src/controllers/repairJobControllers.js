@@ -42,6 +42,7 @@ const createRepairJob = async (req, res, next) => {
         next(error);
     }
 }
+
 const getRepairJobs = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 0;
@@ -50,8 +51,8 @@ const getRepairJobs = async (req, res, next) => {
             .select("-__v -createdAt -updatedAt")
             .populate("customer", "fullname email phone")
             .populate("technician", "fullname email phone")
-            .populate("sparePartsUsed.sparePart", "name unitCost")
-            .populate("sparePartsUsed.sparePartShop", "name address phone")
+            // .populate("sparePartsUsed.sparePart", "name unitCost")
+            // .populate("sparePartsUsed.sparePartShop", "name address phone")
             .sort({ createdAt: -1 })
             // Pagination logic
             .skip(page * pageSize)
@@ -68,6 +69,7 @@ const getRepairJobs = async (req, res, next) => {
         next(error);
     }
 }
+
 const getRepairJob = async (req, res, next) => {
     try {
         const repairJobId = req.params.id;
@@ -93,6 +95,16 @@ const updateRepairJobstatus = async (req, res, next) => {
     try {
         const repairJobId = req.params.id;
         const { repairStatus } = req.body;
+        const repairJob = await RepairJob.findById({ _id: repairJobId });
+        if (!repairJob) {
+            res.status(404);
+            throw new Error("Repair job not found");
+        }
+        
+        if (repairJob.repairStatus === repairStatus) {
+            res.status(400);
+            throw new Error("Repair job status is already set to the requested status");
+        }
 
         if (!repairStatus) {
             res.status(400);
@@ -166,6 +178,6 @@ export default {
     getRepairJobs,
     getRepairJob,
     updateRepairJobstatus,
-    updateRepairJob,
+    updateRepairJob,    
     deleteRepairJob
 };

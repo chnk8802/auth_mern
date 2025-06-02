@@ -11,5 +11,4 @@ const SparePartSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const SparePart = mongoose.model('SparePart', SparePartSchema);
-
 export default SparePart;
