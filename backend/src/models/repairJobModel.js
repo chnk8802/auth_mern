@@ -1,13 +1,18 @@
 import mongoose from 'mongoose';
 import { generateModuleId } from '../utils/generateModuleId.js';
 
-const RepairJobSchema = new mongoose.Schema({
+const repairJobSchema = new mongoose.Schema({
     repairStatus: {
         type: String,
         enum: ['pending', 'in-progress', 'incomplete', 'complete', 'picked'],
         default: 'pending'
     },
-    repairJobCode: { type: String, unique: true },
+    repairJobCode: { 
+      type: String,
+      trim: true,
+      unique: true,
+      immutable: true
+    },
 
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     deviceModel: { type: String, required: true },
@@ -41,7 +46,7 @@ const RepairJobSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-RepairJobSchema.pre('save', async function (next) {
+repairJobSchema.pre('save', async function (next) {
     try {
         // Ensure repairJobCode is generated if not provided
         if (this.isNew && !this.repairJobCode) {
@@ -70,5 +75,5 @@ RepairJobSchema.pre('save', async function (next) {
         next(error);
     }
 });
-const RepairJob = mongoose.model('RepairJob', RepairJobSchema);
+const RepairJob = mongoose.model('RepairJob', repairJobSchema);
 export default RepairJob;

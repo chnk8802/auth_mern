@@ -1,15 +1,18 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
 
-const supplierSchema = new mongoose.Schema(
+const customerSchema = mongoose.Schema(
   {
-    supplierCode: {
+    customerCode: {
       type: String,
       trim: true,
       unique: true,
-      immutable: true,
+      immutable: true
     },
-    fullName: { type: String, required: true },
+    fullName: {
+      type: String,
+      trim: true,
+    },
     phone: {
       type: String,
       trim: true,
@@ -21,8 +24,15 @@ const supplierSchema = new mongoose.Schema(
       },
     },
     address: {
-      street: { type: String },
-      city: { type: String, required: true },
+      street: {
+        type: String,
+        trim: true,
+      },
+      city: {
+        type: String,
+        trim: true,
+        required: true,
+      },
       state: {
         type: String,
         enum: [
@@ -70,25 +80,39 @@ const supplierSchema = new mongoose.Schema(
         required: true,
         trim: true,
       },
-      zip: { type: String },
+      zip: {
+        type: String,
+        trim: true,
+        validate: {
+          validator: (v) => /^[1-9][0-9]{5}$/.test(v),
+          message: (props) => `${props.value} is not a valid Indian PIN code!`,
+        },
+      },
+      country: {
+        type: String,
+        enum: ["India"],
+        default: "India",
+      },
+    },
+    isBulkCustomer: {
+      type: Boolean,
     },
   },
   { timestamps: true }
 );
 
-// Pre-save hook to generate supplierCode if not provided
-supplierSchema.pre("save", async function (next) {
-  try {
-    if (this.isNew && !this.supplierCode) {
-      // Generate a unique supplier code, e.g., "SUP-001"
-      this.supplierCode = await generateModuleId("supplier", "SUP");
+customerSchema.pre("save", async function(next) {
+    try {
+        if (this.isNew && !this.customerCode) {
+            this.customerCode = await generateModuleId("customer", "CUS")
+        }
+        next()
+    } catch (error) {
+        next(error)
     }
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
 
-const Supplier = mongoose.model("Supplier", supplierSchema);
+})
 
-export default Supplier;
+const Customer = mongoose.model("Customer", customerSchema);
+
+export default Customer;

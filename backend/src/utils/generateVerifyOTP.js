@@ -11,7 +11,7 @@ export const generateOTP = (userId) => {
   const token = jwt.sign({ userId, otp }, process.env.JWT_SECRET, {
     expiresIn: "10m", // OTP valid for 10 minutes
   });
-
+  console.log(token.expiresIn);
   return { otp, token };
 };
 

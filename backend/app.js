@@ -8,6 +8,8 @@ import connectDB from "./src/config/db.js";
 
 import authRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
+import customerRoutes from "./src/routes/customerRoutes.js";
+// import technicianRoutes from "./src/routes/technicianRoutes.js"; // Uncomment if technician routes are needed
 import repairJobRoutes from "./src/routes/repairJobRoutes.js";
 
 import { notFound } from "./src/middlewares/routeNotFound.js";
@@ -39,8 +41,10 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 
 // Define Routes
-app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/customers", customerRoutes);
+// app.use("/api/technicians", technicianRoutes);
 app.use("/api/repairjobs", repairJobRoutes);
 
 

@@ -1,6 +1,13 @@
 import mongoose from 'mongoose';
+import { generateModuleId } from '../utils/generateModuleId.js';
 
-const SparePartSchema = new mongoose.Schema({
+const sparePartSchema = new mongoose.Schema({
+  partCode: {
+    type: String,
+    trim: true,
+    unique: true,
+    immutable: true, // Prevent changes to partCode after creation
+  },
   name: { type: String, required: true },          // e.g. "Screen"
   brand: { type: String },                         // e.g. "Samsung"
   partType: { type: String },                      // e.g. "Display", "Battery"
@@ -10,5 +17,17 @@ const SparePartSchema = new mongoose.Schema({
   supplier: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier' },
 }, { timestamps: true });
 
-const SparePart = mongoose.model('SparePart', SparePartSchema);
+// Pre-save hook to generate partCode if not provided
+sparePartSchema.pre('save', async function (next) {
+  try {
+    if (this.isNew && !this.partCode) {
+      this.partCode = await generateModuleId('sparePart', 'SP');
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+const SparePart = mongoose.model('SparePart', sparePartSchema);
 export default SparePart;

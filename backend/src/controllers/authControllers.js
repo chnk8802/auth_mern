@@ -17,6 +17,10 @@ const register = async (req, res, next) => {
       res.status(400);
       throw new Error("Missing mandatory fields");
     }
+    if (role !== "admin" && role !== "manager" && role !== "technician") {
+      res.status(400);
+      throw new Error("Invalid role specified");
+    }
 
     const existingUser = await User.findOne({ email });
 
@@ -34,11 +38,9 @@ const register = async (req, res, next) => {
     await newUser.save();
     newUser = {
       _id: newUser._id,
-      usercode: newUser.usercode,
+      userCode: newUser.userCode,
       email: newUser.email,
       fullname: newUser.fullname,
-      bio: newUser.bio,
-      image: newUser.image,
       address: newUser.address,
       role: newUser.role,
       createdAt: newUser.createdAt,
@@ -106,7 +108,10 @@ const login = async (req, res, next) => {
       res.status(404);
       throw new Error("User not Found");
     }
-
+    if (!user.password || user.role === "customer") {
+      res.status(403);
+      throw new Error("Customers cannot log in");
+    }
     const isPasswordValid = await user.matchPassword(password);
     if (!isPasswordValid) {
       res.status(401);
@@ -121,7 +126,7 @@ const login = async (req, res, next) => {
     await user.save();
     user = {
       _id: user._id,
-      usercode: user.usercode,
+      userCode: user.userCode,
       email: user.email,
     };
     const isProd = process.env.NODE_ENV === "production";
@@ -178,6 +183,11 @@ const forgotPassword = async (req, res, next) => {
     if (!user) {
       res.status(404);
       throw new Error("User not found");
+    }
+
+    if (user.role === "customer") {
+      res.status(403);
+      throw new Error("Customers cannot reset password");
     }
 
     const { otp, token } = generateOTP(user._id);

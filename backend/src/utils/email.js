@@ -59,12 +59,12 @@ async function sendResetPasswordEmail(email, otp) {
     const info = await transporter.sendMail(mailOptions);
 
     // Log and return success message id
-    console.log("Email sent: " + info.messageId);
+    // console.log("Email sent: " + info.messageId);
     return { success: info.messageId };
 
   } catch (error) {
     // Log any error during the process and return a user-friendly error message
-    console.error("Error sending email:", error);
+    // console.error("Error sending email:", error);
     return { error: "Failed to send email. Please try again later." };
   }
 }

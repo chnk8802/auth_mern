@@ -4,7 +4,7 @@ import { generateModuleId } from "../utils/generateModuleId.js";
 
 const userSchema = new mongoose.Schema(
   {
-    usercode: {
+    userCode: {
       type: String,
       trim: true,
       unique: true,
@@ -14,7 +14,9 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       trim: true,
-      required: true,
+      required: function () {
+        return this.role !== "customer"; // Email required unless role is customer
+      },
       unique: true,
       lowercase: true,
       validate: {
@@ -37,7 +39,9 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       trim: true,
-      required: true,
+      required: function () {
+        return this.role !== "customer"; // Only require password if role is customer
+      },
       minlength: 8,
       maxlength: 330,
       validate: {
@@ -49,25 +53,12 @@ const userSchema = new mongoose.Schema(
       },
       select: false, // Exclude password from queries by default
     },
-    fullname: {
-      type: String,
-      trim: true,
-    },
-    bio: {
-      type: String,
-      trim: true,
-      maxlength: 500, // Limit bio length to 500 characters
-    },
-    image: {
+    fullName: {
       type: String,
       trim: true,
     },
     address: {
-      addressLine1: {
-        type: String,
-        trim: true,
-      },
-      addressLine2: {
+      street: {
         type: String,
         trim: true,
       },
@@ -125,6 +116,10 @@ const userSchema = new mongoose.Schema(
       zip: {
         type: String,
         trim: true,
+        validate: {
+          validator: (v) => /^[1-9][0-9]{5}$/.test(v),
+          message: (props) => `${props.value} is not a valid Indian PIN code!`,
+        },
       },
       country: {
         type: String,
@@ -139,6 +134,9 @@ const userSchema = new mongoose.Schema(
     },
     resetPasswordToken: {
       type: String,
+    },
+    resetPasswordExpiresAt: {
+      type: Date,
     },
     isResetPasswordTokenExpired: {
       type: Boolean,
@@ -156,21 +154,19 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", async function (next) {
   try {
     if (this.isModified("password")) {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
     }
-    // Generate usercode if not provided
-    if (this.isNew && !this.usercode) {
-       const prefixMap = {
+    // Generate userCode if not provided
+    if (this.isNew && !this.userCode) {
+      const prefixMap = {
         admin: "ADM",
         manager: "MGR",
         technician: "TECH",
         user: "USR",
-        customer: "CUST",
-        guest: "GST",
       };
       const prefix = prefixMap[this.role] || "USR";
-      this.usercode = await generateModuleId("user", prefix);
+      this.userCode = await generateModuleId("user", prefix);
     }
     next();
   } catch (error) {
@@ -179,8 +175,6 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  console.log("Entered Password:", enteredPassword);
-  console.log("Stored Password:", this);
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

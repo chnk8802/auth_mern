@@ -57,15 +57,15 @@ const AUTHORIZATION_CODE ="4/0AUJR-x6VwuQC96cLqNuoqwJhNJP5OcjQSv53bzaqHiamOkDZbM
 async function getTokens() {
   try {
     const { tokens } = await oAuth2Client.getToken(AUTHORIZATION_CODE);
-    console.log({
-      accessToken: tokens.access_token,
-      refreshToken: tokens.refresh_token,
-    });
+    // console.log({
+    //   accessToken: tokens.access_token,
+    //   refreshToken: tokens.refresh_token,
+    // });
 
     // Set the credentials on the client for subsequent API calls if needed
     oAuth2Client.setCredentials(tokens);
   } catch (error) {
-    console.error("Error exchanging authorization code for token: ", error);
+    // console.error("Error exchanging authorization code for token: ", error);
   }
 }
 
