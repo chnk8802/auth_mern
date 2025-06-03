@@ -1,15 +1,15 @@
 import express from 'express'
-import authControllers from '../controllers/authControllers.js'
+import authController from '../controllers/authController.js'
 import auth from '../middlewares/authMiddleware.js'
 
 const router = express.Router()
 
-router.post('/register', authControllers.register)
-router.post('/refresh-token', authControllers.refreshToken)
-router.post('/login', authControllers.login)
-router.post('/logout', auth, authControllers.logout)
-router.post('/forgot-password', authControllers.forgotPassword)
-router.post('/enter-otp', authControllers.enterOtp)
-router.post('/reset-password', authControllers.resetPassword)
+router.post('/register', authController.register)
+router.post('/refresh-token', authController.refreshToken)
+router.post('/login', authController.login)
+router.post('/logout', auth, authController.logout)
+router.post('/forgot-password', authController.forgotPassword)
+router.post('/enter-otp', authController.enterOtp)
+router.post('/reset-password', authController.resetPassword)
 
 export default router

@@ -25,6 +25,7 @@ const createCustomer = async (req, res, next) => {
     next(error);
   }
 }
+
  const getCustomers = async (req, res, next) => {
   try {
     const { page = 1, pageSize = 10 } = req.query;

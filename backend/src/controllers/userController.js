@@ -81,6 +81,19 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const updateUsers = async (req, res, next) => {
+  try {
+    const data = req.body;
+    console.log(data);
+    if (!data || typeof data !== "object" || data == null) {
+      console.log("DASDAS");
+    }
+    sendFormattedResponse(res, null, "Users Updated Successfully")
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
@@ -148,6 +161,7 @@ export default {
   getUser,
   getCurrentUser,
   getUsers,
+  updateUsers,
   updateUser,
   deleteUser,
 };

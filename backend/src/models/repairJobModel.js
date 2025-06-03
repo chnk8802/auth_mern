@@ -14,7 +14,7 @@ const repairJobSchema = new mongoose.Schema({
       immutable: true
     },
 
-    customer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
     deviceModel: { type: String, required: true },
     deviceImei: { type: String },
     issueDescription: { type: String, required: true },
