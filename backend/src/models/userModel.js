@@ -14,9 +14,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       trim: true,
-      required: function () {
-        return this.role !== "customer"; // Email required unless role is customer
-      },
+      required: true,
       unique: true,
       lowercase: true,
       validate: {
@@ -39,9 +37,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       trim: true,
-      required: function () {
-        return this.role !== "customer"; // Only require password if role is customer
-      },
+      required: true,
       minlength: 8,
       maxlength: 330,
       validate: {
@@ -51,7 +47,7 @@ const userSchema = new mongoose.Schema(
         message: (props) =>
           `Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number!`,
       },
-      select: false, // Exclude password from queries by default
+      select: false,
     },
     fullName: {
       type: String,

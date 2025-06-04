@@ -57,15 +57,22 @@ const createRepairJob = async (req, res, next) => {
 
 const getRepairJobs = async (req, res, next) => {
   try {
-    const page = parseInt(req.query.page) || 0;
-    const pageSize = parseInt(req.query.pageSize) || 10;
+    const { page, pageSize } = req.query;
+    if (pageSize > 200) {
+      res.status(400);
+      throw new Error("Page size must not exceed 200");
+    }
+    const paginationOptions = {
+      page: parseInt(page) || 1,
+      limit: parseInt(pageSize) || 10,
+      sort: { createdAt: -1 } // Sort by creation date, newest first
+    };
     const repairJobs = await RepairJob.find({})
       .select("-__v -createdAt -updatedAt")
       .populate("customer", "customerCode fullname email phone")
-      .sort({ createdAt: -1 })
-      // Pagination logic
-      .skip(page * pageSize)
-      .limit(pageSize);
+      .sort(paginationOptions.sort)
+      .skip((paginationOptions.page - 1) * paginationOptions.limit)
+      .limit(paginationOptions.limit);
     if (!repairJobs || repairJobs.length === 0) {
       res.status(404);
       throw new Error("No repair jobs found");
@@ -77,7 +84,11 @@ const getRepairJobs = async (req, res, next) => {
       res,
       repairJobs,
       "Repair jobs retrieved successfully",
-      totalRecords
+      {
+        page: paginationOptions.page,
+        pageSize: paginationOptions.limit,
+        total: totalRecords
+      }
     );
   } catch (error) {
     next(error);

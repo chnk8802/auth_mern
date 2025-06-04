@@ -11,6 +11,8 @@ import userRoutes from "./src/routes/userRoutes.js";
 import customerRoutes from "./src/routes/customerRoutes.js";
 // import technicianRoutes from "./src/routes/technicianRoutes.js"; // Uncomment if technician routes are needed
 import repairJobRoutes from "./src/routes/repairJobRoutes.js";
+import sparePartRoutes from "./src/routes/sparePartRoutes.js";
+import supplierRoutes from "./src/routes/supplierRoutes.js";
 
 import { notFound } from "./src/middlewares/routeNotFound.js";
 import {errorHandler } from "./src/middlewares/errorHandler.js";
@@ -46,7 +48,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/customers", customerRoutes);
 // app.use("/api/technicians", technicianRoutes);
 app.use("/api/repairjobs", repairJobRoutes);
-
+app.use("/api/spareparts", sparePartRoutes);
+app.use("/api/suppliers", supplierRoutes);
 
 // Handle 404 Not Found
 app.use(notFound);

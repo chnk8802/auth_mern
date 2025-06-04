@@ -8,12 +8,16 @@ const sparePartSchema = new mongoose.Schema({
     unique: true,
     immutable: true, // Prevent changes to partCode after creation
   },
-  name: { type: String, required: true },          // e.g. "Screen"
-  brand: { type: String },                         // e.g. "Samsung"
-  partType: { type: String },                      // e.g. "Display", "Battery"
-  costPrice: { type: Number, required: true },
-  sellPrice: { type: Number },
-  stockQty: { type: Number, default: 0 },
+  brand: { type: String, required: true },        // e.g. "Samsung"
+  model: { type: String, required: true },       // e.g. "Galaxy S21"
+  name: { type: String, required: true },       // e.g. "Screen"
+  partType: { 
+    type: String,
+    trim: true,
+    enum: ['Display', 'Battery', 'Processor', 'Camera', 'Storage', 'Other']
+  },
+  costPrice: { type: mongoose.Schema.Types.Decimal128, required: true },
+  stockQty: { type: Number, default: 0 }, // Default to 0 if not specified
   supplier: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier' },
 }, { timestamps: true });
 

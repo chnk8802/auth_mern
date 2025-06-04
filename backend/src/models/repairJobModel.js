@@ -32,14 +32,14 @@ const repairJobSchema = new mongoose.Schema({
     sparePartsUsed: [{
         sparePart: { type: mongoose.Schema.Types.ObjectId, ref: "SparePart", required: true },
         sparePartShop: { type: mongoose.Schema.Types.ObjectId, ref: "Supplier", required: true },
-        sparePartUnitCost: { type: Number, required: true },
+        sparePartUnitCost: { type: mongoose.Schema.Types.Decimal128, required: true },
     }],
 
-    totalSparePartsCost: { type: Number, default: 0 }, // This will be computed in pre-save hook
-    repairCost: { type: Number, required: true }, // This is the cost of the repair service itself
-    totalCost: { type: Number }, // This should be the sum of repairCost and totalSparePartsCost
-    discount: { type: Number, default: 0 }, // This is the discount applied to the total cost
-    finalCost: { type: Number }, // This should be totalCost - discount
+    totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This will be computed in pre-save hook
+    repairCost: { type: mongoose.Schema.Types.Decimal128, required: true }, // This is the cost of the repair service itself
+    totalCost: { type: mongoose.Schema.Types.Decimal128 }, // This should be the sum of repairCost and totalSparePartsCost
+    discount: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This is the discount applied to the total cost
+    finalCost: { type: mongoose.Schema.Types.Decimal128 }, // This should be totalCost - discount
 
     notes: { type: String },
     pickedAt: { type: Date },

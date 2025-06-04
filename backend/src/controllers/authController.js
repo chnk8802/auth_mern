@@ -8,7 +8,6 @@ import {
 import { sendFormattedResponse } from "../utils/responseFormatter.js";
 import sendResetPasswordEmail from "../utils/email.js";
 
-
 const register = async (req, res, next) => {
   try {
     const { email, password, fullname, role } = req.body;
@@ -53,12 +52,12 @@ const register = async (req, res, next) => {
 };
 
 const refreshToken = async (req, res, next) => {
-  const { refreshToken } = req.cookies;
-  if (!refreshToken) {
-    res.status(400);
-    throw new Error("Refresh token not provided");
-  }
   try {
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) {
+      res.status(400);
+      throw new Error("Refresh token not provided");
+    }
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decoded.userId);
     if (!user) {
@@ -185,11 +184,6 @@ const forgotPassword = async (req, res, next) => {
       throw new Error("User not found");
     }
 
-    if (user.role === "customer") {
-      res.status(403);
-      throw new Error("Customers cannot reset password");
-    }
-
     const { otp, token } = generateOTP(user._id);
     if (!otp) {
       res.status(500);
@@ -215,7 +209,7 @@ const enterOtp = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
 
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email }).select("+password resetPasswordToken isResetPasswordTokenExpired");
     if (!user) {
       res.status(404);
       throw new Error("User not found");
@@ -251,7 +245,7 @@ const resetPassword = async (req, res, next) => {
   try {
     const { userId, newPassword } = req.body;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("+password");
 
     if (!user) {
       res.status(404);

@@ -1,4 +1,5 @@
 import Customer from "../models/customerModel.js";
+import flattenObject from "../utils/flattenObject.js";
 import { sendFormattedResponse } from "../utils/responseFormatter.js";
 
 const createCustomer = async (req, res, next) => {
@@ -28,17 +29,31 @@ const createCustomer = async (req, res, next) => {
 
  const getCustomers = async (req, res, next) => {
   try {
-    const { page = 1, pageSize = 10 } = req.query;
+    const { page, pageSize} = req.query;
+    if (pageSize > 200) {
+      res.status(400);
+      throw new Error("Page size must not exceed 200");
+    }
+    const paginationOptions = {
+      page: parseInt(page) || 1,
+      limit: parseInt(pageSize) || 10,
+      sort: { createdAt: -1 } // Sort by creation date, newest first
+    };
     const customers = await Customer.find()
-      .select("-__v")
-      .skip((page - 1) * pageSize)
-      .limit(pageSize);
+      .select("_id customerCode fullName phone address isBulkCustomer createdAt updatedAt")
+      .sort(paginationOptions.sort)
+      .skip((paginationOptions.page - 1) * paginationOptions.limit)
+      .limit(paginationOptions.limit);
     if (!customers || customers.length === 0) {
       res.status(404);
       throw new Error("No customers found");
     }
     const totalRecords = await Customer.countDocuments({});
-    sendFormattedResponse(res, customers, "Customers fetched successfully", totalRecords);
+    sendFormattedResponse(res, customers, "Customers fetched successfully", {
+      page: paginationOptions.page,
+      pageSize: paginationOptions.limit,
+      total: totalRecords
+    });
   } catch (error) {
     next(error);
   }
@@ -133,10 +148,60 @@ const deleteCustomer = async (req, res, next) => {
   }
 };
 
+const duplicateCustomers = async (req, res, next) => {
+  try {
+    const {_ids} = req.body;
+    if (!Array.isArray(_ids) || _ids.length === 0) {
+      res.status(400);
+      throw new Error("Customer IDs array is required");
+    }
+
+    const customers = await Customer.find({ _id: { $in: _ids } }).select("-__v");
+    if (!customers || customers.length === 0) {
+      res.status(404);
+      throw new Error("Customer not found");
+    }
+    const duplicationPromises = customers.map(async (customer) => {
+      const newCustomer = new Customer({
+        fullName: customer.fullName,
+        phone: customer.phone,
+        address: customer.address,
+        isBulkCustomer: customer.isBulkCustomer,
+      });
+
+      let savedCustomer = await newCustomer.save();
+      if (!savedCustomer) {
+        res.status(400);
+        throw new Error("Customer duplication failed");
+      }
+      
+      return savedCustomer;
+    });
+
+    const duplicatedCustomers = await Promise.all(duplicationPromises);
+    duplicatedCustomers.forEach((customer, index) => {
+      duplicatedCustomers[index] = {
+        _id: customer._id,
+        customerCode: customer.customerCode,
+        fullName: customer.fullName,
+        phone: customer.phone,
+        address: flattenObject(customer.address),
+        isBulkCustomer: customer.isBulkCustomer,
+        createdAt: customer.createdAt,
+        updatedAt: customer.updatedAt,
+      };
+    });
+    sendFormattedResponse(res, duplicatedCustomers, "Customers duplicated successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   createCustomer,
   getCustomers,
   getCustomer,
   updateCustomer,
   deleteCustomer,
+  duplicateCustomers,
 };
