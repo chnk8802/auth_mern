@@ -7,7 +7,7 @@ const getUsers = async (req, res, next) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const totalRecords = await User.countDocuments({});
     const users = await User.find({})
-      .select("_id userCode fullname email address role createdAt updatedAt")
+      .select("_id userCode fullName email address role createdAt updatedAt")
       .limit(pageSize)
       .skip(page * pageSize);
 
@@ -84,11 +84,42 @@ const getUser = async (req, res, next) => {
 const updateUsers = async (req, res, next) => {
   try {
     const data = req.body;
-    console.log(data);
-    if (!data || typeof data !== "object" || data == null) {
-      console.log("DASDAS");
+    const MAX_BATCH_SIZE = 100;
+    if (Object.keys(data).length === 0) {
+      res.status(400);
+      throw new Error("No data provided for update");
     }
-    sendFormattedResponse(res, null, "Users Updated Successfully")
+
+    if (!Array.isArray(data) || data.length === 0) {
+      res.status(400);
+      throw new Error("Invalid data format. Expected an array of users.");
+    }
+
+    if (data.length > MAX_BATCH_SIZE) {
+      res.status(413); // Payload Too Large
+      throw new Error(`Maximum batch size exceeded. Limit is ${MAX_BATCH_SIZE} users.`);
+    }
+    const updateResults = await Promise.all(
+      data.map(async (userData) => {
+        Object.keys(userData).forEach((key) => {
+          if (userData[key] === undefined) {
+            delete userData[key];
+          }
+        });
+        return User.updateOne({ _id: userData._id }, { $set: userData });
+      })
+    );
+
+    console.log("updateUsers", updateResults);
+    if (updateResults.modifiedCount === 0) {
+      res.status(404);
+      throw new Error("No users found to update");
+    }
+    const updatedCount = updateResults.reduce(
+      (count, result) => count + (result.modifiedCount || 0),
+      0
+    );
+    sendFormattedResponse(res, updateResults, "Users Updated Successfully", updatedCount);
   } catch (error) {
     next(error);
   }
