@@ -35,19 +35,20 @@ const register = async (req, res, next) => {
     });
 
     await newUser.save();
+
+    if (!newUser) {
+      res.status(500);
+      throw new Error("Failed to create user");
+    }
     newUser = {
       _id: newUser._id,
       userCode: newUser.userCode,
       email: newUser.email,
-      fullname: newUser.fullname,
-      address: newUser.address,
       role: newUser.role,
-      createdAt: newUser.createdAt,
-      updatedAt: newUser.updatedAt,
     };
     sendFormattedResponse(res, newUser, "User registered successfully");
   } catch (error) {
-    next(error); // Forward error to centralized handler
+    next(error);
   }
 };
 
@@ -58,8 +59,14 @@ const refreshToken = async (req, res, next) => {
       res.status(400);
       throw new Error("Refresh token not provided");
     }
+
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    const user = await User.findById(decoded.userId);
+    if (!decoded) {
+      res.status(403);
+      throw new Error("Invalid refresh token");
+    }
+
+    const user = await User.findById(decoded.userId).select("+refreshTokens");
     if (!user) {
       res.status(404);
       throw new Error("User not found");
@@ -100,17 +107,18 @@ const refreshToken = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    if (!email || !password) {
+      res.status(400);
+      throw new Error("Email and password are required");
+    }
 
-    let user = await User.findOne({ email }).select("+password");
+    let user = await User.findOne({ email }).select("+password +refreshTokens");
 
     if (!user) {
       res.status(404);
       throw new Error("User not Found");
     }
-    if (!user.password || user.role === "customer") {
-      res.status(403);
-      throw new Error("Customers cannot log in");
-    }
+
     const isPasswordValid = await user.matchPassword(password);
     if (!isPasswordValid) {
       res.status(401);
@@ -123,11 +131,19 @@ const login = async (req, res, next) => {
     user.refreshTokens.push({ token: refreshToken });
 
     await user.save();
+
+    if (!user) {
+      res.status(500);
+      throw new Error("Failed to login user");
+    }
+
     user = {
       _id: user._id,
       userCode: user.userCode,
       email: user.email,
+      role: user.role,
     };
+
     const isProd = process.env.NODE_ENV === "production";
 
     res.status(200);
@@ -146,15 +162,20 @@ const login = async (req, res, next) => {
 };
 
 const logout = async (req, res, next) => {
-  const { refreshToken } = req.cookies || req.body;
-  if (!refreshToken) {
-    res.status(204);
-    throw new Error("Refresh token not provided");
-  }
-
   try {
+    const { refreshToken } = req.cookies || req.body;
+    if (!refreshToken) {
+      res.status(204);
+      throw new Error("Refresh token not provided");
+    }
+    
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    const user = await User.findById(decoded.id);
+    
+    if (!decoded || !decoded.userId) {
+      res.status(403);
+      throw new Error("Invalid refresh token");
+    }
+    const user = await User.findById(decoded.userId).select("+refreshTokens");
     if (!user) {
       res.status(403);
       throw new Error("User not found");
@@ -177,8 +198,13 @@ const logout = async (req, res, next) => {
 const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
-
+    if (!email) {
+      res.status(400);
+      throw new Error("Email is required");
+    }
+    const user = await User.findOne({ email }).select(
+      "+resetPasswordToken isResetPasswordTokenExpired"
+    );
     if (!user) {
       res.status(404);
       throw new Error("User not found");
@@ -192,11 +218,15 @@ const forgotPassword = async (req, res, next) => {
     user.isResetPasswordTokenExpired = false; // Reset OTP expiration status
     user.resetPasswordToken = token;
     await user.save();
-
-    const emailResult = await sendResetPasswordEmail(user.email, otp);
-    if (!emailResult.success) {
+    if (!user) {
       res.status(500);
-      throw new Error("Failed to send email");
+      throw new Error("Could not send OTP to user");
+    }
+
+    const emailResult = await sendResetPasswordEmail(email, otp);
+    if (!emailResult.success && emailResult.error) {
+      res.status(500);
+      throw new Error(emailResult.error);
     }
 
     sendFormattedResponse(res, null, "OTP sent to mail." + otp);
@@ -208,8 +238,14 @@ const forgotPassword = async (req, res, next) => {
 const enterOtp = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
+    if (!email || !otp) {
+      res.status(400);
+      throw new Error("Email and OTP are required");
+    }
 
-    let user = await User.findOne({ email }).select("+password resetPasswordToken isResetPasswordTokenExpired");
+    let user = await User.findOne({ email }).select(
+      "+password resetPasswordToken isResetPasswordTokenExpired"
+    );
     if (!user) {
       res.status(404);
       throw new Error("User not found");
@@ -228,6 +264,10 @@ const enterOtp = async (req, res, next) => {
     user.isResetPasswordTokenExpired = true; // Mark OTP as used
     user.resetPasswordToken = null; // Clear the token
     await user.save();
+    if (!user) {
+      res.status(500);
+      throw new Error("Failed to verify OTP");
+    }
     user = {
       _id: user._id,
     };
@@ -244,6 +284,10 @@ const enterOtp = async (req, res, next) => {
 const resetPassword = async (req, res, next) => {
   try {
     const { userId, newPassword } = req.body;
+    if (!userId || !newPassword) {
+      res.status(400);
+      throw new Error("User ID and new password are required");
+    }
 
     const user = await User.findById(userId).select("+password");
 
@@ -254,7 +298,11 @@ const resetPassword = async (req, res, next) => {
 
     user.password = newPassword;
     await user.save();
-    sendFormattedResponse(res, null, "Password reset successfully");
+    if (!user) {
+      res.status(500);
+      throw new Error("Failed to reset password");
+    }
+    sendFormattedResponse(res, null, "Password reset successfully. Please login with your new password.");
   } catch (error) {
     next(error);
   }

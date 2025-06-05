@@ -29,7 +29,7 @@ const createCustomer = async (req, res, next) => {
 
  const getCustomers = async (req, res, next) => {
   try {
-    const { page, pageSize} = req.query;
+    const { page, pageSize } = req.query;
     if (pageSize > 200) {
       res.status(400);
       throw new Error("Page size must not exceed 200");
@@ -40,7 +40,6 @@ const createCustomer = async (req, res, next) => {
       sort: { createdAt: -1 } // Sort by creation date, newest first
     };
     const customers = await Customer.find()
-      .select("_id customerCode fullName phone address isBulkCustomer createdAt updatedAt")
       .sort(paginationOptions.sort)
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
@@ -66,7 +65,7 @@ const getCustomer = async (req, res, next) => {
       res.status(400);
       throw new Error("Customer ID is required");
     }
-    let customer = await Customer.findById(customerId).select("-__v");
+    let customer = await Customer.findById(customerId);
     if (!customer) {
       res.status(404);
       throw new Error("Customer not found");
@@ -103,7 +102,7 @@ const updateCustomer = async (req, res, next) => {
     const customer = await Customer.findByIdAndUpdate(customerId, updates, {
       new: true,
       runValidators: true,
-    }).select("-__v");
+    });
     if (!customer) {
       res.status(404);
       throw new Error("Customer not found");
@@ -156,7 +155,7 @@ const duplicateCustomers = async (req, res, next) => {
       throw new Error("Customer IDs array is required");
     }
 
-    const customers = await Customer.find({ _id: { $in: _ids } }).select("-__v");
+    const customers = await Customer.find({ _id: { $in: _ids } });
     if (!customers || customers.length === 0) {
       res.status(404);
       throw new Error("Customer not found");

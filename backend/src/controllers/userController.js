@@ -16,7 +16,6 @@ const getUsers = async (req, res, next) => {
     };
     
     const users = await User.find({})
-      .select("_id userCode fullName email address role createdAt updatedAt")
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
 
@@ -25,7 +24,7 @@ const getUsers = async (req, res, next) => {
       throw next(new Error("No users Found!"));
     }
     const totalRecords = await User.countDocuments({});
-    // Format the response using the utility function
+    
     sendFormattedResponse(
       res,
       users,
@@ -43,20 +42,13 @@ const getUsers = async (req, res, next) => {
 
 const getCurrentUser = async (req, res, next) => {
   try {
-    const userId = req.user._id;
-    let user = await User.findById(userId).select(
-      "-password -__v -refreshTokens"
-    );
-    user = {
-      _id: user._id,
-      userCode: user.userCode,
-      email: user.email,
-      fullName: user.fullName,
-      address: user.address,
-      role: user.role,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+    const loggedinUserId = req.user._id;
+    if (!loggedinUserId) {
+      res.status(400);
+      throw new Error("User ID is required");
+    }
+    let user = await User.findById(loggedinUserId);
+
     if (!user) {
       res.status(404);
       throw new Error("User not found");
@@ -71,24 +63,17 @@ const getCurrentUser = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    let user = await User.findById(userId).select(
-      "-password -__v -refreshTokens"
-    );
-    user = {
-      _id: user._id,
-      userCode: user.userCode,
-      email: user.email,
-      fullName: user.fullName,
-      address: user.address,
-      role: user.role,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
+    if (!userId) {
+      res.status(400);
+      throw new Error("User ID is required");
+    }
+    let user = await User.findById(userId);
 
     if (!user) {
       res.status(404);
       throw new Error("User not found");
     }
+
     sendFormattedResponse(res, user, "User fetched successfully");
   } catch (error) {
     next(error);
@@ -98,7 +83,12 @@ const getUser = async (req, res, next) => {
 const updateUsers = async (req, res, next) => {
   try {
     const { _ids, field } = req.body;
-    const MAX_BATCH_SIZE = 200;
+    const MAX_BATCH_SIZE = 5000;
+    
+    if (!Array.isArray(_ids) || _ids.length === 0) {
+      res.status(400);
+      throw new Error("Invalid data format. Expected an array of user IDs.");
+    }
 
     if (_ids.length > MAX_BATCH_SIZE) {
       res.status(413);
@@ -106,10 +96,7 @@ const updateUsers = async (req, res, next) => {
         `Maximum batch size exceeded. Limit is ${MAX_BATCH_SIZE} users.`
       );
     }
-    if (!Array.isArray(_ids) || _ids.length === 0) {
-      res.status(400);
-      throw new Error("Invalid data format. Expected an array of user IDs.");
-    }
+
     if (!field || typeof field !== "object") {
       res.status(400);
       throw new Error("Invalid update field format. Expected an object.");
@@ -128,7 +115,7 @@ const updateUsers = async (req, res, next) => {
     );
     if (updatedUsers.modifiedCount === 0) {
       res.status(404);
-      throw new Error("No users found to update");
+      throw new Error("No users updated");
     }
     sendFormattedResponse(res, updatedUsers, "Users Updated Successfully");
   } catch (error) {
@@ -138,7 +125,7 @@ const updateUsers = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params.id;    
     const {fullName, phone, address, role} = req.body;
     if (!userId) {
       res.status(400);
@@ -159,17 +146,6 @@ const updateUser = async (req, res, next) => {
       res.status(404);
       throw new Error("User not found");
     }
-
-    updatedUser = {
-      _id: updatedUser._id,
-      userCode: updatedUser.userCode,
-      email: updatedUser.email,
-      fullName: updatedUser.fullName,
-      address: updatedUser.address,
-      role: updatedUser.role,
-      createdAt: updatedUser.createdAt,
-      updatedAt: updatedUser.updatedAt,
-    };
     sendFormattedResponse(res, updatedUser, "User updated successfully");
   } catch (error) {
     next(error);
@@ -178,13 +154,17 @@ const updateUser = async (req, res, next) => {
 
 const deleteUsers = async (req, res, next) => {
   try {
-    const userIds = req.body.userIds;
+    const { userIds } = req.body;
     if (!Array.isArray(userIds) || userIds.length === 0) {
       res.status(400);
       throw new Error("Invalid data format. Expected an array of user IDs.");
     }
 
     const deleteResults = await User.deleteMany({ _id: { $in: userIds } });
+    if (!deleteResults) {
+      res.status(404);
+      throw new Error("No users found to delete");
+    }
     sendFormattedResponse(res, deleteResults, "Users deleted successfully");
   } catch (error) {
     next(error);
@@ -194,6 +174,12 @@ const deleteUsers = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
+
+    if (!userId) {
+      res.status(400);
+      throw new Error("User ID is required");
+    }
+
     let user = await User.findByIdAndDelete(userId);
 
     if (!user) {

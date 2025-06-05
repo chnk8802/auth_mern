@@ -43,16 +43,34 @@ async function sendResetPasswordEmail(email, otp) {
 
     // HTML content of the email including the OTP token
     const htmlContent = `
-      <h1>Hello from Node.js</h1>
-      <p>This is your token <b>${otp}</b></p>
-    `;
+  <div style="font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb; padding: 40px; border-radius: 10px; max-width: 600px; margin: 40px auto; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+    <div style="text-align: center;">
+      <h1 style="color: #1e293b; font-size: 28px; margin-bottom: 10px;">Reset Your Password</h1>
+      <p style="font-size: 16px; color: #475569;">Use the OTP below to reset your password. This code is valid for the next <strong>10 minutes</strong>.</p>
+    </div>
+
+    <div style="text-align: center; margin: 30px 0;">
+      <span style="display: inline-block; padding: 16px 40px; font-size: 24px; background-color: #0ea5e9; color: white; font-weight: bold; letter-spacing: 2px; border-radius: 8px;">
+        ${otp}
+      </span>
+    </div>
+
+    <p style="color: #64748b; font-size: 14px; text-align: center;">
+      If you didn't request this, please ignore this email or contact support.
+    </p>
+
+    <p style="margin-top: 30px; text-align: center; font-size: 12px; color: #94a3b8;">
+      &copy; ${new Date().getFullYear()} Your Company Name. All rights reserved.
+    </p>
+  </div>
+`;
 
     // Email message options
     const mailOptions = {
       from: "smtpsmtp13@gmail.com", // Sender address
-      to: email,                    // Recipient address
-      subject: "Reset password",    // Email subject line
-      html: htmlContent,            // Email body in HTML format
+      to: email, // Recipient address
+      subject: "Reset password", // Email subject line
+      html: htmlContent, // Email body in HTML format
     };
 
     // Send the email asynchronously and wait for response
@@ -61,11 +79,10 @@ async function sendResetPasswordEmail(email, otp) {
     // Log and return success message id
     // console.log("Email sent: " + info.messageId);
     return { success: info.messageId };
-
   } catch (error) {
     // Log any error during the process and return a user-friendly error message
     // console.error("Error sending email:", error);
-    return { error: "Failed to send email. Please try again later." };
+    return { error: "Failed to send reset password email. Please try again later." };
   }
 }
 

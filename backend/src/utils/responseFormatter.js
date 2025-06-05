@@ -1,7 +1,16 @@
-export const sendFormattedResponse = ( res, data, message = "Success", totalRecords = 0 ) => {
+export const sendFormattedResponse = (
+  res,
+  data,
+  message = "Success",
+  totalRecords = 0
+) => {
+  const formatData = (item) =>
+    item?.toJSON ? item.toJSON() : item;
+
   if (data !== null) {
-    data = Array.isArray(data) ? data : [data];
+    data = Array.isArray(data) ? data.map(formatData) : formatData(data);
   }
+
   res.status(200).json({
     status: "Success",
     code: 200,

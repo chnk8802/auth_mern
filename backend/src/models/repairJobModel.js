@@ -1,79 +1,79 @@
-import mongoose from 'mongoose';
-import { generateModuleId } from '../utils/generateModuleId.js';
+import mongoose from "mongoose";
+import { generateModuleId } from "../utils/generateModuleId.js";
+import sparePartUsed from "./schema/sparePartsUsedSchema.js";
 
-const repairJobSchema = new mongoose.Schema({
+const repairJobSchema = new mongoose.Schema(
+  {
     repairStatus: {
-        type: String,
-        enum: ['pending', 'in-progress', 'incomplete', 'complete', 'picked'],
-        default: 'pending'
+      type: String,
+      enum: ["pending", "in-progress", "incomplete", "complete", "picked"],
+      default: "pending",
     },
-    repairJobCode: { 
+    repairJobCode: {
       type: String,
       trim: true,
       unique: true,
-      immutable: true
+      immutable: true,
     },
-
-    customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
+    customer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
+    },
     deviceModel: { type: String, required: true },
     deviceImei: { type: String },
     issueDescription: { type: String, required: true },
     repairType: {
-        type: String,
-        enum: ['hardware', 'software', 'both'],
-        default: 'hardware'
+      type: String,
+      enum: ["Hardware", "Software", "Both"],
+      default: "Hardware",
     },
-    technician: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    technician: { type: mongoose.Schema.Types.ObjectId, ref: "User", filter: { role: "Technician" } },
     deviceComponents: {
-        type: [String],
-        enum: ["Sim Tray", "Screen", "Front Camera", "Back Camera"]
+      type: [String],
+      enum: ["Sim Tray", "Screen", "Front Camera", "Back Camera"],
     },
-
-    sparePartsUsed: [{
-        sparePart: { type: mongoose.Schema.Types.ObjectId, ref: "SparePart", required: true },
-        sparePartShop: { type: mongoose.Schema.Types.ObjectId, ref: "Supplier", required: true },
-        sparePartUnitCost: { type: mongoose.Schema.Types.Decimal128, required: true },
-    }],
-
+    sparePartsUsed: [sparePartUsed], 
     totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This will be computed in pre-save hook
     repairCost: { type: mongoose.Schema.Types.Decimal128, required: true }, // This is the cost of the repair service itself
-    totalCost: { type: mongoose.Schema.Types.Decimal128 }, // This should be the sum of repairCost and totalSparePartsCost
     discount: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This is the discount applied to the total cost
     finalCost: { type: mongoose.Schema.Types.Decimal128 }, // This should be totalCost - discount
-
+    paymentDetails: {
+        paymentStatus:{ type: String, enum: ["paid", "unpaid", "partial"], default: "unpaid" },
+        amountPaid: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount paid by the customer
+        amountDue: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount still due
+    },
     notes: { type: String },
     pickedAt: { type: Date },
+  },
+  { timestamps: true }
+);
 
-}, { timestamps: true });
-
-repairJobSchema.pre('save', async function (next) {
-    try {
-        // Ensure repairJobCode is generated if not provided
-        if (this.isNew && !this.repairJobCode) {
-            this.repairJobCode = await generateModuleId('repairJob', 'REP')
-        }
-        // Ensure totalSparePartsCost is computed before saving
-        if (this.new || this.isModified('sparePartsUsed.sparePartUnitCost')) {
-            this.totalSparePartsCost = this.sparePartsUsed.reduce((total, part) => {
-                return total + (part.sparePartUnitCost || 0);
-            })
-        }
-        // Ensure totalCost is computed before saving
-        if (this.isNew || this.isModified('repairCost') || this.isModified('totalSparePartsCost')) {
-            this.totalCost = this.repairCost + this.totalSparePartsCost;
-        }
-        // Ensure finalCost is computed before saving
-        if (this.isNew || this.isModified('totalCost') || this.isModified('discount')) {
-            this.finalCost = this.totalCost - this.discount;
-        }
-        // Ensure pickedAt is set to current date if repairStatus is 'picked'
-        if (this.isModified('repairStatus') && this.repairStatus === 'picked') {
-            this.pickedAt = new Date();
-        }
-        next();
-    } catch (error) {
-        next(error);
+repairJobSchema.pre("save", async function (next) {
+  try {
+    // Ensure repairJobCode is generated if not provided
+    if (this.isNew && !this.repairJobCode) {
+      this.repairJobCode = await generateModuleId("repairJob", "REP");
     }
+    
+    const sparePartsCost = this.sparePartsUsed.reduce((total, part) => {
+        const partCost = parseFloat(part.sparePartUnitCost?.toString()) || 0;
+        return total + partCost;
+    }, 0);
+    this.totalSparePartsCost = sparePartsCost;
+    const repairCost = parseFloat(this.repairCost?.toString() || "0");
+    const discount = parseFloat(this.discount?.toString() || "0");
+    this.finalCost = (repairCost - discount).toFixed(2);
+
+    // Ensure pickedAt is set to current date if repairStatus is 'picked'
+    if (this.isModified("repairStatus") && this.repairStatus === "picked") {
+      this.pickedAt = new Date();
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
-const RepairJob = mongoose.model('RepairJob', repairJobSchema);
+
+const RepairJob = mongoose.model("RepairJob", repairJobSchema);
 export default RepairJob;

@@ -1,4 +1,4 @@
-import Supplier from '../models/Supplier.js';
+import Supplier from '../models/supplierModel.js';
 import { sendFormattedResponse } from '../utils/responseFormatter.js';
 
 const createSupplier = async (req, res, next) => {
@@ -44,7 +44,6 @@ const getSuppliers = async (req, res, next) => {
     };
 
     const suppliers = await Supplier.find()
-      .select('-__v')
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit)
       .sort(paginationOptions.sort);
@@ -67,7 +66,7 @@ const getSuppliers = async (req, res, next) => {
 const getSupplier = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const supplier = await Supplier.findById(id).select('-__v');
+    const supplier = await Supplier.findById(id);
     if (!supplier) {
       res.status(404);
       throw new Error('Supplier not found');
@@ -87,7 +86,7 @@ const updateSupplier = async (req, res, next) => {
       id,
       { fullName, phone, address },
       { new: true, runValidators: true }
-    ).select('-__v');
+    );
 
     if (!updatedSupplier) {
       res.status(404);

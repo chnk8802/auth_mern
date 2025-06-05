@@ -130,17 +130,26 @@ const userSchema = new mongoose.Schema(
     },
     resetPasswordToken: {
       type: String,
+      trim: true,
+      select: false,
     },
     resetPasswordExpiresAt: {
       type: Date,
+      select: false,
     },
     isResetPasswordTokenExpired: {
       type: Boolean,
       default: false,
+      select: false,
     },
-    refreshTokens: [
-      { token: { type: String }, createdAt: { type: Date, default: Date.now } },
-    ],
+    refreshTokens: {
+      type: [
+        {
+          token: { type: String },
+          createdAt: { type: Date, default: Date.now },
+        },
+      ], select: false,
+    },
   },
   {
     timestamps: true,

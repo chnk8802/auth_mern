@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import removeVersionKeyPlugin from "../plugins/removeVersionKeyPlugin.js";
+
+mongoose.plugin(removeVersionKeyPlugin);
 const connectDB = async () => {
     try {
         const con = await mongoose.connect(process.env.MONGODB_URI);

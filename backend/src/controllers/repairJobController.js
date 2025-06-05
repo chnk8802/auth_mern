@@ -36,19 +36,20 @@ const createRepairJob = async (req, res, next) => {
       discount: discount || 0,
       notes: notes || "",
     });
-    const savedRepairJob = await newRepairJob.save();
-    const totalRecords = await RepairJob.countDocuments({});
+    let savedRepairJob = await newRepairJob.save();
+
     if (!savedRepairJob) {
       res.status(500);
       throw new Error("Failed to create repair job");
     }
-    delete savedRepairJob.__v;
+    
+    const totalRecords = await RepairJob.countDocuments({});
     res.status(201);
     sendFormattedResponse(
       res,
       savedRepairJob,
       "Repair job created successfully",
-      totalRecords
+      { page: 1, pageSize: 10, totalRecords }
     );
   } catch (error) {
     next(error);
@@ -65,11 +66,9 @@ const getRepairJobs = async (req, res, next) => {
     const paginationOptions = {
       page: parseInt(page) || 1,
       limit: parseInt(pageSize) || 10,
-      sort: { createdAt: -1 } // Sort by creation date, newest first
+      sort: { createdAt: -1 }, // Sort by creation date, newest first
     };
     const repairJobs = await RepairJob.find({})
-      .select("-__v -createdAt -updatedAt")
-      .populate("customer", "customerCode fullname email phone")
       .sort(paginationOptions.sort)
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
@@ -87,7 +86,7 @@ const getRepairJobs = async (req, res, next) => {
       {
         page: paginationOptions.page,
         pageSize: paginationOptions.limit,
-        total: totalRecords
+        total: totalRecords,
       }
     );
   } catch (error) {
@@ -98,10 +97,7 @@ const getRepairJobs = async (req, res, next) => {
 const getRepairJob = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
-    const repairJob = await RepairJob.findById(repairJobId)
-      .select("-__v")
-      .populate("customer", "customerCode fullname email phone")
-      .populate("technician", "userCode fullname email phone");
+    const repairJob = await RepairJob.findById(repairJobId);
 
     if (!repairJob) {
       res.status(404);
@@ -205,7 +201,9 @@ const deleteRepairJobs = async (req, res, next) => {
       res.status(400);
       throw new Error("Repair job IDs are required");
     }
-    const deletedRepairJobs = await RepairJob.deleteMany({_id: {$in: repairJobIds}})
+    const deletedRepairJobs = await RepairJob.deleteMany({
+      _id: { $in: repairJobIds },
+    });
     if (!deletedRepairJobs) {
       res.status(404);
       throw new Error("No repair jobs found");
@@ -248,6 +246,59 @@ const deleteRepairJob = async (req, res, next) => {
   }
 };
 
+const searchRepairJobs = async (req, res, next) => {
+  try {
+    const { page, pageSize, repairJobCode, customer, technician, deviceModel } =
+      req.query;
+    if (pageSize > 200) {
+      res.status(400);
+      throw new Error("Page size must not exceed 200");
+    }
+    const paginationOptions = {
+      page: parseInt(page) || 1,
+      limit: parseInt(pageSize) || 10,
+      sort: { createdAt: -1 }, // Sort by creation date, newest first
+    };
+    const searchCriteria = {};
+    if (repairJobCode) {
+      searchCriteria.repairJobCode = { $regex: repairJobCode, $options: "i" };
+    }
+    if (customer) {
+      searchCriteria.customer = customer;
+    }
+    if (technician) {
+      searchCriteria.technician = technician;
+    }
+    if (deviceModel) {
+      searchCriteria.deviceModel = { $regex: deviceModel, $options: "i" };
+    }
+
+    const repairJobs = await RepairJob.find(searchCriteria)
+      .sort(paginationOptions.sort)
+      .skip((paginationOptions.page - 1) * paginationOptions.limit)
+      .limit(paginationOptions.limit);
+
+    if (!repairJobs || repairJobs.length === 0) {
+      res.status(404);
+      throw new Error("No repair jobs found");
+    }
+    const totalRecords = await RepairJob.countDocuments(searchCriteria);
+    res.status(200);
+    sendFormattedResponse(
+      res,
+      repairJobs,
+      "Repair jobs retrieved successfully",
+      {
+        page: paginationOptions.page,
+        pageSize: paginationOptions.limit,
+        totalRecords,
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   createRepairJob,
   getRepairJobs,
@@ -256,4 +307,5 @@ export default {
   updateRepairJob,
   deleteRepairJobs,
   deleteRepairJob,
+  searchRepairJobs,
 };

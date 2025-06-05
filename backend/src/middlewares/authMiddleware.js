@@ -5,7 +5,7 @@ const auth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      const err = new Error("Authorization header is missing or invalid");
+      const err = new Error("Unauthorized access");
       err.status = 401;
       throw err;
     }
@@ -13,8 +13,8 @@ const auth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     const user = await User.findById(decoded.userId);
     if (!user) {
-      const err = new Error("Unauthorized access: User not found");
-      err.status = 404;
+      const err = new Error("Unauthorized access");
+      err.status = 401;
       throw err;
     }
     req.user = user;

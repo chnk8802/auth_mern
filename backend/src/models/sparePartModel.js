@@ -33,5 +33,9 @@ sparePartSchema.pre('save', async function (next) {
   }
 });
 
+sparePartSchema.virtual("partName").get(function(){
+  return `${this.brand} ${this.model} ${this.name}`
+});
+
 const SparePart = mongoose.model('SparePart', sparePartSchema);
 export default SparePart;

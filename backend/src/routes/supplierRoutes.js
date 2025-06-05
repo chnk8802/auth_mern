@@ -1,7 +1,7 @@
 import express from 'express';
 import supplierController from '../controllers/supplierController.js';
-import auth from '../middleware/authMiddleware.js';
-import permit from '../middleware/permissionMiddleware.js';
+import auth from '../middlewares/authMiddleware.js';
+import permit from '../middlewares/permissionMiddleware.js';
 
 const router = express.Router();
 
