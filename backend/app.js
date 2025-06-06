@@ -9,13 +9,14 @@ import connectDB from "./src/config/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import customerRoutes from "./src/routes/customerRoutes.js";
-// import technicianRoutes from "./src/routes/technicianRoutes.js"; // Uncomment if technician routes are needed
+import technicianRoutes from "./src/routes/technicianRoutes.js";
 import repairJobRoutes from "./src/routes/repairJobRoutes.js";
 import sparePartRoutes from "./src/routes/sparePartRoutes.js";
 import supplierRoutes from "./src/routes/supplierRoutes.js";
+import paymentRoutes from "./src/routes/paymentRoutes.js"
 
 import { notFound } from "./src/middlewares/routeNotFound.js";
-import {errorHandler } from "./src/middlewares/errorHandler.js";
+import { errorHandler } from "./src/middlewares/errorHandler.js";
 
 // .env configuration
 dotenv.config();
@@ -36,6 +37,7 @@ app.use(
     credentials: true, // Allow sending cookies and other credentials
   })
 );
+
 // Middleware
 app.use(express.json());
 app.use(helmet());
@@ -46,15 +48,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/customers", customerRoutes);
-// app.use("/api/technicians", technicianRoutes);
+app.use("/api/technicians", technicianRoutes);
 app.use("/api/repairjobs", repairJobRoutes);
 app.use("/api/spareparts", sparePartRoutes);
 app.use("/api/suppliers", supplierRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // Handle 404 Not Found
 app.use(notFound);
 // Handle Errors
 app.use(errorHandler);
-
 
 export default app;

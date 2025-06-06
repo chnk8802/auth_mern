@@ -183,6 +183,10 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
+userSchema.virtual("displayName").get(function () {
+  return `${this.userCode} - ${this.fullName}`
+})
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

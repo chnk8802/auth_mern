@@ -12,29 +12,27 @@ const getUsers = async (req, res, next) => {
     const paginationOptions = {
       page: parseInt(page) || 1,
       limit: parseInt(pageSize) || 10,
-      sort: { createdAt: -1 } // Sort by creation date, newest first
+      sort: { createdAt: -1 }, // Sort by creation date, newest first
     };
-    
+
     const users = await User.find({})
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
+      .limit(paginationOptions.limit)
+      .sort(paginationOptions.skip);
 
     if (!users) {
       res.status(404);
       throw next(new Error("No users Found!"));
     }
     const totalRecords = await User.countDocuments({});
-    
-    sendFormattedResponse(
-      res,
-      users,
-      "Users fetched successfully",
-      {
+
+    sendFormattedResponse(res, users, "Users fetched successfully", {
+      pagination: {
         page: paginationOptions.page,
         pageSize: paginationOptions.limit,
-        total: totalRecords
+        total: totalRecords,
       }
-    );
+    });
   } catch (error) {
     next(error);
   }
@@ -84,7 +82,7 @@ const updateUsers = async (req, res, next) => {
   try {
     const { _ids, field } = req.body;
     const MAX_BATCH_SIZE = 5000;
-    
+
     if (!Array.isArray(_ids) || _ids.length === 0) {
       res.status(400);
       throw new Error("Invalid data format. Expected an array of user IDs.");
@@ -125,8 +123,8 @@ const updateUsers = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const userId = req.params.id;    
-    const {fullName, phone, address, role} = req.body;
+    const userId = req.params.id;
+    const { fullName, phone, address, role } = req.body;
     if (!userId) {
       res.status(400);
       throw new Error("User ID is required");
@@ -204,5 +202,5 @@ export default {
   updateUsers,
   updateUser,
   deleteUsers,
-  deleteUser
+  deleteUser,
 };

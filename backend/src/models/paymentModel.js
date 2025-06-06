@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
 
-const jobPaymentSchema = new mongoose.Schema(
+const paymentSchema = new mongoose.Schema(
   {
     paymentCode: {
       type: String,
@@ -16,12 +16,17 @@ const jobPaymentSchema = new mongoose.Schema(
     },
 
     // ✅ Track each repair job with its corresponding amount paid
-    payments: [
+    paymentEntries: [
       {
         repairJob: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "RepairJob",
           required: true,
+        },
+        supplier: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Supplier",
+          required: true
         },
         amountPaid: {
           type: mongoose.Schema.Types.Decimal128,
@@ -45,12 +50,16 @@ const jobPaymentSchema = new mongoose.Schema(
   }
 );
 
-jobPaymentSchema.pre("save", async function (next) {
+paymentSchema.pre("save", async function (next) {
   if (this.isNew && !this.paymentCode) {
-    this.paymentCode = await generateModuleId("jobPayment", "PAY");
+    this.paymentCode = await generateModuleId("payment", "PAY");
   }
   next();
 });
 
-const JobPayment = mongoose.model("JobPayment", jobPaymentSchema);
-export default JobPayment;
+paymentSchema.virtual("displayName").get(function () {
+  return `${this.paymentCode}`
+})
+
+const Payment = mongoose.model("Payment", paymentSchema);
+export default Payment;

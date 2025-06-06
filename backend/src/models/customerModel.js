@@ -7,7 +7,7 @@ const customerSchema = mongoose.Schema(
       type: String,
       trim: true,
       unique: true,
-      immutable: true
+      immutable: true,
     },
     fullName: {
       type: String,
@@ -101,16 +101,23 @@ const customerSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-customerSchema.pre("save", async function(next) {
-    try {
-        if (this.isNew && !this.customerCode) {
-            this.customerCode = await generateModuleId("customer", "CUS")
-        }
-        next()
-    } catch (error) {
-        next(error)
+customerSchema.pre("save", async function (next) {
+  try {
+    if (this.isNew && !this.customerCode) {
+      this.customerCode = await generateModuleId("customer", "CUS");
     }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
+customerSchema.virtual("addressDisplayName").get(function () {
+  return `${this.address?.street} ${this.address.city} ${this.address.state}`
+})
+
+customerSchema.virtual("displayName").get(function () {
+  return `${this.fullName} ${this.address.city} ${this.customerCode}`
 })
 
 const Customer = mongoose.model("Customer", customerSchema);

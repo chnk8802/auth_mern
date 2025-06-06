@@ -1,23 +1,25 @@
 export const sendFormattedResponse = (
   res,
-  data,
+  data = null,
   message = "Success",
-  totalRecords = 0
+  options = {}
 ) => {
+  const {status = "Success", code = 200, pagination = null} = options;
   const formatData = (item) =>
     item?.toJSON ? item.toJSON() : item;
 
-  if (data !== null) {
-    data = Array.isArray(data) ? data.map(formatData) : formatData(data);
+  let formattedData = null;
+  if (data !== null && data !== undefined) {
+    formattedData = Array.isArray(data) ? data.map(formatData) : formatData(data);
   }
 
-  res.status(200).json({
-    status: "Success",
-    code: 200,
-    data,
-    dataCount: Array.isArray(data) ? data.length : 1,
-    totalRecords,
+  res.status(code).json({
+    status,
+    code,
     message,
+    data: formattedData,
+    dataCount: Array.isArray(formattedData) ? formattedData.length : (formattedData ? 1 : 0),
+    pagination,
     timestamp: new Date().toISOString(),
   });
 };

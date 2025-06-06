@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const sparePartsUsedSchema = new mongoose.Schema(
+const sparePartEntriesSchema = new mongoose.Schema(
   {
     sourceType: {
       type: String,
@@ -41,11 +41,11 @@ const sparePartsUsedSchema = new mongoose.Schema(
   }
 );
 
-sparePartsUsedSchema.virtual("sparePartName").get(function () {
+sparePartEntriesSchema.virtual("sparePartName").get(function () {
   if (this.sourceType === "External") {
     return this.externalPartName || "External Part";
   }
   return `${this.sparePart.brand} ${this.sparePart.model} ${this.sparePart.name}`;
 });
 
-export default sparePartsUsedSchema;
+export default sparePartEntriesSchema;

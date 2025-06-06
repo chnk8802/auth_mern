@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
-import sparePartUsed from "./schema/sparePartsUsedSchema.js";
+import sparePartEntries from "./schema/sparePartEntriesSchema.js";
 
 const repairJobSchema = new mongoose.Schema(
   {
@@ -33,7 +33,7 @@ const repairJobSchema = new mongoose.Schema(
       type: [String],
       enum: ["Sim Tray", "Screen", "Front Camera", "Back Camera"],
     },
-    sparePartsUsed: [sparePartUsed], 
+    sparePartEntries: [sparePartEntries], 
     totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This will be computed in pre-save hook
     repairCost: { type: mongoose.Schema.Types.Decimal128, required: true }, // This is the cost of the repair service itself
     discount: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This is the discount applied to the total cost
@@ -74,6 +74,10 @@ repairJobSchema.pre("save", async function (next) {
     next(error);
   }
 });
+
+repairJobSchema.virtual("displayName").get(function () {
+  return `${this.repairJobCode} - ${this.deviceModel}`
+})
 
 const RepairJob = mongoose.model("RepairJob", repairJobSchema);
 export default RepairJob;

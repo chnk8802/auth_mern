@@ -37,5 +37,8 @@ sparePartSchema.virtual("partName").get(function(){
   return `${this.brand} ${this.model} ${this.name}`
 });
 
+sparePartSchema.virtual("displayName").get(function () {
+  return `${this.partCode} - ${this.brand} ${this.model} ${this.name}`
+})
 const SparePart = mongoose.model('SparePart', sparePartSchema);
 export default SparePart;

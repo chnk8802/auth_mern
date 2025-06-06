@@ -42,7 +42,7 @@ const createRepairJob = async (req, res, next) => {
       res.status(500);
       throw new Error("Failed to create repair job");
     }
-    
+
     const totalRecords = await RepairJob.countDocuments({});
     res.status(201);
     sendFormattedResponse(
@@ -84,9 +84,11 @@ const getRepairJobs = async (req, res, next) => {
       repairJobs,
       "Repair jobs retrieved successfully",
       {
-        page: paginationOptions.page,
-        pageSize: paginationOptions.limit,
-        total: totalRecords,
+        pagination: {
+          page: paginationOptions.page,
+          pageSize: paginationOptions.limit,
+          total: totalRecords,
+        },
       }
     );
   } catch (error) {
@@ -289,9 +291,11 @@ const searchRepairJobs = async (req, res, next) => {
       repairJobs,
       "Repair jobs retrieved successfully",
       {
-        page: paginationOptions.page,
-        pageSize: paginationOptions.limit,
-        totalRecords,
+        pagination: {
+          page: paginationOptions.page,
+          pageSize: paginationOptions.limit,
+          total: totalRecords,
+        },
       }
     );
   } catch (error) {

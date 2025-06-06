@@ -21,18 +21,6 @@ const createSparePart = async (req, res, next) => {
       res.status(400);
       throw new Error("Failed to create spare part");
     }
-    // savedSparePart = {
-    //   _id: savedSparePart._id,
-    //   partCode: savedSparePart.partCode,
-    //   brand: savedSparePart.brand,
-    //   model: savedSparePart.model,
-    //   name: savedSparePart.name,
-    //   partType: savedSparePart.partType,
-    //   costPrice: savedSparePart.costPrice,
-    //   stockQty: savedSparePart.stockQty,
-    //   createdAt: savedSparePart.createdAt,
-    //   updatedAt: savedSparePart.updatedAt,
-    // };
 
     sendFormattedResponse(
       res,
@@ -60,15 +48,17 @@ const getSpareParts = async (req, res, next) => {
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit)
       .sort(paginationOptions.sort);
-    const totalSpareParts = await SparePart.countDocuments();
+    const totalRecords = await SparePart.countDocuments();
     sendFormattedResponse(
       res,
       spareParts,
       "Spare parts retrieved successfully",
       {
-        page: paginationOptions.page,
-        pageSize: paginationOptions.limit,
-        total: totalSpareParts,
+        pagination: {
+          page: paginationOptions.page,
+          pageSize: paginationOptions.limit,
+          total: totalRecords,
+        },
       }
     );
   } catch (error) {
@@ -82,7 +72,7 @@ const getSparePart = async (req, res, next) => {
       res.status(400);
       throw new Error("Spare part ID is required");
     }
-    const sparePart = await SparePart.findById(id)
+    const sparePart = await SparePart.findById(id);
     if (!sparePart) {
       res.status(404);
       throw new Error("Spare part not found");
@@ -101,7 +91,7 @@ const updateSparePart = async (req, res, next) => {
       req.params.id,
       { brand, model, name, partType, costPrice, stockQty, supplier },
       { new: true, runValidators: true }
-    )
+    );
     if (!sparePart) {
       res.status(404);
       throw new Error("Spare part not found");
@@ -173,7 +163,7 @@ const searchSpareParts = async (req, res, next) => {
       res.status(404);
       throw new Error("No spare parts found matching the search criteria");
     }
-    const totalSpareParts = await SparePart.countDocuments({
+    const totalRecords = await SparePart.countDocuments({
       $or: searchConditions,
     });
 
@@ -182,9 +172,11 @@ const searchSpareParts = async (req, res, next) => {
       spareParts,
       "Spare parts retrieved successfully",
       {
-        page: paginationOptions.page,
-        pageSize: paginationOptions.limit,
-        total: totalSpareParts,
+        pagination: {
+          page: paginationOptions.page,
+          pageSize: paginationOptions.limit,
+          total: totalRecords,
+        },
       }
     );
   } catch (error) {
