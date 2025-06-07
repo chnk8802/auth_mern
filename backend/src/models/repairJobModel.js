@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
-import sparePartEntries from "./schema/sparePartEntriesSchema.js";
 
 const repairJobSchema = new mongoose.Schema(
   {
@@ -33,15 +32,15 @@ const repairJobSchema = new mongoose.Schema(
       type: [String],
       enum: ["Sim Tray", "Screen", "Front Camera", "Back Camera"],
     },
-    sparePartEntries: [sparePartEntries], 
+    spareParts: [{ type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" }],
     totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This will be computed in pre-save hook
     repairCost: { type: mongoose.Schema.Types.Decimal128, required: true }, // This is the cost of the repair service itself
     discount: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This is the discount applied to the total cost
     finalCost: { type: mongoose.Schema.Types.Decimal128 }, // This should be totalCost - discount
     paymentDetails: {
-        paymentStatus:{ type: String, enum: ["paid", "unpaid", "partial"], default: "unpaid" },
-        amountPaid: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount paid by the customer
-        amountDue: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount still due
+      paymentStatus: { type: String, enum: ["paid", "unpaid", "partial"], default: "unpaid" },
+      amountPaid: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount paid by the customer
+      amountDue: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount still due
     },
     notes: { type: String },
     pickedAt: { type: Date },
@@ -55,10 +54,10 @@ repairJobSchema.pre("save", async function (next) {
     if (this.isNew && !this.repairJobCode) {
       this.repairJobCode = await generateModuleId("repairJob", "REP");
     }
-    
+
     const sparePartsCost = this.sparePartsUsed.reduce((total, part) => {
-        const partCost = parseFloat(part.sparePartUnitCost?.toString()) || 0;
-        return total + partCost;
+      const partCost = parseFloat(part.unitCost?.toString()) || 0;
+      return total + partCost;
     }, 0);
     this.totalSparePartsCost = sparePartsCost;
     const repairCost = parseFloat(this.repairCost?.toString() || "0");

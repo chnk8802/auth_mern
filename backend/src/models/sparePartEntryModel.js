@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const sparePartEntriesSchema = new mongoose.Schema(
+const sparePartEntrySchema = new mongoose.Schema(
   {
     sourceType: {
       type: String,
@@ -21,16 +21,17 @@ const sparePartEntriesSchema = new mongoose.Schema(
         return !this.sourceType || this.sourceType === "External";
       },
     },
-    sparePartShop: {
+    supplier: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Supplier",
       required: true,
     },
-    sparePartUnitCost: {
+    unitCost: {
       type: mongoose.Schema.Types.Decimal128,
       required: true,
     },
   },
+  { timestamps: true },
   {
     toJSON: {
       virtuals: true,
@@ -41,11 +42,13 @@ const sparePartEntriesSchema = new mongoose.Schema(
   }
 );
 
-sparePartEntriesSchema.virtual("sparePartName").get(function () {
+sparePartEntrySchema.virtual("sparePartName").get(function () {
   if (this.sourceType === "External") {
     return this.externalPartName || "External Part";
   }
   return `${this.sparePart.brand} ${this.sparePart.model} ${this.sparePart.name}`;
 });
 
-export default sparePartEntriesSchema;
+const SparePartEntry = mongoose.model("SparePartEntry", sparePartEntrySchema);
+
+export default SparePartEntry;

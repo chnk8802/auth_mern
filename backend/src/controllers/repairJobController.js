@@ -56,7 +56,7 @@ const createRepairJob = async (req, res, next) => {
   }
 };
 
-const getRepairJobs = async (req, res, next) => {
+const getAllRepairJobs = async (req, res, next) => {
   try {
     const { page, pageSize } = req.query;
     if (pageSize > 200) {
@@ -96,7 +96,7 @@ const getRepairJobs = async (req, res, next) => {
   }
 };
 
-const getRepairJob = async (req, res, next) => {
+const getRepairJobById = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
     const repairJob = await RepairJob.findById(repairJobId);
@@ -178,7 +178,7 @@ const updateRepairJob = async (req, res, next) => {
       .populate("customer", "fullname email phone")
       .populate("technician", "fullname email phone")
       .populate("sparePartsUsed.sparePart", "name unitCost")
-      .populate("sparePartsUsed.sparePartShop", "name address phone");
+      .populate("sparePartsUsed.supplier", "name address phone");
 
     if (!updatedRepairJob) {
       res.status(404);
@@ -305,8 +305,8 @@ const searchRepairJobs = async (req, res, next) => {
 
 export default {
   createRepairJob,
-  getRepairJobs,
-  getRepairJob,
+  getAllRepairJobs,
+  getRepairJobById,
   updateRepairJobstatus,
   updateRepairJob,
   deleteRepairJobs,

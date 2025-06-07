@@ -1,4 +1,3 @@
-// plugins/removeVersionKeyPlugin.js
 const removeVersionKeyPlugin = (schema) => {
   const transform = (doc, ret) => {
     delete ret?.id;

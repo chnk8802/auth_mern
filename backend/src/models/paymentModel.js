@@ -16,27 +16,7 @@ const paymentSchema = new mongoose.Schema(
     },
 
     // ✅ Track each repair job with its corresponding amount paid
-    paymentEntries: [
-      {
-        repairJob: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "RepairJob",
-          required: true,
-        },
-        supplier: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Supplier",
-          required: true
-        },
-        amountPaid: {
-          type: mongoose.Schema.Types.Decimal128,
-          required: true,
-        },
-        note: {
-          type: String,
-        }
-      }
-    ],
+    paymentEntries: [{type: mongoose.Schema.Types.ObjectId, ref: "PaymentEntry"}],
 
     paymentMethod: {
       type: String,
