@@ -34,7 +34,10 @@ const createSparePartEntry = async (req, res, next) => {
     }
 
     // Validate supplier
-    if (!payload.supplier || !mongoose.Types.ObjectId.isValid(payload.supplier)) {
+    if (
+      !payload.supplier ||
+      !mongoose.Types.ObjectId.isValid(payload.supplier)
+    ) {
       res.status(400);
       throw new Error("Supplier ID is missing or invalid.");
     }
@@ -47,24 +50,72 @@ const createSparePartEntry = async (req, res, next) => {
 
     // Create the SparePartEntry document
     const sparePartEntry = new SparePartEntry(payload);
-    const savedSparePartEntry = await sparePartEntry.save();
+    const savedSparePartEntry = (await sparePartEntry.save()).populate("supplier", "fullName");
     if (!savedSparePartEntry) {
-        res.status(400);
-        throw new Error("Failed to create SparePartEntry");
+      res.status(400);
+      throw new Error("Failed to create SparePartEntry");
     }
 
-    sendFormattedResponse(res, savedSparePartEntry, "Spare part entry created.");
+    sendFormattedResponse(
+      res,
+      savedSparePartEntry,
+      "Spare part entry created."
+    );
   } catch (error) {
     next(error);
   }
 };
 
 const getSparePartEntryById = async (req, res, next) => {
-    
-}
+  try {
+    const sparePartEntryId = req.params.id;
+    if (!sparePartEntryId) {
+      res.status(400);
+      throw new Error("spare Part Entry ID is missing.");
+    }
+    const sparePartEntry = await SparePart.findById({ _id: sparePartEntryI });
+    if (!sparePartEntry) {
+      res.status(404);
+      throw new Error("No Spare Part Entry found");
+    }
+    sendFormattedResponse(
+      res,
+      sparePartEntry,
+      "Spare Part Entry retreived successfully"
+    );
+  } catch (error) {
+    next(error);
+  }
+};
 
 const updateSparePartEntry = async (req, res, next) => {
+  try {
+    const sparePartEntryId = req.params.id;
+    const { sourceType, sparePart, externalPartName, supplier, unitCost } =
+      req.body;
 
-}
+    const updatedSparePartEntry = await findByIdAndUpdate(
+      { _id: sparePartEntryId },
+      { sourceType, sparePart, externalPartName, supplier, unitCost }
+    );
 
-export default createSparePartEntry;
+    if (!updateSparePartEntry) {
+      res.status(400);
+      throw new Error("Spare Part Entry not updated");
+    }
+
+    sendFormattedResponse(
+      res,
+      updateSparePartEntry,
+      "Spare Part Entry updated successfully"
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default {
+  createSparePartEntry,
+  getSparePartEntryById,
+  updateSparePartEntry,
+};
