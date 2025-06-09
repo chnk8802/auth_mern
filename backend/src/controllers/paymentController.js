@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Payment from "../models/paymentModel.js";
 import flattenObject from "../utils/flattenObject.js";
-import { sendFormattedResponse } from "../utils/responseFormatter.js";
+import response from "../utils/response.js";
 
 const createPayment = async (req, res, next) => {
   try {
@@ -50,7 +50,7 @@ const createPayment = async (req, res, next) => {
       throw new Error("Cannot create payment");
     }
 
-    sendFormattedResponse(res, savedPayment, "Payment created successffully.");
+    response(res, savedPayment, "Payment created successffully.");
   } catch (error) {
     next(error);
   }
@@ -82,7 +82,7 @@ const getPayments = async (req, res, next) => {
       throw new Error("No users Found!");
     }
     const totalRecords = await Payment.countDocuments();
-    sendFormattedResponse(res, payments, "Payments fetched successfully", {
+    response(res, payments, "Payments fetched successfully", {
       pagination: {
         page: paginationOptions.page,
         pageSize: paginationOptions.limit,
@@ -109,7 +109,7 @@ const getPayment = async (req, res, next) => {
       throw new Error("No payment found");
     }
 
-    sendFormattedResponse(res, payment, "Payment fetched successfully");
+    response(res, payment, "Payment fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -172,7 +172,7 @@ const updatePayment = async (req, res, next) => {
       throw new Error("Payment not found");
     }
 
-    sendFormattedResponse(res, updatedPayment, "Payment updated successfully");
+    response(res, updatedPayment, "Payment updated successfully");
   } catch (error) {
     next(error);
   }
@@ -181,7 +181,7 @@ const updatePayment = async (req, res, next) => {
 const deletePayments = async (req, res, next) => {
   try {
     const result = await Payment.deleteMany({});
-    sendFormattedResponse(res, result, "All payments deleted successfully");
+    response(res, result, "All payments deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -199,7 +199,7 @@ const deletePayment = async (req, res, next) => {
       res.status(404);
       throw new Error("Payment not found");
     }
-    sendFormattedResponse(res, deletedPayment, "Payment deleted successfully");
+    response(res, deletedPayment, "Payment deleted successfully");
   } catch (error) {
     next(error);
   }

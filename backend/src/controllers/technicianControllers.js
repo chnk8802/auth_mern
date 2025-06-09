@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-import { sendFormattedResponse } from "../utils/responseFormatter.js";
+import response from "../utils/response.js";
 import flattenObject from "../utils/flattenObject.js";
 
 const getTechnicians = async (req, res, next) => {
@@ -25,7 +25,7 @@ const getTechnicians = async (req, res, next) => {
     }
     const totalRecords = await User.countDocuments(criteria);
 
-    sendFormattedResponse(res, technicinians, "Users fetched successfully", {
+    response(res, technicinians, "Users fetched successfully", {
       pagination: {
         page: paginationOptions.page,
         pageSize: paginationOptions.limit,

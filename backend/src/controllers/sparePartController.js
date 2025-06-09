@@ -1,6 +1,6 @@
 import e from "express";
 import SparePart from "../models/sparePartModel.js";
-import { sendFormattedResponse } from "../utils/responseFormatter.js";
+import response from "../utils/response.js";
 
 // Create a new spare part
 const createSparePart = async (req, res, next) => {
@@ -22,7 +22,7 @@ const createSparePart = async (req, res, next) => {
       throw new Error("Failed to create spare part");
     }
 
-    sendFormattedResponse(
+    response(
       res,
       savedSparePart,
       "Spare part created successfully"
@@ -49,7 +49,7 @@ const getSpareParts = async (req, res, next) => {
       .limit(paginationOptions.limit)
       .sort(paginationOptions.sort);
     const totalRecords = await SparePart.countDocuments();
-    sendFormattedResponse(
+    response(
       res,
       spareParts,
       "Spare parts retrieved successfully",
@@ -77,7 +77,7 @@ const getSparePart = async (req, res, next) => {
       res.status(404);
       throw new Error("Spare part not found");
     }
-    sendFormattedResponse(res, sparePart, "Spare part retrieved successfully");
+    response(res, sparePart, "Spare part retrieved successfully");
   } catch (error) {
     next(error);
   }
@@ -96,7 +96,7 @@ const updateSparePart = async (req, res, next) => {
       res.status(404);
       throw new Error("Spare part not found");
     }
-    sendFormattedResponse(res, sparePart, "Spare part updated successfully");
+    response(res, sparePart, "Spare part updated successfully");
   } catch (error) {
     next(error);
   }
@@ -118,7 +118,7 @@ const deleteSparePart = async (req, res, next) => {
       _id: sparePart._id,
       partCode: sparePart.partCode,
     };
-    sendFormattedResponse(res, sparePart, "Spare part deleted successfully");
+    response(res, sparePart, "Spare part deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -167,7 +167,7 @@ const searchSpareParts = async (req, res, next) => {
       $or: searchConditions,
     });
 
-    sendFormattedResponse(
+    response(
       res,
       spareParts,
       "Spare parts retrieved successfully",

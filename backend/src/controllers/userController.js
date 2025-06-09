@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-import { sendFormattedResponse } from "../utils/responseFormatter.js";
+import response from "../utils/response.js";
 import flattenObject from "../utils/flattenObject.js";
 
 const getUsers = async (req, res, next) => {
@@ -26,7 +26,7 @@ const getUsers = async (req, res, next) => {
     }
     const totalRecords = await User.countDocuments({});
 
-    sendFormattedResponse(res, users, "Users fetched successfully", {
+    response(res, users, "Users fetched successfully", {
       pagination: {
         page: paginationOptions.page,
         pageSize: paginationOptions.limit,
@@ -52,7 +52,7 @@ const getCurrentUser = async (req, res, next) => {
       throw new Error("User not found");
     }
 
-    sendFormattedResponse(res, user, "User fetched successfully");
+    response(res, user, "User fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -72,7 +72,7 @@ const getUser = async (req, res, next) => {
       throw new Error("User not found");
     }
 
-    sendFormattedResponse(res, user, "User fetched successfully");
+    response(res, user, "User fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -115,7 +115,7 @@ const updateUsers = async (req, res, next) => {
       res.status(404);
       throw new Error("No users updated");
     }
-    sendFormattedResponse(res, updatedUsers, "Users Updated Successfully");
+    response(res, updatedUsers, "Users Updated Successfully");
   } catch (error) {
     next(error);
   }
@@ -144,7 +144,7 @@ const updateUser = async (req, res, next) => {
       res.status(404);
       throw new Error("User not found");
     }
-    sendFormattedResponse(res, updatedUser, "User updated successfully");
+    response(res, updatedUser, "User updated successfully");
   } catch (error) {
     next(error);
   }
@@ -163,7 +163,7 @@ const deleteUsers = async (req, res, next) => {
       res.status(404);
       throw new Error("No users found to delete");
     }
-    sendFormattedResponse(res, deleteResults, "Users deleted successfully");
+    response(res, deleteResults, "Users deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -189,7 +189,7 @@ const deleteUser = async (req, res, next) => {
       _id: user._id,
       userCode: user.userCode,
     };
-    sendFormattedResponse(res, user, "User deleted successfully");
+    response(res, user, "User deleted successfully");
   } catch (error) {
     next(error);
   }

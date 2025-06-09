@@ -32,14 +32,6 @@ const sparePartEntrySchema = new mongoose.Schema(
     },
   },
   { timestamps: true },
-  {
-    toJSON: {
-      virtuals: true,
-    },
-    toObject: {
-      virtuals: true,
-    },
-  }
 );
 
 sparePartEntrySchema.virtual("sparePartName").get(function () {

@@ -1,6 +1,6 @@
 import Customer from "../models/customerModel.js";
 import flattenObject from "../utils/flattenObject.js";
-import { sendFormattedResponse } from "../utils/responseFormatter.js";
+import response from "../utils/response.js";
 
 const createCustomer = async (req, res, next) => {
   try {
@@ -21,7 +21,7 @@ const createCustomer = async (req, res, next) => {
       createdAt: savedCustomer.createdAt,
       updatedAt: savedCustomer.updatedAt,
     };
-    sendFormattedResponse(res, savedCustomer, "Customer created successfully");
+    response(res, savedCustomer, "Customer created successfully");
   } catch (error) {
     next(error);
   }
@@ -48,7 +48,7 @@ const createCustomer = async (req, res, next) => {
       throw new Error("No customers found");
     }
     const totalRecords = await Customer.countDocuments({});
-    sendFormattedResponse(res, customers, "Customers fetched successfully", {
+    response(res, customers, "Customers fetched successfully", {
       page: paginationOptions.page,
       pageSize: paginationOptions.limit,
       total: totalRecords
@@ -80,7 +80,7 @@ const getCustomer = async (req, res, next) => {
       createdAt: customer.createdAt,
       updatedAt: customer.updatedAt,
     };
-    sendFormattedResponse(res, customer, "Customer fetched successfully");
+    response(res, customer, "Customer fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -118,7 +118,7 @@ const updateCustomer = async (req, res, next) => {
       updatedAt: customer.updatedAt,
     };
 
-    sendFormattedResponse(res, updatedCustomer, "Customer updated successfully");
+    response(res, updatedCustomer, "Customer updated successfully");
   } catch (error) {
     next(error);
   }
@@ -141,7 +141,7 @@ const deleteCustomer = async (req, res, next) => {
       _id: customer._id,
       customerCode: customer.customerCode,
     };
-    sendFormattedResponse(res, deletedCustomer, "Customer deleted successfully");
+    response(res, deletedCustomer, "Customer deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -190,7 +190,7 @@ const duplicateCustomers = async (req, res, next) => {
         updatedAt: customer.updatedAt,
       };
     });
-    sendFormattedResponse(res, duplicatedCustomers, "Customers duplicated successfully");
+    response(res, duplicatedCustomers, "Customers duplicated successfully");
   } catch (error) {
     next(error);
   }

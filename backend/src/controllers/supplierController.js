@@ -1,5 +1,5 @@
 import Supplier from "../models/supplierModel.js";
-import { sendFormattedResponse } from "../utils/responseFormatter.js";
+import response from "../utils/response.js";
 
 const createSupplier = async (req, res, next) => {
   try {
@@ -24,7 +24,7 @@ const createSupplier = async (req, res, next) => {
       updatedAt: savedSupplier.updatedAt,
     };
 
-    sendFormattedResponse(res, savedSupplier, "Supplier created successfully");
+    response(res, savedSupplier, "Supplier created successfully");
   } catch (error) {
     next(error);
   }
@@ -53,7 +53,7 @@ const getSuppliers = async (req, res, next) => {
     }
 
     const totalSuppliers = await Supplier.countDocuments();
-    sendFormattedResponse(res, suppliers, "Suppliers retrieved successfully", {
+    response(res, suppliers, "Suppliers retrieved successfully", {
       pagination: {
         page: paginationOptions.page,
         pageSize: paginationOptions.limit,
@@ -73,7 +73,7 @@ const getSupplier = async (req, res, next) => {
       res.status(404);
       throw new Error("Supplier not found");
     }
-    sendFormattedResponse(res, supplier, "Supplier retrieved successfully");
+    response(res, supplier, "Supplier retrieved successfully");
   } catch (error) {
     next(error);
   }
@@ -95,7 +95,7 @@ const updateSupplier = async (req, res, next) => {
       throw new Error("Supplier not found");
     }
 
-    sendFormattedResponse(
+    response(
       res,
       updatedSupplier,
       "Supplier updated successfully"
@@ -117,7 +117,7 @@ const deleteSupplier = async (req, res, next) => {
       _id: deletedSupplier._id,
       supplierCode: deletedSupplier.supplierCode,
     };
-    sendFormattedResponse(
+    response(
       res,
       deletedSupplier,
       "Supplier deleted successfully"

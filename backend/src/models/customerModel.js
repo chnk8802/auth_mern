@@ -113,7 +113,7 @@ customerSchema.pre("save", async function (next) {
 });
 
 customerSchema.virtual("addressDisplayName").get(function () {
-  return `${this.address?.street} ${this.address.city} ${this.address.state}`
+  return `${this.address.street ? this.address.street: ""} ${this.address.city} ${this.address.state}`
 })
 
 customerSchema.virtual("displayName").get(function () {

@@ -17,28 +17,40 @@ const repairJobSchema = new mongoose.Schema(
     customer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Customer",
-      required: true,
+      // required: true,
     },
-    deviceModel: { type: String, required: true },
-    deviceImei: { type: String },
-    issueDescription: { type: String, required: true },
+    deviceModel: { type: String /* required: true, */ },
+    deviceIMEI: { type: String },
+    issueDescription: { type: String /* required: true, */ },
     repairType: {
       type: String,
       enum: ["Hardware", "Software", "Both"],
       default: "Hardware",
     },
-    technician: { type: mongoose.Schema.Types.ObjectId, ref: "User", filter: { role: "Technician" } },
+    technician: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      filter: { role: "Technician" },
+    },
     deviceComponents: {
       type: [String],
       enum: ["Sim Tray", "Screen", "Front Camera", "Back Camera"],
     },
-    spareParts: [{ type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" }],
+    spareParts: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
+    ],
     totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This will be computed in pre-save hook
-    repairCost: { type: mongoose.Schema.Types.Decimal128, required: true }, // This is the cost of the repair service itself
+    repairCost: {
+      type: mongoose.Schema.Types.Decimal128 /* required: true, */,
+    }, // This is the cost of the repair service itself
     discount: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This is the discount applied to the total cost
     finalCost: { type: mongoose.Schema.Types.Decimal128 }, // This should be totalCost - discount
     paymentDetails: {
-      paymentStatus: { type: String, enum: ["paid", "unpaid", "partial"], default: "unpaid" },
+      paymentStatus: {
+        type: String,
+        enum: ["paid", "unpaid", "partial"],
+        default: "unpaid",
+      },
       amountPaid: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount paid by the customer
       amountDue: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount still due
     },
@@ -55,7 +67,7 @@ repairJobSchema.pre("save", async function (next) {
       this.repairJobCode = await generateModuleId("repairJob", "REP");
     }
 
-    const sparePartsCost = this.sparePartsUsed.reduce((total, part) => {
+    const sparePartsCost = this.spareParts.reduce((total, part) => {
       const partCost = parseFloat(part.unitCost?.toString()) || 0;
       return total + partCost;
     }, 0);
@@ -75,8 +87,8 @@ repairJobSchema.pre("save", async function (next) {
 });
 
 repairJobSchema.virtual("displayName").get(function () {
-  return `${this.repairJobCode} - ${this.deviceModel}`
-})
+  return `${this.repairJobCode} - ${this.deviceModel}`;
+});
 
 const RepairJob = mongoose.model("RepairJob", repairJobSchema);
 export default RepairJob;

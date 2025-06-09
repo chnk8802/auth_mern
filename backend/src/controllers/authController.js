@@ -5,7 +5,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateToken.js";
-import { sendFormattedResponse } from "../utils/responseFormatter.js";
+import response from "../utils/response.js";
 import sendResetPasswordEmail from "../utils/email.js";
 
 const register = async (req, res, next) => {
@@ -46,7 +46,7 @@ const register = async (req, res, next) => {
       email: newUser.email,
       role: newUser.role,
     };
-    sendFormattedResponse(res, newUser, "User registered successfully");
+    response(res, newUser, "User registered successfully");
   } catch (error) {
     next(error);
   }
@@ -98,7 +98,7 @@ const refreshToken = async (req, res, next) => {
       httpOnly: true,
       secure: isProd,
     });
-    sendFormattedResponse(res, null, "Tokens refreshed successfully");
+    response(res, null, "Tokens refreshed successfully");
   } catch (error) {
     next(error);
   }
@@ -155,7 +155,7 @@ const login = async (req, res, next) => {
       httpOnly: true,
       secure: isProd,
     });
-    sendFormattedResponse(res, user, "Login successful");
+    response(res, user, "Login successful");
   } catch (error) {
     next(error);
   }
@@ -189,7 +189,7 @@ const logout = async (req, res, next) => {
     res.clearCookie("refreshToken");
     res.clearCookie("accessToken");
     res.status(200);
-    sendFormattedResponse(res, null, "Logout successful");
+    response(res, null, "Logout successful");
   } catch (error) {
     next(error);
   }
@@ -229,7 +229,7 @@ const forgotPassword = async (req, res, next) => {
       throw new Error(emailResult.error);
     }
 
-    sendFormattedResponse(res, null, "OTP sent to mail." + otp);
+    response(res, null, "OTP sent to mail." + otp);
   } catch (error) {
     next(error);
   }
@@ -271,7 +271,7 @@ const enterOtp = async (req, res, next) => {
     user = {
       _id: user._id,
     };
-    sendFormattedResponse(
+    response(
       res,
       user,
       "OTP verified successfully. You can now reset your password."
@@ -302,7 +302,7 @@ const resetPassword = async (req, res, next) => {
       res.status(500);
       throw new Error("Failed to reset password");
     }
-    sendFormattedResponse(res, null, "Password reset successfully. Please login with your new password.");
+    response(res, null, "Password reset successfully. Please login with your new password.");
   } catch (error) {
     next(error);
   }

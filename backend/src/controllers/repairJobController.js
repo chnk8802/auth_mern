@@ -1,56 +1,38 @@
 import RepairJob from "../models/repairJobModel.js";
 import Customer from "../models/customerModel.js";
-
-import { sendFormattedResponse } from "../utils/responseFormatter.js";
+import {
+  repairJobJoiSchema,
+  repairJobUpdateSchema,
+} from "../validations/repairJob/repairJob.validation.js";
+import response from "../utils/response.js";
+import { createError } from "../utils/errorHandler.js";
+import { getPaginationOptions } from "../utils/pagination.js";
+import { listRepairJobs } from "../services/repairJobServices.js";
 
 const createRepairJob = async (req, res, next) => {
   try {
-    const {
-      customer,
-      deviceModel,
-      issueDescription,
-      repairType,
-      deviceComponents,
-      repairCost,
-      discount,
-      notes,
-    } = req.body;
-    if (!customer || !deviceModel || !issueDescription || !repairCost) {
-      res.status(400);
-      throw new Error("Missing required fields");
-    }
-
-    const customerExists = await Customer.findById(customer);
-    if (!customerExists) {
-      res.status(404);
-      throw new Error("Customer not found");
-    }
-
-    const newRepairJob = new RepairJob({
-      customer,
-      deviceModel,
-      issueDescription,
-      repairCost,
-      repairType,
-      deviceComponents: deviceComponents || [],
-      discount: discount || 0,
-      notes: notes || "",
+    const { error, value } = repairJobJoiSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
     });
-    let savedRepairJob = await newRepairJob.save();
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+    const customerExists = await Customer.findById(value.customer);
+    if (!customerExists) {
+      throw createError(404, "Customer not found");
+    }
+
+    const newRepairJob = new RepairJob(value);
+    const savedRepairJob = await newRepairJob.save();
 
     if (!savedRepairJob) {
-      res.status(500);
-      throw new Error("Failed to create repair job");
+      throw createError(500, "Failed to create repair job");
     }
 
-    const totalRecords = await RepairJob.countDocuments({});
-    res.status(201);
-    sendFormattedResponse(
-      res,
-      savedRepairJob,
-      "Repair job created successfully",
-      { page: 1, pageSize: 10, totalRecords }
-    );
+    response(res, savedRepairJob, "Repair job created successfully", {
+      code: 201,
+    });
   } catch (error) {
     next(error);
   }
@@ -58,39 +40,37 @@ const createRepairJob = async (req, res, next) => {
 
 const getAllRepairJobs = async (req, res, next) => {
   try {
-    const { page, pageSize } = req.query;
-    if (pageSize > 200) {
-      res.status(400);
-      throw new Error("Page size must not exceed 200");
-    }
-    const paginationOptions = {
-      page: parseInt(page) || 1,
-      limit: parseInt(pageSize) || 10,
-      sort: { createdAt: -1 }, // Sort by creation date, newest first
-    };
-    const repairJobs = await RepairJob.find({})
-      .sort(paginationOptions.sort)
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
-    if (!repairJobs || repairJobs.length === 0) {
-      res.status(404);
-      throw new Error("No repair jobs found");
-    }
-    const totalRecords = await RepairJob.countDocuments({});
+    const { page, limit, skip, sort } = getPaginationOptions(req.query);
 
-    res.status(200);
-    sendFormattedResponse(
-      res,
-      repairJobs,
-      "Repair jobs retrieved successfully",
-      {
-        pagination: {
-          page: paginationOptions.page,
-          pageSize: paginationOptions.limit,
-          total: totalRecords,
-        },
-      }
-    );
+    const repairJobs = await RepairJob.find({})
+      .populate("customer", "customerCode fullname email phone address")
+      .populate("technician", "userCode fullname email phone")
+      .populate({
+        path: "spareParts",
+        populate: [
+          {
+            path: "sparePart",
+            select: "partCode brand model name displayName",
+          },
+          { path: "supplier", select: "supplierCode fullName displayName" },
+        ],
+      })
+      .sort(sort)
+      .skip(skip)
+      .limit(limit);
+
+    if (!repairJobs || repairJobs.length === 0) {
+      throw createError(404, "No repair jobs found");
+    }
+
+    const totalRecords = await RepairJob.countDocuments({});
+    response(res, repairJobs, "Repair jobs retrieved successfully", {
+      pagination: {
+        page,
+        limit,
+        total: totalRecords,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -99,61 +79,25 @@ const getAllRepairJobs = async (req, res, next) => {
 const getRepairJobById = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
-    const repairJob = await RepairJob.findById(repairJobId);
+    const repairJob = await RepairJob.findById(repairJobId)
+      .populate("customer", "customerCode fullname email phone address")
+      .populate("technician", "userCode fullname email phone")
+      .populate({
+        path: "spareParts",
+        populate: [
+          {
+            path: "sparePart",
+            select: "partCode brand model name displayName",
+          },
+          { path: "supplier", select: "supplierCode fullName displayName" },
+        ],
+      });
 
     if (!repairJob) {
-      res.status(404);
-      throw new Error("Repair job not found");
+      throw createError(404, "Repair job not found");
     }
 
-    res.status(200);
-    sendFormattedResponse(res, repairJob, "Repair job retrieved successfully");
-  } catch (error) {
-    next(error);
-  }
-};
-
-const updateRepairJobstatus = async (req, res, next) => {
-  try {
-    const repairJobId = req.params.id;
-    const { repairStatus } = req.body;
-    const repairJob = await RepairJob.findById({ _id: repairJobId });
-    if (!repairJob) {
-      res.status(404);
-      throw new Error("Repair job not found");
-    }
-
-    if (repairJob.repairStatus === repairStatus) {
-      res.status(400);
-      throw new Error(
-        "Repair job status is already set to the requested status"
-      );
-    }
-
-    if (!repairStatus) {
-      res.status(400);
-      throw new Error("Repair status is required");
-    }
-
-    const updateData = { repairStatus };
-
-    const updatedRepairJob = await RepairJob.findByIdAndUpdate(
-      repairJobId,
-      updateData,
-      { new: true }
-    ).select("_id repairJobCode repairStatus");
-
-    if (!updatedRepairJob) {
-      res.status(404);
-      throw new Error("Repair job not found");
-    }
-
-    res.status(200);
-    sendFormattedResponse(
-      res,
-      updatedRepairJob,
-      "Repair job status updated successfully"
-    );
+    response(res, repairJob, "Repair job retrieved successfully");
   } catch (error) {
     next(error);
   }
@@ -162,35 +106,76 @@ const updateRepairJobstatus = async (req, res, next) => {
 const updateRepairJob = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
-    const { repairStatus, technician, sparePartsUsed, notes } = req.body;
 
-    const updateData = {};
-    if (repairStatus) updateData.repairStatus = repairStatus;
-    if (technician) updateData.technician = technician;
-    if (sparePartsUsed) updateData.sparePartsUsed = sparePartsUsed;
-    if (notes) updateData.notes = notes;
+    const { error, value } = repairJobUpdateSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
 
     const updatedRepairJob = await RepairJob.findByIdAndUpdate(
       repairJobId,
-      updateData,
+      value,
       { new: true }
     )
-      .populate("customer", "fullname email phone")
-      .populate("technician", "fullname email phone")
-      .populate("sparePartsUsed.sparePart", "name unitCost")
-      .populate("sparePartsUsed.supplier", "name address phone");
+      .populate("customer", "customerCode fullname email phone address")
+      .populate("technician", "userCode fullname email phone")
+      .populate({
+        path: "spareParts",
+        populate: [
+          {
+            path: "sparePart",
+            select: "partCode brand model name displayName",
+          },
+          { path: "supplier", select: "supplierCode fullName displayName" },
+        ],
+      });
 
     if (!updatedRepairJob) {
-      res.status(404);
-      throw new Error("Repair job not found");
+      throw createError(404, "Repair job not found");
     }
 
-    res.status(200);
-    sendFormattedResponse(
-      res,
-      updatedRepairJob,
-      "Repair job updated successfully"
-    );
+    response(res, updatedRepairJob, "Repair job updated successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateRepairJobStatus = async (req, res, next) => {
+  try {
+    const repairJobId = req.params.id;
+    const { repairStatus } = req.body;
+
+    if (!repairStatus) {
+      throw createError(400, "Repair status is required");
+    }
+
+    const repairJob = await RepairJob.findById(repairJobId);
+    if (!repairJob) {
+      throw createError(404, "Repair job not found");
+    }
+
+    if (repairJob.repairStatus === repairStatus) {
+      throw createError(
+        400,
+        "Repair job status is already set to the requested status"
+      );
+    }
+
+    const updatedRepairJob = await RepairJob.findByIdAndUpdate(
+      repairJobId,
+      { repairStatus },
+      { new: true }
+    ).select("_id repairJobCode repairStatus");
+
+    if (!updatedRepairJob) {
+      throw createError(500, "Repair job not updated");
+    }
+
+    response(res, updatedRepairJob, "Repair job status updated successfully");
   } catch (error) {
     next(error);
   }
@@ -200,22 +185,18 @@ const deleteRepairJobs = async (req, res, next) => {
   try {
     const repairJobIds = req.body.ids;
     if (!repairJobIds || !Array.isArray(repairJobIds)) {
-      res.status(400);
-      throw new Error("Repair job IDs are required");
+      throw createError(400, "Repair job IDs are required");
     }
+
     const deletedRepairJobs = await RepairJob.deleteMany({
       _id: { $in: repairJobIds },
     });
-    if (!deletedRepairJobs) {
-      res.status(404);
-      throw new Error("No repair jobs found");
+
+    if (!deletedRepairJobs || deletedRepairJobs.deletedCount === 0) {
+      throw createError(404, "No repair jobs found");
     }
-    res.status(200);
-    sendFormattedResponse(
-      res,
-      deletedRepairJobs,
-      "Repair jobs deleted successfully"
-    );
+
+    response(res, deletedRepairJobs, "Repair jobs deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -225,24 +206,18 @@ const deleteRepairJob = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
     if (!repairJobId) {
-      res.status(400);
-      throw new Error("Repair job ID is required");
+      throw createError(400, "Repair job ID is required");
     }
+
     const deletedRepairJob = await RepairJob.findByIdAndDelete(
       repairJobId
-    ).select("_id repairJobCode");
+    ).select("repairJobCode deviceModel");
 
     if (!deletedRepairJob) {
-      res.status(404);
-      throw new Error("Repair job not found");
+      throw createError(404, "Repair job not found");
     }
 
-    res.status(200);
-    sendFormattedResponse(
-      res,
-      deletedRepairJob,
-      "Repair job deleted successfully"
-    );
+    response(res, deletedRepairJob, "Repair job deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -250,54 +225,35 @@ const deleteRepairJob = async (req, res, next) => {
 
 const searchRepairJobs = async (req, res, next) => {
   try {
-    const { page, pageSize, repairJobCode, customer, technician, deviceModel } =
-      req.query;
-    if (pageSize > 200) {
-      res.status(400);
-      throw new Error("Page size must not exceed 200");
-    }
-    const paginationOptions = {
-      page: parseInt(page) || 1,
-      limit: parseInt(pageSize) || 10,
-      sort: { createdAt: -1 }, // Sort by creation date, newest first
-    };
-    const searchCriteria = {};
-    if (repairJobCode) {
-      searchCriteria.repairJobCode = { $regex: repairJobCode, $options: "i" };
-    }
-    if (customer) {
-      searchCriteria.customer = customer;
-    }
-    if (technician) {
-      searchCriteria.technician = technician;
-    }
-    if (deviceModel) {
-      searchCriteria.deviceModel = { $regex: deviceModel, $options: "i" };
-    }
+    const { search } = req.query;
+    const { page, limit, sort } = getPaginationOptions(req.query);
+    console.log(search, page, limit, sort);
+    const result = await listRepairJobs({
+      search,
+      page,
+      limit,
+      sort,
+    });
 
-    const repairJobs = await RepairJob.find(searchCriteria)
-      .sort(paginationOptions.sort)
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
-
-    if (!repairJobs || repairJobs.length === 0) {
-      res.status(404);
-      throw new Error("No repair jobs found");
-    }
-    const totalRecords = await RepairJob.countDocuments(searchCriteria);
-    res.status(200);
-    sendFormattedResponse(
-      res,
-      repairJobs,
-      "Repair jobs retrieved successfully",
-      {
+    if (!result.data.length) {
+      return response(res, [], "No repair jobs found", {
         pagination: {
-          page: paginationOptions.page,
-          pageSize: paginationOptions.limit,
-          total: totalRecords,
+          page: result.page,
+          totalPages: result.totalPages,
+          total: result.totalRecords,
+          limit,
         },
-      }
-    );
+      });
+    }
+
+    response(res, result.data, "Repair jobs retrieved successfully", {
+      pagination: {
+        page: result.page,
+        totalPages: result.totalPages,
+        total: result.totalRecords,
+        limit,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -307,7 +263,7 @@ export default {
   createRepairJob,
   getAllRepairJobs,
   getRepairJobById,
-  updateRepairJobstatus,
+  updateRepairJobStatus,
   updateRepairJob,
   deleteRepairJobs,
   deleteRepairJob,

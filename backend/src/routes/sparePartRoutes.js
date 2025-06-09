@@ -14,5 +14,6 @@ router.patch('/:id', auth, permit(['admin', 'manager']), sparePartController.upd
 router.delete('/:id', auth, permit(['admin', 'manager']), sparePartController.deleteSparePart);
 
 router.post('/sparepartentries', auth, permit(['admin', 'manager']), sparePartEntryControllers.createSparePartEntry);
+router.get('/sparepartentries/:speid', auth, permit(['admin', 'manager']), sparePartEntryControllers.getSparePartEntryById);
 
 export default router;
