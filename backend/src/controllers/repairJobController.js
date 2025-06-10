@@ -259,8 +259,6 @@ const searchRepairJobs = async (req, res, next) => {
   }
 };
 
-
-
 export default {
   createRepairJob,
   getAllRepairJobs,
