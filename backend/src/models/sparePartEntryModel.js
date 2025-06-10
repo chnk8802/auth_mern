@@ -4,34 +4,25 @@ const sparePartEntrySchema = new mongoose.Schema(
   {
     sourceType: {
       type: String,
-      required: true,
       enum: ["In-house", "External"],
     },
     sparePart: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SparePart",
-      required: function () {
-        return !this.sourceType || this.sourceType === "In-house";
-      },
     },
     externalPartName: {
       type: String,
       trim: true,
-      required: function () {
-        return !this.sourceType || this.sourceType === "External";
-      },
     },
     supplier: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Supplier",
-      required: true,
     },
     unitCost: {
       type: mongoose.Schema.Types.Decimal128,
-      required: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 sparePartEntrySchema.virtual("sparePartName").get(function () {

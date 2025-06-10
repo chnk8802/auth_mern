@@ -214,7 +214,7 @@ const deleteRepairJob = async (req, res, next) => {
     ).select("repairJobCode deviceModel");
 
     if (!deletedRepairJob) {
-      throw createError(404, "Repair job not found");
+      throw createError(400, "Could not delete Repair Job");
     }
 
     response(res, deletedRepairJob, "Repair job deleted successfully");
@@ -258,6 +258,8 @@ const searchRepairJobs = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 export default {
   createRepairJob,

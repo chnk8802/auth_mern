@@ -1,30 +1,34 @@
 import Joi from "joi";
+import { joiObjectId } from "../custom/customValidators.js";
 
-const createSparePartEntry = {
-    body: Joi.object().keys({
-        partName: Joi.string().required(),
-        partNumber: Joi.string().required(),
-        quantity: Joi.number().integer().min(1).required(),
-        supplier: Joi.string().required(),
-        purchaseDate: Joi.date().iso().required(),
-        price: Joi.number().min(0).required(),
-        description: Joi.string().allow('', null),
-    }),
-};
+export const createSparePartEntrySchema = Joi.object({
+  sourceType: Joi.string().valid("In-house", "External").required(),
+  sparePart: Joi.when("sourceType", {
+    is: "In-house",
+    then: joiObjectId().required(),
+    otherwise: Joi.forbidden(),
+  }),
+  externalPartName: Joi.when("sourceType", {
+    is: "External",
+    then: Joi.string().trim().required(),
+    otherwise: Joi.forbidden(),
+  }),
+  supplier: joiObjectId().required(),
+  unitCost: Joi.number().min(0).required(),
+});
 
-const updateSparePartEntry = {
-    body: Joi.object().keys({
-        partName: Joi.string(),
-        partNumber: Joi.string(),
-        quantity: Joi.number().integer().min(1),
-        supplier: Joi.string(),
-        purchaseDate: Joi.date().iso(),
-        price: Joi.number().min(0),
-        description: Joi.string().allow('', null),
-    }),
-};
-
-module.exports = {
-    createSparePartEntry,
-    updateSparePartEntry,
-};
+export const updateSparePartEntrySchema = Joi.object({
+  sourceType: Joi.string().valid("In-house", "External"),
+  sparePart: Joi.when("sourceType", {
+    is: "In-house",
+    then: joiObjectId(),
+    otherwise: Joi.forbidden(),
+  }),
+  externalPartName: Joi.when("sourceType", {
+    is: "External",
+    then: Joi.string().trim(),
+    otherwise: Joi.forbidden(),
+  }),
+  supplier: joiObjectId(),
+  unitCost: Joi.number().min(0),
+});
