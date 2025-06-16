@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import RepairJob from "../models/repairJobModel.js";
 import Customer from "../models/customerModel.js";
 import {
@@ -258,6 +259,56 @@ const searchRepairJobs = async (req, res, next) => {
     next(error);
   }
 };
+
+const updateRepairOrderAndCRUDSparePart = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const repairJobId = req.params.id;
+    const {data} = req.body[0];
+    const repairJobPayload = delete payload.spareParts;
+    const updatedRepairJob = await RepairJob.findByIdAndUpdate(
+      repairJobId,
+      repairJobPayload,
+      { new: true, session }
+    )
+      .populate("customer", "customerCode fullname email phone address")
+      .populate("technician", "userCode fullname email phone")
+      .populate({
+        path: "spareParts",
+        populate: [
+          {
+            path: "sparePart",
+            select: "partCode brand model name displayName",
+          },
+          { path: "supplier", select: "supplierCode fullName displayName" },
+        ],
+      });
+
+    const sparePartPayload = payload.spareParts;
+
+    sparePartPayload.forEach(sparePartEntry => {
+      // const updateSparePartEntry = await sparePartEntry.upsert({})
+      
+    });
+
+    if (!updatedRepairJob) {
+      await session.abortTransaction();
+      session.endSession();
+      throw createError(404, "Repair job not found");
+    }
+
+
+
+    await session.commitTransaction();
+    session.endSession();
+
+
+    response(res, updatedRepairJob, "Repair job updated successfully");
+  } catch (error) {
+    next(error);
+  }
+}
 
 export default {
   createRepairJob,

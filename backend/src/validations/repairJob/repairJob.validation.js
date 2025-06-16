@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { joiObjectId } from "../custom/customValidators.js";
+import { createSparePartEntrySchema, updateSparePartEntrySchema } from "../sparePartEntry/sparePartEntry.validation.js";
 
 export const repairJobJoiSchema = Joi.object({
   repairStatus: Joi.string()
@@ -75,7 +76,7 @@ export const repairJobUpdateSchema = Joi.object({
     )
     .optional(),
 
-  spareParts: Joi.array().items(joiObjectId()).optional(),
+  spareParts: Joi.array().items(createSparePartEntrySchema).optional(),
 
   totalSparePartsCost: Joi.number().precision(2).optional(),
 
