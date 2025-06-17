@@ -37,8 +37,31 @@ const repairJobSchema = new mongoose.Schema(
       enum: ["Sim Tray", "Screen", "Front Camera", "Back Camera"],
     },
     spareParts: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
+      {
+        sourceType: {
+          type: String,
+          enum: ["In-house", "External"],
+        },
+        sparePart: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "SparePart",
+        },
+        externalPartName: {
+          type: String,
+          trim: true,
+        },
+        supplier: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Supplier",
+        },
+        unitCost: {
+          type: mongoose.Schema.Types.Decimal128,
+        },
+      },
     ],
+    // spareParts: [
+    //   { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
+    // ],
     totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This will be computed in pre-save hook
     repairCost: {
       type: mongoose.Schema.Types.Decimal128 /* required: true, */,

@@ -29,7 +29,7 @@ export const repairJobJoiSchema = Joi.object({
     )
     .optional(),
 
-  spareParts: Joi.array().items(joiObjectId()).optional(),
+  spareParts: Joi.array().items(updateSparePartEntrySchema).optional(),
 
   totalSparePartsCost: Joi.number().precision(2).optional(),
 
@@ -76,7 +76,7 @@ export const repairJobUpdateSchema = Joi.object({
     )
     .optional(),
 
-  spareParts: Joi.array().items(createSparePartEntrySchema).optional(),
+  spareParts: Joi.array().items(updateSparePartEntrySchema).optional(),
 
   totalSparePartsCost: Joi.number().precision(2).optional(),
 

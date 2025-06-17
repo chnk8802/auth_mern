@@ -18,7 +18,6 @@ export const createSparePartEntrySchema = Joi.object({
 });
 
 export const updateSparePartEntrySchema = Joi.object({
-  _id: joiObjectId().required(),
   sourceType: Joi.string().valid("In-house", "External"),
   sparePart: Joi.when("sourceType", {
     is: "In-house",
