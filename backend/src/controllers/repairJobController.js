@@ -115,6 +115,22 @@ const updateRepairJob = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
+    if (value?.customer) {
+      const customerExists = await Customer.findById({
+        _id: value.customer,
+      }).select("customerCode");
+      if (!customerExists) {
+        throw createError(404, "customer not found");
+      }
+    }
+    if (value?.technician) {
+      const technicianExists = await User.findById({
+        _id: value.technician,
+      }).select("userCode");
+      if (!technicianExists) {
+        throw createError(404, "Technician not found");
+      }
+    }
 
     const updatedRepairJob = await RepairJob.findByIdAndUpdate(
       repairJobId,
