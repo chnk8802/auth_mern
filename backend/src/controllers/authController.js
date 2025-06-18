@@ -7,46 +7,46 @@ import {
 } from "../utils/generateToken.js";
 import response from "../utils/response.js";
 import sendResetPasswordEmail from "../utils/email.js";
+import { createError } from "../utils/errorHandler.js";
+import { loginUserSchema, signupUserSchema } from "../validations/user/user.validation.js";
 
 const register = async (req, res, next) => {
   try {
-    const { email, password, fullname, role } = req.body;
+    const { error, value } = signupUserSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
 
-    if (!email || !password || !role) {
-      res.status(400);
-      throw new Error("Missing mandatory fields");
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    if (role !== "admin" && role !== "manager" && role !== "technician") {
-      res.status(400);
-      throw new Error("Invalid role specified");
-    }
+
+    const { email, password, fullName, phone, role, address } = value;
 
     const existingUser = await User.findOne({ email });
-
     if (existingUser) {
-      res.status(400);
-      throw new Error("User already exists");
+      throw createError(400, "User already exists with this email");
     }
 
     let newUser = new User({
       email,
       password,
+      fullName,
+      phone,
       role,
+      address,
     });
 
     await newUser.save();
 
-    if (!newUser) {
-      res.status(500);
-      throw new Error("Failed to create user");
-    }
-    newUser = {
+    const safeUser = {
       _id: newUser._id,
       userCode: newUser.userCode,
       email: newUser.email,
       role: newUser.role,
     };
-    response(res, newUser, "User registered successfully");
+
+    response(res, safeUser, "User registered successfully");
   } catch (error) {
     next(error);
   }
@@ -55,48 +55,52 @@ const register = async (req, res, next) => {
 const refreshToken = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
+    
     if (!refreshToken) {
-      res.status(400);
-      throw new Error("Refresh token not provided");
+      throw createError(400, "Refresh token not provided");
     }
 
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    if (!decoded) {
-      res.status(403);
-      throw new Error("Invalid refresh token");
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    } catch (err) {
+      throw createError(403, "Invalid or expired refresh token");
     }
 
     const user = await User.findById(decoded.userId).select("+refreshTokens");
     if (!user) {
-      res.status(404);
-      throw new Error("User not found");
+      throw createError(404, "User not found");
     }
 
-    const tokenExists = user.refreshTokens.some(
-      (t) => t.token === refreshToken
-    );
+    const tokenExists = user.refreshTokens.some(t => t.token === refreshToken);
     if (!tokenExists) {
-      res.status(403);
-      throw new Error("Invalid refresh token");
+      throw createError(403, "Refresh token not recognized");
     }
-    user.refreshTokens = user.refreshTokens.filter(
-      (t) => t.token !== refreshToken
-    );
+
+    // Rotate tokens
+    user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
+
     const newAccessToken = generateAccessToken(user._id);
     const newRefreshToken = generateRefreshToken(user._id);
 
     user.refreshTokens.push({ token: newRefreshToken });
     await user.save();
+
     const isProd = process.env.NODE_ENV === "production";
 
-    res.status(200);
+    // Set cookies with best practices
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: isProd,
+      sameSite: isProd ? "Strict" : "Lax",
+      path: "/",
     });
+
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: isProd,
+      sameSite: isProd ? "Strict" : "Lax",
+      path: "/",
     });
     response(res, null, "Tokens refreshed successfully");
   } catch (error) {
@@ -106,56 +110,64 @@ const refreshToken = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      res.status(400);
-      throw new Error("Email and password are required");
+    //  Validate login input using Joi
+    const { error, value } = loginUserSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
+    const { email, password } = value;
+
+    //  Fetch user with password and refreshTokens
     let user = await User.findOne({ email }).select("+password +refreshTokens");
 
     if (!user) {
-      res.status(404);
-      throw new Error("User not Found");
+      throw createError(404, "User not found");
     }
 
     const isPasswordValid = await user.matchPassword(password);
     if (!isPasswordValid) {
-      res.status(401);
-      throw new Error("Invalid password");
+      throw createError(401, "Invalid password");
     }
 
+    //  Generate tokens
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
+    //  Store refresh token
     user.refreshTokens.push({ token: refreshToken });
-
     await user.save();
 
-    if (!user) {
-      res.status(500);
-      throw new Error("Failed to login user");
-    }
-
-    user = {
+    //  Prepare safe response user object
+    const safeUser = {
       _id: user._id,
       userCode: user.userCode,
       email: user.email,
       role: user.role,
     };
 
+    //  Set secure cookies
     const isProd = process.env.NODE_ENV === "production";
 
-    res.status(200);
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
+      sameSite: isProd ? "strict" : "Lax",
+      path: "/",
     });
+
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: isProd,
+      sameSite: isProd ? "strict" : "Lax",
+      path: "/",
     });
-    response(res, user, "Login successful");
+
+    response(res, safeUser, "Login successful");
   } catch (error) {
     next(error);
   }
@@ -165,30 +177,43 @@ const logout = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies || req.body;
     if (!refreshToken) {
-      res.status(204);
-      throw new Error("Refresh token not provided");
+      throw createError(204, "Refresh token not provided");
     }
     
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    
-    if (!decoded || !decoded.userId) {
-      res.status(403);
-      throw new Error("Invalid refresh token");
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    } catch (err) {
+      throw createError(403, "Invalid or expired refresh token");
     }
+
+    if (!decoded?.userId) {
+      throw createError(403, "Invalid refresh token payload");
+    }
+
     const user = await User.findById(decoded.userId).select("+refreshTokens");
     if (!user) {
-      res.status(403);
-      throw new Error("User not found");
+      throw createError(403, "User not found");
     }
 
-    user.refreshTokens = user.refreshTokens.filter(
-      (t) => t.token !== refreshToken
-    );
+    user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
     await user.save();
 
-    res.clearCookie("refreshToken");
-    res.clearCookie("accessToken");
-    res.status(200);
+    const isProd = process.env.NODE_ENV === "production";
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "Strict" : "Lax",
+      path: "/",
+    });
+
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "Strict" : "Lax",
+      path: "/",
+    });
     response(res, null, "Logout successful");
   } catch (error) {
     next(error);
@@ -206,30 +231,26 @@ const forgotPassword = async (req, res, next) => {
       "+resetPasswordToken isResetPasswordTokenExpired"
     );
     if (!user) {
-      res.status(404);
-      throw new Error("User not found");
+      throw createError(404, "User not found");
     }
 
     const { otp, token } = generateOTP(user._id);
     if (!otp) {
-      res.status(500);
-      throw new Error("Internal server error");
+      throw createError(500, "Internal server error");
     }
     user.isResetPasswordTokenExpired = false; // Reset OTP expiration status
     user.resetPasswordToken = token;
     await user.save();
     if (!user) {
-      res.status(500);
-      throw new Error("Could not send OTP to user");
+      throw createError(500, "Could not send OTP to user");
     }
 
     const emailResult = await sendResetPasswordEmail(email, otp);
     if (!emailResult.success && emailResult.error) {
-      res.status(500);
-      throw new Error(emailResult.error);
+      throw createError(500, emailResult.error);
     }
 
-    response(res, null, "OTP sent to mail." + otp);
+    response(res, null, "OTP sent to mail. " + otp);
   } catch (error) {
     next(error);
   }
@@ -239,34 +260,29 @@ const enterOtp = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
     if (!email || !otp) {
-      res.status(400);
-      throw new Error("Email and OTP are required");
+      throw createError(400,"Email and OTP are required");
     }
 
     let user = await User.findOne({ email }).select(
       "+password resetPasswordToken isResetPasswordTokenExpired"
     );
     if (!user) {
-      res.status(404);
-      throw new Error("User not found");
+      throw createError(404, "User not found");
     }
     if (!user.resetPasswordToken || user.isResetPasswordTokenExpired) {
-      res.status(400);
-      throw new Error("OTP has expired or is not set.");
+      throw createError(400, "OTP has expired or is not set.");
     }
     // Verify OTP
     const isOtpValid = verifyOTP(user._id, otp, user.resetPasswordToken);
     if (!isOtpValid) {
-      res.status(400);
-      throw new Error("Invalid or Expired OTP.");
+      throw createError(400, "Invalid or Expired OTP.");
     }
     // OTP is valid, clear it and allow password reset
     user.isResetPasswordTokenExpired = true; // Mark OTP as used
     user.resetPasswordToken = null; // Clear the token
     await user.save();
     if (!user) {
-      res.status(500);
-      throw new Error("Failed to verify OTP");
+      throw createError(500, "Failed to verify OTP");
     }
     user = {
       _id: user._id,
@@ -285,22 +301,19 @@ const resetPassword = async (req, res, next) => {
   try {
     const { userId, newPassword } = req.body;
     if (!userId || !newPassword) {
-      res.status(400);
-      throw new Error("User ID and new password are required");
+      throw createError(400, "User ID and new password are required");
     }
 
     const user = await User.findById(userId).select("+password");
 
     if (!user) {
-      res.status(404);
-      throw new Error("User not found");
+      throw createError(404, "User not found");
     }
 
     user.password = newPassword;
     await user.save();
     if (!user) {
-      res.status(500);
-      throw new Error("Failed to reset password");
+      throw createError(500, "Failed to reset password");
     }
     response(res, null, "Password reset successfully. Please login with your new password.");
   } catch (error) {

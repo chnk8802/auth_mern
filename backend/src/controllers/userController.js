@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import response from "../utils/response.js";
 import flattenObject from "../utils/flattenObject.js";
+import { updateUserSchema } from "../validations/user/user.validation.js";
 
 const getUsers = async (req, res, next) => {
   try {
@@ -124,26 +125,34 @@ const updateUsers = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const { fullName, phone, address, role } = req.body;
-    if (!userId) {
-      res.status(400);
-      throw new Error("User ID is required");
-    }
-    const updates = {};
-    if (fullName !== undefined) updates.fullName = fullName;
-    if (phone !== undefined) updates.phone = phone;
-    if (address !== undefined) updates.address = address;
-    if (role !== undefined) updates.role = role;
 
-    let updatedUser = await User.findByIdAndUpdate({ _id: userId }, updates, {
+    if (!userId) {
+      throw createError(400, "User ID is required");
+    }
+
+    const { error, value } = updateUserSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
+    if (error) {
+      throw createError(400, error.details.map(d => d.message).join(", "));
+    }
+
+    const updates = {};
+    if (Object.keys(value).length > 0) {
+      updates.$set = value;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
       new: true,
       runValidators: true,
     });
 
     if (!updatedUser) {
-      res.status(404);
-      throw new Error("User not found");
+      throw createError(404, "User not found");
     }
+
     response(res, updatedUser, "User updated successfully");
   } catch (error) {
     next(error);

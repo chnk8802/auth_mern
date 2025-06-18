@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const sparePartEntrySchema = new mongoose.Schema(
   {
+    repairJob: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RepairJob",
+    },
     sourceType: {
       type: String,
       enum: ["In-house", "External"],

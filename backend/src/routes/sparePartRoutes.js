@@ -2,7 +2,6 @@ import express from 'express';
 import sparePartController from '../controllers/sparePartController.js';
 import auth from '../middlewares/authMiddleware.js';
 import permit from '../middlewares/permissionMiddleware.js';
-import sparePartEntryControllers from '../controllers/sparePartEntryControllers.js';
 
 const router = express.Router();
 
@@ -12,9 +11,5 @@ router.get('/search', auth, permit(['admin', 'manager', 'technician']), sparePar
 router.get('/:id', auth, permit(['admin', 'manager', 'technician']), sparePartController.getSparePart);
 router.patch('/:id', auth, permit(['admin', 'manager']), sparePartController.updateSparePart);
 router.delete('/:id', auth, permit(['admin', 'manager']), sparePartController.deleteSparePart);
-
-router.post('/sparepartentries', auth, permit(['admin', 'manager']), sparePartEntryControllers.createSparePartEntry);
-router.get('/sparepartentries/:speid', auth, permit(['admin', 'manager']), sparePartEntryControllers.getSparePartEntryById);
-router.patch('/sparepartentries/:speid', auth, permit(['admin', 'manager']), sparePartEntryControllers.updateSparePartEntry);
 
 export default router;

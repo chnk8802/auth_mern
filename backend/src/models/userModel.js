@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       trim: true,
-      required: true,
       unique: true,
       lowercase: true,
       validate: {
@@ -37,17 +36,9 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       trim: true,
-      required: true,
       minlength: 8,
       maxlength: 330,
-      validate: {
-        validator: function (v) {
-          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/i.test(v);
-        },
-        message: (props) =>
-          `Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number!`,
-      },
-      select: false,
+      select: false, // How does this even works itsno t working in register controller
     },
     fullName: {
       type: String,
@@ -106,7 +97,6 @@ const userSchema = new mongoose.Schema(
           "Puducherry",
         ],
         default: "Uttar Pradesh",
-        required: true,
         trim: true,
       },
       zip: {
@@ -125,8 +115,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "manager", "technician", "user", "customer", "guest"],
-      default: "user",
+      enum: ["admin", "manager", "technician"],
     },
     resetPasswordToken: {
       type: String,
@@ -168,9 +157,8 @@ userSchema.pre("save", async function (next) {
         admin: "ADM",
         manager: "MGR",
         technician: "TECH",
-        user: "USR",
       };
-      const prefix = prefixMap[this.role] || "USR";
+      const prefix = prefixMap[this.role];
       this.userCode = await generateModuleId("user", prefix);
     }
     next();
