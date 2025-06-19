@@ -1,8 +1,8 @@
 import RepairJob from "../models/repairJobModel.js";
 import Customer from "../models/customerModel.js";
 import {
-  repairJobJoiSchema,
-  repairJobUpdateSchema,
+  createRepairJobSchema,
+  updateRepairJobSchema,
 } from "../validations/repairJob/repairJob.validation.js";
 import response from "../utils/response.js";
 import { createError } from "../utils/errorHandler.js";
@@ -11,7 +11,7 @@ import { listRepairJobs } from "../services/repairJobServices.js";
 
 const createRepairJob = async (req, res, next) => {
   try {
-    const { error, value } = repairJobJoiSchema.validate(req.body, {
+    const { error, value } = createRepairJobSchema.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -107,14 +107,14 @@ const updateRepairJob = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
 
-    const { error, value } = repairJobUpdateSchema.validate(req.body, {
+    const { error, value } = updateRepairJobSchema.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
-
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
+
     if (value?.customer) {
       const customerExists = await Customer.findById({
         _id: value.customer,
@@ -132,9 +132,14 @@ const updateRepairJob = async (req, res, next) => {
       }
     }
 
+    const updates = {};
+    if (Object.keys(value).length > 0) {
+      updates.$set = value;
+    }
+
     const updatedRepairJob = await RepairJob.findByIdAndUpdate(
       repairJobId,
-      value,
+      updates,
       { new: true }
     )
       .populate("customer", "customerCode fullname email phone address")

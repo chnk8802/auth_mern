@@ -9,6 +9,7 @@ router.post("/duplicate", auth, permit(["admin", "manager"]), customerController
 router.get("/", auth, permit(["admin", "manager", "technician"]), customerController.getCustomers);
 router.get("/:id", auth, permit(["admin", "manager"]), customerController.getCustomer);
 router.patch("/:id", auth, permit(["admin", "manager"]), customerController.updateCustomer);
+router.delete("/", auth, permit(["admin", "manager"]), customerController.deleteCustomers);
 router.delete("/:id", auth, permit(["admin", "manager"]), customerController.deleteCustomer);
 
 export default router;

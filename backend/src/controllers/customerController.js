@@ -1,17 +1,32 @@
 import Customer from "../models/customerModel.js";
-import flattenObject from "../utils/flattenObject.js";
+import { createError } from "../utils/errorHandler.js";
+import { getPaginationOptions } from "../utils/pagination.js";
 import response from "../utils/response.js";
+import flattenObject from "../utils/flattenObject.js"
+import {
+  createCustomerSchema,
+  deleteMultipleCustomersSchema,
+  deleteSingleCustomerSchema,
+  duplicateMultipleCustomersSchema,
+  updateCustomerSchema,
+} from "../validations/customer/customer.validate.js";
 
 const createCustomer = async (req, res, next) => {
   try {
-    const { fullName, phone, address, isBulkCustomer } = req.body;
-    const customer = new Customer({ fullName, phone, address, isBulkCustomer });
+    const { error, value } = createCustomerSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+    const customer = new Customer(value);
     let savedCustomer = await customer.save();
     if (!savedCustomer) {
-      res.status(400);
-      throw new Error("Customer creation failed");
+      throw createError(400, "Customer creation failed");
     }
-    savedCustomer = {
+    const safeCustomer = {
       _id: savedCustomer._id,
       customerCode: savedCustomer.customerCode,
       fullName: savedCustomer.fullName,
@@ -21,65 +36,43 @@ const createCustomer = async (req, res, next) => {
       createdAt: savedCustomer.createdAt,
       updatedAt: savedCustomer.updatedAt,
     };
-    response(res, savedCustomer, "Customer created successfully");
+    response(res, safeCustomer, "Customer created successfully");
   } catch (error) {
     next(error);
   }
-}
+};
 
- const getCustomers = async (req, res, next) => {
+const getCustomers = async (req, res, next) => {
   try {
-    const { page, pageSize } = req.query;
-    if (pageSize > 200) {
-      res.status(400);
-      throw new Error("Page size must not exceed 200");
-    }
-    const paginationOptions = {
-      page: parseInt(page) || 1,
-      limit: parseInt(pageSize) || 10,
-      sort: { createdAt: -1 } // Sort by creation date, newest first
-    };
-    const customers = await Customer.find()
-      .sort(paginationOptions.sort)
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
+    const { page, limit, skip, sort } = getPaginationOptions(req.query);
+
+    const customers = await Customer.find().sort(sort).skip(skip).limit(limit);
     if (!customers || customers.length === 0) {
-      res.status(404);
-      throw new Error("No customers found");
+      throw createError(404, "No customers found");
     }
     const totalRecords = await Customer.countDocuments({});
     response(res, customers, "Customers fetched successfully", {
-      page: paginationOptions.page,
-      pageSize: paginationOptions.limit,
-      total: totalRecords
+      pagination: {
+        page,
+        limit,
+        total: totalRecords,
+      },
     });
   } catch (error) {
     next(error);
   }
-}
+};
 
 const getCustomer = async (req, res, next) => {
   try {
     const customerId = req.params.id;
     if (!customerId) {
-      res.status(400);
-      throw new Error("Customer ID is required");
+      throw createError(400, "Customer ID is required");
     }
-    let customer = await Customer.findById(customerId);
+    const customer = await Customer.findById(customerId);
     if (!customer) {
-      res.status(404);
-      throw new Error("Customer not found");
+      throw createError(404, "Customer not found");
     }
-    customer = {
-      _id: customer._id,
-      customerCode: customer.customerCode,
-      fullName: customer.fullName,
-      phone: customer.phone,
-      address: customer.address,
-      isBulkCustomer: customer.isBulkCustomer,
-      createdAt: customer.createdAt,
-      updatedAt: customer.updatedAt,
-    };
     response(res, customer, "Customer fetched successfully");
   } catch (error) {
     next(error);
@@ -89,34 +82,31 @@ const getCustomer = async (req, res, next) => {
 const updateCustomer = async (req, res, next) => {
   try {
     const customerId = req.params.id;
-    const updates = req.body;
     if (!customerId) {
-      res.status(400);
-      throw new Error("Customer ID is required");
-    }
-    if (!updates || Object.keys(updates).length === 0) {
-      res.status(400);
-      throw new Error("No updates provided");
+      throw createError(400, "Customer ID is required");
     }
 
-    const customer = await Customer.findByIdAndUpdate(customerId, updates, {
-      new: true,
-      runValidators: true,
+    const { error, value } = updateCustomerSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
     });
-    if (!customer) {
-      res.status(404);
-      throw new Error("Customer not found");
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    const updatedCustomer = {
-      _id: customer._id,
-      customerCode: customer.customerCode,
-      fullName: customer.fullName,
-      phone: customer.phone,
-      address: customer.address,
-      isBulkCustomer: customer.isBulkCustomer,
-      createdAt: customer.createdAt,
-      updatedAt: customer.updatedAt,
-    };
+
+    const flattenedUpdates = flattenObject(value);
+
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+      customerId,
+      flattenedUpdates,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (!updatedCustomer) {
+      throw createError(404, "Customer not found");
+    }
 
     response(res, updatedCustomer, "Customer updated successfully");
   } catch (error) {
@@ -126,22 +116,44 @@ const updateCustomer = async (req, res, next) => {
 
 const deleteCustomer = async (req, res, next) => {
   try {
-    const customerId = req.params.id;
-    if (!customerId) {
-      res.status(400);
-      throw new Error("Customer ID is required");
+    const { error, value } = deleteSingleCustomerSchema.validate(req.params);
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    
-    const customer = await Customer.findByIdAndDelete(customerId);
+
+    const customer = await Customer.findByIdAndDelete(value.id);
     if (!customer) {
-      res.status(404);
-      throw new Error("Customer not found");
+      throw createError(404, "Customer not found");
     }
+
     const deletedCustomer = {
       _id: customer._id,
       customerCode: customer.customerCode,
     };
+
     response(res, deletedCustomer, "Customer deleted successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteCustomers = async (req, res, next) => {
+  try {
+    const { error, value } = deleteMultipleCustomersSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+
+    const result = await Customer.deleteMany({ _id: { $in: value.ids } });
+
+    if (result.deletedCount === 0) {
+      throw createError(404, "No customers found for deletion");
+    }
+
+    response(res, { deletedCount: result.deletedCount });
   } catch (error) {
     next(error);
   }
@@ -149,47 +161,51 @@ const deleteCustomer = async (req, res, next) => {
 
 const duplicateCustomers = async (req, res, next) => {
   try {
-    const {_ids} = req.body;
-    if (!Array.isArray(_ids) || _ids.length === 0) {
-      res.status(400);
-      throw new Error("Customer IDs array is required");
-    }
+    const { error, value } = duplicateMultipleCustomersSchema.validate(
+      req.body,
+      {
+        abortEarly: false,
+        stripUnknown: true,
+      }
+    );
 
-    const customers = await Customer.find({ _id: { $in: _ids } });
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+    const customers = await Customer.find({ _id: { $in: value.ids } });
     if (!customers || customers.length === 0) {
-      res.status(404);
-      throw new Error("Customer not found");
+      throw createError(404, "No customers found for duplication");
     }
-    const duplicationPromises = customers.map(async (customer) => {
-      const newCustomer = new Customer({
-        fullName: customer.fullName,
-        phone: customer.phone,
-        address: customer.address,
-        isBulkCustomer: customer.isBulkCustomer,
-      });
 
+    const duplicationPromises = customers.map(async (customer) => {
+      const { error, value } = createCustomerSchema.validate(
+        {
+          fullName: customer.fullName,
+          phone: customer.phone,
+          address: customer.address,
+          isBulkCustomer: customer.isBulkCustomer,
+        },
+        {
+          abortEarly: false,
+          stripUnknown: true,
+        }
+      );
+
+      if (error) {
+        throw createError(400, error.details.map((d) => d.message).join(", "));
+      }
+
+      const newCustomer = new Customer(value);
       let savedCustomer = await newCustomer.save();
       if (!savedCustomer) {
-        res.status(400);
-        throw new Error("Customer duplication failed");
+        throw createError(400, "Customer duplication failed");
       }
-      
+
       return savedCustomer;
     });
 
     const duplicatedCustomers = await Promise.all(duplicationPromises);
-    duplicatedCustomers.forEach((customer, index) => {
-      duplicatedCustomers[index] = {
-        _id: customer._id,
-        customerCode: customer.customerCode,
-        fullName: customer.fullName,
-        phone: customer.phone,
-        address: flattenObject(customer.address),
-        isBulkCustomer: customer.isBulkCustomer,
-        createdAt: customer.createdAt,
-        updatedAt: customer.updatedAt,
-      };
-    });
+
     response(res, duplicatedCustomers, "Customers duplicated successfully");
   } catch (error) {
     next(error);
@@ -202,5 +218,6 @@ export default {
   getCustomer,
   updateCustomer,
   deleteCustomer,
+  deleteCustomers,
   duplicateCustomers,
 };

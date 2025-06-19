@@ -2,7 +2,7 @@ import Joi from "joi";
 import { joiObjectId } from "../custom/customValidators.js";
 import { createSparePartEntrySchema, updateSparePartEntrySchema } from "../sparePartEntry/sparePartEntry.validation.js";
 
-export const repairJobJoiSchema = Joi.object({
+export const createRepairJobSchema = Joi.object({
   repairStatus: Joi.string()
     .valid("pending", "in-progress", "incomplete", "complete", "picked")
     .default("pending"),
@@ -52,7 +52,7 @@ export const repairJobJoiSchema = Joi.object({
   pickedAt: Joi.date().optional().allow(null),
 });
 
-export const repairJobUpdateSchema = Joi.object({
+export const updateRepairJobSchema = Joi.object({
   repairStatus: Joi.string()
     .valid("pending", "in-progress", "incomplete", "complete", "picked")
     .default("pending"),
@@ -97,4 +97,4 @@ export const repairJobUpdateSchema = Joi.object({
   notes: Joi.string().optional().allow(null, ""),
 
   pickedAt: Joi.date().optional().allow(null),
-});
+}).min(1);

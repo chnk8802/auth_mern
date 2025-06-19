@@ -31,7 +31,6 @@ const customerSchema = mongoose.Schema(
       city: {
         type: String,
         trim: true,
-        required: true,
       },
       state: {
         type: String,

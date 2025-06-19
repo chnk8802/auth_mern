@@ -224,8 +224,7 @@ const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
     if (!email) {
-      res.status(400);
-      throw new Error("Email is required");
+      throw createError(400, "Email is required");
     }
     const user = await User.findOne({ email }).select(
       "+resetPasswordToken isResetPasswordTokenExpired"
