@@ -5,11 +5,10 @@ import permit from "../middlewares/permissionMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", auth, permit(["admin"]), userController.getUsers);
-router.get("/", auth, permit(["admin"]), userController.getUsers);
-router.patch("/", auth, permit(["admin", "manager"]), userController.updateUsers);
+router.get("/", auth, permit(["admin", "manager"]), userController.getUsers);
+router.patch("/", auth, permit(["admin"]), userController.updateUsers);
 router.get("/me", auth, userController.getCurrentUser);
-router.get("/:id", auth, permit(["admin"]), userController.getUser);
+router.get("/:id", auth, permit(["admin", "manager"]), userController.getUser);
 router.patch("/:id", auth, permit(["admin"]), userController.updateUser);
 router.delete("/:id", auth, permit(["admin"]), userController.deleteUser);
 

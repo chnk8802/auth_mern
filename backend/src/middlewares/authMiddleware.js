@@ -1,21 +1,18 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
+import { createError } from "../utils/errorHandler.js";
 
 const auth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      const err = new Error("Unauthorized access");
-      err.status = 401;
-      throw err;
+      throw createError(401, "Unauthorized access");
     }
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     const user = await User.findById(decoded.userId);
     if (!user) {
-      const err = new Error("Unauthorized access");
-      err.status = 401;
-      throw err;
+      throw createError(401, "Unauthorized access");
     }
     req.user = user;
     next();

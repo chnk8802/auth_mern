@@ -1,9 +1,14 @@
-// utils/pagination.js
 import { createError } from "./errorHandler.js";
+import { paginationSchema } from "../validations/pagination.validation.js";
+
 export const getPaginationOptions = (query) => {
+  const {error, value} = paginationSchema.validate(query)
+  if (error) {
+    throw createError(400, error.details.map(d => d.message).join(", "))
+  }
   let MAX_LIMIT = 200;
-  let page = parseInt(query.page) || 1;
-  let limit = parseInt(query.limit) || 10;
+  let page = parseInt(value.page) || 1;
+  let limit = parseInt(value.limit) || 10;
 
   if (limit > MAX_LIMIT) {
     throw createError(400, `Page size must not exceed ${MAX_LIMIT}`);

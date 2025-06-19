@@ -1,38 +1,31 @@
 import User from "../models/userModel.js";
 import response from "../utils/response.js";
 import flattenObject from "../utils/flattenObject.js";
-import { updateUserSchema } from "../validations/user/user.validation.js";
+import {
+  deleteMultipleUsersSchema,
+  deleteSingleUserSchema,
+  updateUserSchema,
+} from "../validations/user/user.validation.js";
+import { getPaginationOptions } from "../utils/pagination.js";
+import { createError } from "../utils/errorHandler.js";
 
 const getUsers = async (req, res, next) => {
   try {
-    const { page, pageSize } = req.query;
-    if (pageSize > 200) {
-      res.status(400);
-      throw new Error("Page size must not exceed 200");
-    }
-    const paginationOptions = {
-      page: parseInt(page) || 1,
-      limit: parseInt(pageSize) || 10,
-      sort: { createdAt: -1 }, // Sort by creation date, newest first
-    };
+    const { page, limit, skip, sort } = getPaginationOptions(req.query);
 
-    const users = await User.find({})
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit)
-      .sort(paginationOptions.skip);
+    const users = await User.find({}).skip(skip).limit(limit).sort(sort);
 
     if (!users) {
-      res.status(404);
-      throw next(new Error("No users Found!"));
+      throw createError(404, "No users Found!");
     }
     const totalRecords = await User.countDocuments({});
 
     response(res, users, "Users fetched successfully", {
       pagination: {
-        page: paginationOptions.page,
-        pageSize: paginationOptions.limit,
+        page,
+        limit,
         total: totalRecords,
-      }
+      },
     });
   } catch (error) {
     next(error);
@@ -42,18 +35,13 @@ const getUsers = async (req, res, next) => {
 const getCurrentUser = async (req, res, next) => {
   try {
     const loggedinUserId = req.user._id;
-    if (!loggedinUserId) {
-      res.status(400);
-      throw new Error("User ID is required");
-    }
-    let user = await User.findById(loggedinUserId);
 
-    if (!user) {
-      res.status(404);
-      throw new Error("User not found");
+    let currentUser = await User.findById(loggedinUserId);
+    if (!currentUser) {
+      throw createError(404, "User not found");
     }
 
-    response(res, user, "User fetched successfully");
+    response(res, currentUser, "User fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -62,15 +50,11 @@ const getCurrentUser = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    if (!userId) {
-      res.status(400);
-      throw new Error("User ID is required");
-    }
-    let user = await User.findById(userId);
+
+    const user = await User.findById(userId);
 
     if (!user) {
-      res.status(404);
-      throw new Error("User not found");
+      throw createError(404, "User not found");
     }
 
     response(res, user, "User fetched successfully");
@@ -81,31 +65,24 @@ const getUser = async (req, res, next) => {
 
 const updateUsers = async (req, res, next) => {
   try {
-    const { _ids, field } = req.body;
+    const { ids, field } = req.body;
     const MAX_BATCH_SIZE = 5000;
 
-    if (!Array.isArray(_ids) || _ids.length === 0) {
-      res.status(400);
-      throw new Error("Invalid data format. Expected an array of user IDs.");
+    if (!Array.isArray(ids) || ids.length === 0) {
+      throw createError(400, "Invalid data format. Expected an array of user IDs.");
     }
 
-    if (_ids.length > MAX_BATCH_SIZE) {
-      res.status(413);
-      throw new Error(
-        `Maximum batch size exceeded. Limit is ${MAX_BATCH_SIZE} users.`
-      );
+    if (ids.length > MAX_BATCH_SIZE) {
+      throw createError(413, `Maximum batch size exceeded. Limit is ${MAX_BATCH_SIZE} users.`);
     }
 
     if (!field || typeof field !== "object") {
-      res.status(400);
-      throw new Error("Invalid update field format. Expected an object.");
+      throw createError(400, "Invalid update field format. Expected an object.");
     }
-    // console.log(flattenObject(field)) convert nested objects to flat structure to prevent address object overwriting
-    // For example, if field is { address: { city: "New York" } },
-    // Example: { address: { city: "New York" } } becomes { "address.city": "New York" }
+
     const updatedUsers = await User.updateMany(
       {
-        _id: { $in: _ids },
+        _id: { $in: ids },
       },
       {
         $set: flattenObject(field),
@@ -113,8 +90,7 @@ const updateUsers = async (req, res, next) => {
       { runValidators: true }
     );
     if (updatedUsers.modifiedCount === 0) {
-      res.status(404);
-      throw new Error("No users updated");
+      throw createError(400, "No users updated");
     }
     response(res, updatedUsers, "Users Updated Successfully");
   } catch (error) {
@@ -126,25 +102,18 @@ const updateUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
 
-    if (!userId) {
-      throw createError(400, "User ID is required");
-    }
-
     const { error, value } = updateUserSchema.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
 
     if (error) {
-      throw createError(400, error.details.map(d => d.message).join(", "));
+      throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    const updates = {};
-    if (Object.keys(value).length > 0) {
-      updates.$set = value;
-    }
+    const flattenedUpdates = flattenObject(value);
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+    const updatedUser = await User.findByIdAndUpdate(userId, flattenedUpdates, {
       new: true,
       runValidators: true,
     });
@@ -161,18 +130,23 @@ const updateUser = async (req, res, next) => {
 
 const deleteUsers = async (req, res, next) => {
   try {
-    const { userIds } = req.body;
-    if (!Array.isArray(userIds) || userIds.length === 0) {
-      res.status(400);
-      throw new Error("Invalid data format. Expected an array of user IDs.");
+    const { error, value } = deleteMultipleUsersSchema.validate(req.params, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    const deleteResults = await User.deleteMany({ _id: { $in: userIds } });
-    if (!deleteResults) {
-      res.status(404);
-      throw new Error("No users found to delete");
+    const result = await User.deleteMany({ _id: { $in: value.ids } });
+    if (result.deletedCount === 0) {
+      throw createError(404, "No customers found for deletion");
     }
-    response(res, deleteResults, "Users deleted successfully");
+    response(
+      res,
+      { deletedCount: result.deletedCount },
+      "Users deleted successfully"
+    );
   } catch (error) {
     next(error);
   }
@@ -180,18 +154,15 @@ const deleteUsers = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-
-    if (!userId) {
-      res.status(400);
-      throw new Error("User ID is required");
+    const { error, value } = deleteSingleUserSchema.validate(req.params);
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    let user = await User.findByIdAndDelete(userId);
+    const user = await User.findByIdAndDelete(value.id);
 
     if (!user) {
-      res.status(404);
-      throw new Error("User not found");
+      throw createError(404, "User not found");
     }
 
     user = {

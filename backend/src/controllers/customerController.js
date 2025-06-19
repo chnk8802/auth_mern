@@ -82,9 +82,6 @@ const getCustomer = async (req, res, next) => {
 const updateCustomer = async (req, res, next) => {
   try {
     const customerId = req.params.id;
-    if (!customerId) {
-      throw createError(400, "Customer ID is required");
-    }
 
     const { error, value } = updateCustomerSchema.validate(req.body, {
       abortEarly: false,
@@ -116,7 +113,10 @@ const updateCustomer = async (req, res, next) => {
 
 const deleteCustomer = async (req, res, next) => {
   try {
-    const { error, value } = deleteSingleCustomerSchema.validate(req.params);
+    const { error, value } = deleteSingleCustomerSchema.validate(req.params, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
