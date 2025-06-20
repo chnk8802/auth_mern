@@ -1,17 +1,18 @@
 import RepairJob from "../models/repairJobModel.js";
 import Customer from "../models/customerModel.js";
 import {
-  createRepairJobSchema,
-  updateRepairJobSchema,
+  createRepairJobValidation,
+  updateRepairJobValidation,
 } from "../validations/repairJob/repairJob.validation.js";
 import response from "../utils/response.js";
 import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import { listRepairJobs } from "../services/repairJobServices.js";
+import { paramIdValidation, multipleIdsValidation } from "../validations/common/common.validation.js";
 
 const createRepairJob = async (req, res, next) => {
   try {
-    const { error, value } = createRepairJobSchema.validate(req.body, {
+    const { error, value } = createRepairJobValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -68,6 +69,7 @@ const getAllRepairJobs = async (req, res, next) => {
       pagination: {
         page,
         limit,
+        sort,
         total: totalRecords,
       },
     });
@@ -96,7 +98,7 @@ const getRepairJobById = async (req, res, next) => {
     if (!repairJob) {
       throw createError(404, "Repair job not found");
     }
-
+    console.log(repairJob)
     response(res, repairJob, "Repair job retrieved successfully");
   } catch (error) {
     next(error);
@@ -107,7 +109,7 @@ const updateRepairJob = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
 
-    const { error, value } = updateRepairJobSchema.validate(req.body, {
+    const { error, value } = updateRepairJobValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -247,7 +249,7 @@ const deleteRepairJob = async (req, res, next) => {
 const searchRepairJobs = async (req, res, next) => {
   try {
     const { search } = req.query;
-    const { page, limit, sort } = getPaginationOptions(req.query);
+    const { page, limit, skip, sort } = getPaginationOptions(req.query);
     console.log(search, page, limit, sort);
     const result = await listRepairJobs({
       search,

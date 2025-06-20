@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
+import { PAYMENT_METHODS } from "../constants/enums.js";
 
 const paymentSchema = new mongoose.Schema(
   {
@@ -11,8 +12,7 @@ const paymentSchema = new mongoose.Schema(
     },
     customer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
-      required: true,
+      ref: "Customer"
     },
 
     // ✅ Track each repair job with its corresponding amount paid
@@ -20,9 +20,8 @@ const paymentSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ["Cash", "Card", "UPI", "Bank Transfer"],
+      enum: [...PAYMENT_METHODS],
       default: "Cash",
-      required: true,
     }
   },
   {

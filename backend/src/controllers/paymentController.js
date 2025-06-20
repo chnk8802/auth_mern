@@ -2,53 +2,21 @@ import mongoose from "mongoose";
 import Payment from "../models/paymentModel.js";
 import flattenObject from "../utils/flattenObject.js";
 import response from "../utils/response.js";
+import { paramIdValidation, multipleIdsValidation } from "../validations/common/common.validation.js";
+import { createError } from "../utils/errorHandler.js";
+import { createPaymentValidation } from "../validations/payment/payment.validation.js";
 
 const createPayment = async (req, res, next) => {
   try {
-    const { customer, paymentEntries, paymentMethod } = req.body;
-    if (!customer) {
-      res.status(400);
-      throw new Error("Customer ID is required");
-    }
-    if (!Array.isArray(paymentEntries)) {
-      res.status(400);
-      throw new Error("Invalid data format. Expected an array.");
+    const {error, value} = createPaymentValidation.validate(req.body);
+    if (error) {
+      throw createError(400, error.details.map(d=>d.message).join(", "))
     }
 
-    const flattenPaymentEntries = [];
-
-    for (const entry of paymentEntries) {
-      if (
-        !entry.repairJob ||
-        entry.amountPaid === undefined ||
-        !entry.supplier
-      ) {
-        throw new Error("Missing required fields");
-      }
-      if (
-        !mongoose.Types.ObjectId.isValid(entry.repairJob) ||
-        isNaN(entry.amountPaid) ||
-        !mongoose.Types.ObjectId.isValid(entry.supplier)
-      ) {
-        throw new Error(
-          "Invalid repairJob, amountPaid, or supplier in payment entry"
-        );
-      }
-      flattenPaymentEntries.push(flattenObject(entry));
-    }
-
-    const payment = new Payment({
-      customer,
-      paymentEntries: flattenPaymentEntries,
-      paymentMethod,
-    });
-
+    const payment = new Payment(value);
     let savedPayment = await payment.save();
 
-    if (!savedPayment) {
-      res.status(400);
-      throw new Error("Cannot create payment");
-    }
+    if (!savedPayment) throw createError(500, "Failed to create Payment");
 
     response(res, savedPayment, "Payment created successffully.");
   } catch (error) {

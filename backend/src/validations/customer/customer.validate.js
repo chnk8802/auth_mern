@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { joiObjectId } from "../custom/customValidators.js";
+import { COUNTRIES, STATES } from "../../constants/enums.js";
 
-export const createCustomerSchema = Joi.object({
+export const createCustomerValidation = Joi.object({
   fullName: Joi.string().trim().min(3).max(100).required(),
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
@@ -14,46 +14,8 @@ export const createCustomerSchema = Joi.object({
     street: Joi.string().trim().optional(),
     city: Joi.string().trim().required(),
     state: Joi.string()
-      .valid(
-        // States
-        "Andhra Pradesh",
-        "Arunachal Pradesh",
-        "Assam",
-        "Bihar",
-        "Chhattisgarh",
-        "Goa",
-        "Gujarat",
-        "Haryana",
-        "Himachal Pradesh",
-        "Jharkhand",
-        "Karnataka",
-        "Kerala",
-        "Madhya Pradesh",
-        "Maharashtra",
-        "Manipur",
-        "Meghalaya",
-        "Mizoram",
-        "Nagaland",
-        "Odisha",
-        "Punjab",
-        "Rajasthan",
-        "Sikkim",
-        "Tamil Nadu",
-        "Telangana",
-        "Tripura",
-        "Uttar Pradesh",
-        "Uttarakhand",
-        "West Bengal",
-        // UTs
-        "Andaman and Nicobar Islands",
-        "Chandigarh",
-        "Dadra and Nagar Haveli and Daman and Diu",
-        "Delhi",
-        "Jammu and Kashmir",
-        "Ladakh",
-        "Lakshadweep",
-        "Puducherry"
-      )
+      .trim()
+      .valid(...STATES)
       .default("Uttar Pradesh")
       .optional(),
 
@@ -69,7 +31,7 @@ export const createCustomerSchema = Joi.object({
   isBulkCustomer: Joi.boolean().optional(),
 });
 
-export const updateCustomerSchema = Joi.object({
+export const updateCustomerValidation = Joi.object({
   fullName: Joi.string().trim().min(3).max(100).optional(),
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
@@ -79,49 +41,10 @@ export const updateCustomerSchema = Joi.object({
         "Phone number must be a valid 10-digit Indian number",
     }),
   address: Joi.object({
-    street: Joi.string().trim().optional(),
+    street: Joi.string().allow("").trim().optional(),
     city: Joi.string().trim().optional(),
     state: Joi.string()
-      .valid(
-        // States
-        "Andhra Pradesh",
-        "Arunachal Pradesh",
-        "Assam",
-        "Bihar",
-        "Chhattisgarh",
-        "Goa",
-        "Gujarat",
-        "Haryana",
-        "Himachal Pradesh",
-        "Jharkhand",
-        "Karnataka",
-        "Kerala",
-        "Madhya Pradesh",
-        "Maharashtra",
-        "Manipur",
-        "Meghalaya",
-        "Mizoram",
-        "Nagaland",
-        "Odisha",
-        "Punjab",
-        "Rajasthan",
-        "Sikkim",
-        "Tamil Nadu",
-        "Telangana",
-        "Tripura",
-        "Uttar Pradesh",
-        "Uttarakhand",
-        "West Bengal",
-        // UTs
-        "Andaman and Nicobar Islands",
-        "Chandigarh",
-        "Dadra and Nagar Haveli and Daman and Diu",
-        "Delhi",
-        "Jammu and Kashmir",
-        "Ladakh",
-        "Lakshadweep",
-        "Puducherry"
-      )
+      .valid(...STATES)
       .default("Uttar Pradesh")
       .optional(),
 
@@ -132,46 +55,10 @@ export const updateCustomerSchema = Joi.object({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
 
-    country: Joi.string().valid("India").default("India").optional(),
+    country: Joi.string()
+      .valid(...COUNTRIES)
+      .default("India")
+      .optional(),
   }).optional(),
   isBulkCustomer: Joi.boolean().optional(),
 }).min(1);
-
-export const deleteSingleCustomerSchema = Joi.object({
-  id: joiObjectId().required().messages({
-    "any.required": "Customer ID is required",
-    "string.pattern.name": "Invalid Customer ID",
-  }),
-});
-
-export const deleteMultipleCustomersSchema = Joi.object({
-  ids: Joi.array()
-    .items(
-      joiObjectId().messages({
-        "string.pattern.name": "Invalid Customer ID in list",
-      })
-    )
-    .min(1)
-    .required()
-    .messages({
-      "array.base": "IDs must be an array",
-      "array.min": "At least one ID is required",
-      "any.required": "Customer IDs are required",
-    }),
-});
-
-export const duplicateMultipleCustomersSchema = Joi.object({
-  ids: Joi.array()
-    .items(
-      joiObjectId().messages({
-        "string.pattern.name": "Invalid Customer ID in list",
-      })
-    )
-    .min(1)
-    .required()
-    .messages({
-      "array.base": "ids must be an array",
-      "array.min": "At least one ID is required",
-      "any.required": "'ids' array is required",
-    }),
-});

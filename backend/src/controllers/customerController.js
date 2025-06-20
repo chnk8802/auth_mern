@@ -2,18 +2,16 @@ import Customer from "../models/customerModel.js";
 import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import response from "../utils/response.js";
-import flattenObject from "../utils/flattenObject.js"
+import flattenObject from "../utils/flattenObject.js";
 import {
-  createCustomerSchema,
-  deleteMultipleCustomersSchema,
-  deleteSingleCustomerSchema,
-  duplicateMultipleCustomersSchema,
-  updateCustomerSchema,
+  createCustomerValidation,
+  updateCustomerValidation,
 } from "../validations/customer/customer.validate.js";
+import {paramIdValidation, multipleIdsValidation} from '../validations/common/common.validation.js'
 
 const createCustomer = async (req, res, next) => {
   try {
-    const { error, value } = createCustomerSchema.validate(req.body, {
+    const { error, value } = createCustomerValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -55,6 +53,7 @@ const getCustomers = async (req, res, next) => {
       pagination: {
         page,
         limit,
+        sort,
         total: totalRecords,
       },
     });
@@ -65,11 +64,14 @@ const getCustomers = async (req, res, next) => {
 
 const getCustomer = async (req, res, next) => {
   try {
-    const customerId = req.params.id;
-    if (!customerId) {
-      throw createError(400, "Customer ID is required");
+    const {error, value} = paramIdValidation.validate(req.params, {
+      abortEarly: true,
+      stripUnknown: true
+    })
+    if (error) {
+      throw createError(400, error.details.map(d=> d.message).join(", "));
     }
-    const customer = await Customer.findById(customerId);
+    const customer = await Customer.findById(value.id);
     if (!customer) {
       throw createError(404, "Customer not found");
     }
@@ -83,7 +85,7 @@ const updateCustomer = async (req, res, next) => {
   try {
     const customerId = req.params.id;
 
-    const { error, value } = updateCustomerSchema.validate(req.body, {
+    const { error, value } = updateCustomerValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -113,7 +115,7 @@ const updateCustomer = async (req, res, next) => {
 
 const deleteCustomer = async (req, res, next) => {
   try {
-    const { error, value } = deleteSingleCustomerSchema.validate(req.params, {
+    const { error, value } = multipleIdsValidation.validate(req.params, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -121,17 +123,16 @@ const deleteCustomer = async (req, res, next) => {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    const customer = await Customer.findByIdAndDelete(value.id);
-    if (!customer) {
-      throw createError(404, "Customer not found");
+    const result = await Customer.findByIdAndDelete(value.id);
+    if (!result) {
+      throw createError(404, "Record not found");
     }
 
-    const deletedCustomer = {
-      _id: customer._id,
-      customerCode: customer.customerCode,
+    const deletedresult = {
+      _id: result._id,
     };
 
-    response(res, deletedCustomer, "Customer deleted successfully");
+    response(res, deletedresult, "Record deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -139,7 +140,7 @@ const deleteCustomer = async (req, res, next) => {
 
 const deleteCustomers = async (req, res, next) => {
   try {
-    const { error, value } = deleteMultipleCustomersSchema.validate(req.body, {
+    const { error, value } = multipleIdsValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -150,10 +151,14 @@ const deleteCustomers = async (req, res, next) => {
     const result = await Customer.deleteMany({ _id: { $in: value.ids } });
 
     if (result.deletedCount === 0) {
-      throw createError(404, "No customers found for deletion");
+      throw createError(404, "No records found for deletion");
     }
 
-    response(res, { deletedCount: result.deletedCount });
+    response(
+      res,
+      { deletedCount: result.deletedCount },
+      "Records deleted successfully"
+    );
   } catch (error) {
     next(error);
   }
@@ -161,29 +166,26 @@ const deleteCustomers = async (req, res, next) => {
 
 const duplicateCustomers = async (req, res, next) => {
   try {
-    const { error, value } = duplicateMultipleCustomersSchema.validate(
-      req.body,
-      {
-        abortEarly: false,
-        stripUnknown: true,
-      }
-    );
+    const { error, value } = duplicateMultipleValidation.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
 
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    const customers = await Customer.find({ _id: { $in: value.ids } });
-    if (!customers || customers.length === 0) {
-      throw createError(404, "No customers found for duplication");
+    const duplicated = await Customer.find({ _id: { $in: value.ids } });
+    if (!duplicated || duplicated.length === 0) {
+      throw createError(404, "No records found for duplication");
     }
 
-    const duplicationPromises = customers.map(async (customer) => {
-      const { error, value } = createCustomerSchema.validate(
+    const duplicationPromises = duplicated.map(async (record) => {
+      const { error, value } = createCustomerValidation.validate(
         {
-          fullName: customer.fullName,
-          phone: customer.phone,
-          address: customer.address,
-          isBulkCustomer: customer.isBulkCustomer,
+          fullName: record.fullName,
+          phone: record.phone,
+          address: record.address,
+          isBulkCustomer: record.isBulkCustomer,
         },
         {
           abortEarly: false,
@@ -195,18 +197,18 @@ const duplicateCustomers = async (req, res, next) => {
         throw createError(400, error.details.map((d) => d.message).join(", "));
       }
 
-      const newCustomer = new Customer(value);
-      let savedCustomer = await newCustomer.save();
-      if (!savedCustomer) {
-        throw createError(400, "Customer duplication failed");
+      const newRecord = new Customer(value);
+      let savedRecord = await newRecord.save();
+      if (!savedRecord) {
+        throw createError(400, "Duplication failed");
       }
 
-      return savedCustomer;
+      return savedRecord;
     });
 
-    const duplicatedCustomers = await Promise.all(duplicationPromises);
+    const duplicatedRecords = await Promise.all(duplicationPromises);
 
-    response(res, duplicatedCustomers, "Customers duplicated successfully");
+    response(res, duplicatedRecords, "Customers duplicated successfully");
   } catch (error) {
     next(error);
   }

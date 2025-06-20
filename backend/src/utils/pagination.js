@@ -1,8 +1,8 @@
 import { createError } from "./errorHandler.js";
-import { paginationSchema } from "../validations/pagination.validation.js";
+import { paginationValidation } from "../validations/pagination.validation.js";
 
 export const getPaginationOptions = (query) => {
-  const {error, value} = paginationSchema.validate(query)
+  const {error, value} = paginationValidation.validate(query)
   if (error) {
     throw createError(400, error.details.map(d => d.message).join(", "))
   }

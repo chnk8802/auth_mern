@@ -1,11 +1,11 @@
 import User from "../models/userModel.js";
 import response from "../utils/response.js";
 import flattenObject from "../utils/flattenObject.js";
+import { updateUserValidation } from "../validations/user/user.validation.js";
 import {
-  deleteMultipleUsersSchema,
-  deleteSingleUserSchema,
-  updateUserSchema,
-} from "../validations/user/user.validation.js";
+  paramIdValidation,
+  multipleIdsValidation,
+} from "../validations/common/common.validation.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import { createError } from "../utils/errorHandler.js";
 
@@ -24,6 +24,7 @@ const getUsers = async (req, res, next) => {
       pagination: {
         page,
         limit,
+        sort,
         total: totalRecords,
       },
     });
@@ -49,9 +50,16 @@ const getCurrentUser = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const { error, value } = paramIdValidation.validate(req.params, {
+      abortEarly: true,
+      stripUnknown: true,
+    });
 
-    const user = await User.findById(userId);
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+
+    const user = await User.findById(value.id);
 
     if (!user) {
       throw createError(404, "User not found");
@@ -69,15 +77,24 @@ const updateUsers = async (req, res, next) => {
     const MAX_BATCH_SIZE = 5000;
 
     if (!Array.isArray(ids) || ids.length === 0) {
-      throw createError(400, "Invalid data format. Expected an array of user IDs.");
+      throw createError(
+        400,
+        "Invalid data format. Expected an array of user IDs."
+      );
     }
 
     if (ids.length > MAX_BATCH_SIZE) {
-      throw createError(413, `Maximum batch size exceeded. Limit is ${MAX_BATCH_SIZE} users.`);
+      throw createError(
+        413,
+        `Maximum batch size exceeded. Limit is ${MAX_BATCH_SIZE} users.`
+      );
     }
 
     if (!field || typeof field !== "object") {
-      throw createError(400, "Invalid update field format. Expected an object.");
+      throw createError(
+        400,
+        "Invalid update field format. Expected an object."
+      );
     }
 
     const updatedUsers = await User.updateMany(
@@ -102,7 +119,7 @@ const updateUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
 
-    const { error, value } = updateUserSchema.validate(req.body, {
+    const { error, value } = updateUserValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -130,7 +147,7 @@ const updateUser = async (req, res, next) => {
 
 const deleteUsers = async (req, res, next) => {
   try {
-    const { error, value } = deleteMultipleUsersSchema.validate(req.params, {
+    const { error, value } = multipleIdsValidation.validate(req.params, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -154,7 +171,7 @@ const deleteUsers = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const { error, value } = deleteSingleUserSchema.validate(req.params);
+    const { error, value } = multipleIdsValidation.validate(req.params);
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }

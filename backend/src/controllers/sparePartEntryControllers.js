@@ -4,15 +4,15 @@ import Supplier from "../models/supplierModel.js";
 import response from "../utils/response.js";
 import { createError } from "../utils/errorHandler.js";
 import {
-  createSparePartEntrySchema,
-  updateSparePartEntrySchema,
-} from "../validations/sparePartEntry/sparePartEntry.validation.js";
+  createSparePartEntryValidation,
+  updateSparePartEntryValidation,
+} from "../validations/repairJob/sparePartEntry/sparePartEntry.validation.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import RepairJob from "../models/repairJobModel.js";
 
 const createSparePartEntry = async (req, res, next) => {
   try {
-    const { error, value } = createSparePartEntrySchema.validate(req.body, {
+    const { error, value } = createSparePartEntryValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -20,13 +20,11 @@ const createSparePartEntry = async (req, res, next) => {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    // Validate Repair Job
     const repairJobExists = await RepairJob.findById(value.repairJob).select("_id");
     if (!repairJobExists) {
       throw createError(404, "Repair Job not found or invalid reference.");
     }
 
-    // Validate Spare Part (if provided)
     if (value.sparePart) {
       const sparePartExists = await SparePart.findById(value.sparePart).select("_id").lean();
       if (!sparePartExists) {
@@ -34,20 +32,17 @@ const createSparePartEntry = async (req, res, next) => {
       }
     }
 
-    // Validate Supplier
     const supplierExists = await Supplier.findById(value.supplier).select("_id").lean();
     if (!supplierExists) {
       throw createError(404, "Supplier not found");
     }
 
-    // Save SparePartEntry
     const sparePartEntry = new SparePartEntry(value);
     const savedSparePartEntry = await sparePartEntry.save();
     if (!savedSparePartEntry) {
       throw createError(400, "Failed to create SparePartEntry");
     }
 
-    // Update RepairJob with the new SparePartEntry ID
     const updateRepairJob = await RepairJob.findByIdAndUpdate(
       value.repairJob,
       { $push: { spareParts: savedSparePartEntry._id } },
@@ -80,6 +75,7 @@ const getAllSparePartEntries = async (req, res, next) => {
       pagination: {
         page,
         limit,
+        sort,
         total: totalRecords,
       },
     });
@@ -110,7 +106,7 @@ const updateSparePartEntry = async (req, res, next) => {
   try {
     const sparePartEntryId = req.params.id;
 
-    const { error, value } = updateSparePartEntrySchema.validate(req.body, {
+    const { error, value } = updateSparePartEntryValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });

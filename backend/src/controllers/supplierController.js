@@ -2,11 +2,16 @@ import Supplier from "../models/supplierModel.js";
 import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import response from "../utils/response.js";
-import { createSupplierSchema } from "../validations/supplier/supplier.validation.js";
+import flattenObject from "../utils/flattenObject.js";
+import {
+  createSupplierValidation,
+  updateSupplierValidation,
+} from "../validations/supplier/supplier.validation.js";
+import {paramIdValidation, multipleIdsValidation} from '../validations/common/common.validation.js'
 
 const createSupplier = async (req, res, next) => {
   try {
-    const { error, value } = createSupplierSchema.validate(req.body, {
+    const { error, value } = createSupplierValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -43,6 +48,7 @@ const getSuppliers = async (req, res, next) => {
       pagination: {
         page,
         limit,
+        sort,
         totalCount: totalCount,
       },
     });
@@ -67,17 +73,25 @@ const getSupplier = async (req, res, next) => {
 const updateSupplier = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { fullName, phone, address } = req.body;
+    const { error, value } = updateSupplierValidation.validate(req.body, {
+      abortEarly: true,
+      stripUnknown: true,
+    });
+
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+
+    const flattenupdated = flattenObject(value);
 
     const updatedSupplier = await Supplier.findByIdAndUpdate(
       id,
-      { fullName, phone, address },
+      flattenupdated,
       { new: true, runValidators: true }
     );
 
     if (!updatedSupplier) {
-      res.status(404);
-      throw new Error("Supplier not found");
+      throw createError(404, "Supplier not found");
     }
 
     response(res, updatedSupplier, "Supplier updated successfully");
@@ -88,17 +102,99 @@ const updateSupplier = async (req, res, next) => {
 
 const deleteSupplier = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    let deletedSupplier = await Supplier.findByIdAndDelete(id);
-    if (!deletedSupplier) {
-      res.status(404);
-      throw new Error("Supplier not found");
+    const { error, value } = multipleIdsValidation.validate(req.params, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    deletedSupplier = {
-      _id: deletedSupplier._id,
-      supplierCode: deletedSupplier.supplierCode,
+
+    const result = await Supplier.findByIdAndDelete(value.id);
+    if (!result) {
+      throw createError(404, "Record not found");
+    }
+
+    const deletedresult = {
+      _id: result._id,
     };
-    response(res, deletedSupplier, "Supplier deleted successfully");
+
+    response(res, deletedresult, "Record deleted successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteSuppliers = async (req, res, next) => {
+  try {
+    const { error, value } = multipleIdsValidation.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+
+    const result = await Supplier.deleteMany({ _id: { $in: value.ids } });
+
+    if (result.deletedCount === 0) {
+      throw createError(404, "No records found for deletion");
+    }
+
+    response(
+      res,
+      { deletedCount: result.deletedCount },
+      "Records deleted successfully"
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+const duplicateSuppliers = async (req, res, next) => {
+  try {
+    const { error, value } = duplicateMultipleValidation.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+    const duplicated = await Supplier.find({ _id: { $in: value.ids } });
+    if (!duplicated || duplicated.length === 0) {
+      throw createError(404, "No records found for duplication");
+    }
+
+    const duplicationPromises = duplicated.map(async (record) => {
+      const { error, value } = createSupplierValidation.validate(
+        {
+          fullName: record.fullName,
+          phone: record.phone,
+          address: record.address,
+        },
+        {
+          abortEarly: false,
+          stripUnknown: true,
+        }
+      );
+
+      if (error) {
+        throw createError(400, error.details.map((d) => d.message).join(", "));
+      }
+
+      const newRecord = new Supplier(value);
+      let savedRecord = await newRecord.save();
+      if (!savedRecord) {
+        throw createError(400, "Duplication failed");
+      }
+
+      return savedRecord;
+    });
+
+    const duplicatedRecords = await Promise.all(duplicationPromises);
+
+    response(res, duplicatedRecords, "Customers duplicated successfully");
   } catch (error) {
     next(error);
   }
@@ -110,4 +206,6 @@ export default {
   getSupplier,
   updateSupplier,
   deleteSupplier,
+  deleteSuppliers,
+  duplicateSuppliers
 };

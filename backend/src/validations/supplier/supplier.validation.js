@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const createSupplierSchema = Joi.object({
+export const createSupplierValidation = Joi.object({
   fullName: Joi.string().trim().min(3).max(100).required(),
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
@@ -67,7 +67,7 @@ export const createSupplierSchema = Joi.object({
   }).optional(),
 });
 
-export const updateSupplierSchema = Joi.object({
+export const updateSupplierValidation = Joi.object({
   fullName: Joi.string().trim().min(3).max(100).optional(),
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)

@@ -8,11 +8,12 @@ import {
 import response from "../utils/response.js";
 import sendResetPasswordEmail from "../utils/email.js";
 import { createError } from "../utils/errorHandler.js";
-import { loginUserSchema, signupUserSchema } from "../validations/user/user.validation.js";
+import { loginUserValidation, signupUserValidation } from "../validations/user/user.validation.js";
+import { paramIdValidation, multipleIdsValidation } from "../validations/common/common.validation.js";
 
 const register = async (req, res, next) => {
   try {
-    const { error, value } = signupUserSchema.validate(req.body, {
+    const { error, value } = signupUserValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
@@ -111,7 +112,7 @@ const refreshToken = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     //  Validate login input using Joi
-    const { error, value } = loginUserSchema.validate(req.body, {
+    const { error, value } = loginUserValidation.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });

@@ -10,7 +10,7 @@ const getTechnicians = async (req, res, next) => {
     const technicinians = await User.find(criteria)
       .skip(skip)
       .limit(limit)
-      .sort(skip);
+      .sort(sort);
 
     if (!technicinians) {
       throw createError(400, "No users Found!");
@@ -22,6 +22,7 @@ const getTechnicians = async (req, res, next) => {
       pagination: {
         page,
         limit,
+        sort,
         total: totalRecords,
       },
     });

@@ -2,8 +2,11 @@ import express from 'express'
 import paymentController from '../controllers/paymentController.js'
 import auth from '../middlewares/authMiddleware.js';
 import permit from '../middlewares/permissionMiddleware.js';
+import paymentEntryController from '../controllers/paymentEntryController.js';
 
 const router = express.Router();
+
+router.post('/paymententry', auth, permit(['admin', 'manager'], paymentEntryController.createPaymentEntry))
 
 router.post('/', auth, permit(["admin", "manager"]), paymentController.createPayment);
 router.get('/', auth, permit(["admin", "manager"]), paymentController.getPayments);

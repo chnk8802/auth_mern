@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { joiObjectId } from "../custom/customValidators.js";
+import { joiObjectId } from "../../custom/custom.validators.js";
 
-export const createSparePartEntrySchema = Joi.object({
+export const createSparePartEntryValidation = Joi.object({
   repairJob: joiObjectId().required(),
   sourceType: Joi.string().valid("In-house", "External").required(),
   sparePart: Joi.when("sourceType", {
@@ -18,7 +18,7 @@ export const createSparePartEntrySchema = Joi.object({
   unitCost: Joi.number().min(0).required(),
 });
 
-export const updateSparePartEntrySchema = Joi.object({
+export const updateSparePartEntryValidation = Joi.object({
   sourceType: Joi.string().valid("In-house", "External"),
   sparePart: Joi.when("sourceType", {
     is: "In-house",

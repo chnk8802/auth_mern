@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
+import { STATES, COUNTRIES } from "../constants/enums.js";
 
 const supplierSchema = new mongoose.Schema(
   {
@@ -25,51 +26,12 @@ const supplierSchema = new mongoose.Schema(
       city: { type: String, required: true },
       state: {
         type: String,
-        enum: [
-          // States
-          "Andhra Pradesh",
-          "Arunachal Pradesh",
-          "Assam",
-          "Bihar",
-          "Chhattisgarh",
-          "Goa",
-          "Gujarat",
-          "Haryana",
-          "Himachal Pradesh",
-          "Jharkhand",
-          "Karnataka",
-          "Kerala",
-          "Madhya Pradesh",
-          "Maharashtra",
-          "Manipur",
-          "Meghalaya",
-          "Mizoram",
-          "Nagaland",
-          "Odisha",
-          "Punjab",
-          "Rajasthan",
-          "Sikkim",
-          "Tamil Nadu",
-          "Telangana",
-          "Tripura",
-          "Uttar Pradesh",
-          "Uttarakhand",
-          "West Bengal",
-
-          // Union Territories
-          "Andaman and Nicobar Islands",
-          "Chandigarh",
-          "Dadra and Nagar Haveli and Daman and Diu",
-          "Delhi",
-          "Jammu and Kashmir",
-          "Ladakh",
-          "Lakshadweep",
-          "Puducherry",
-        ],
+        enum: [...STATES],
         default: "Uttar Pradesh",
         required: true,
         trim: true,
       },
+      country: { type: String, enum: [...COUNTRIES], default: "India",},
       zip: { type: String },
     },
   },
@@ -90,8 +52,8 @@ supplierSchema.pre("save", async function (next) {
 });
 
 supplierSchema.virtual("displayName").get(function () {
-  return `${this.supplierCode} - ${this.fullName}`
-})
+  return `${this.supplierCode} - ${this.fullName}`;
+});
 
 const Supplier = mongoose.model("Supplier", supplierSchema);
 

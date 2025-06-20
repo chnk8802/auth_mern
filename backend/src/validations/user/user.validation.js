@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { joiObjectId } from "../custom/customValidators.js";
+import { joiObjectId } from "../custom/custom.validators.js";
 
-export const signupUserSchema = Joi.object({
+export const signupUserValidation = Joi.object({
   email: Joi.string()
     .email({ tlds: { allow: false } }) // Relaxed validation (no .com/.in restriction)
     .required()
@@ -59,7 +59,7 @@ export const signupUserSchema = Joi.object({
   role: Joi.string().valid("admin", "manager", "technician").required()
 });
 
-export const loginUserSchema = Joi.object({
+export const loginUserValidation = Joi.object({
   email: Joi.string()
     .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in)$/)
     .required()
@@ -75,7 +75,7 @@ export const loginUserSchema = Joi.object({
     }),
 });
 
-export const updateUserSchema = Joi.object({
+export const updateUserValidation = Joi.object({
   fullName: Joi.string().trim().min(3).max(100),
 
   phone: Joi.string()
@@ -108,27 +108,3 @@ export const updateUserSchema = Joi.object({
 
   role: Joi.string().valid("admin", "manager", "technician"),
 }).min(1);
-
-
-export const deleteSingleUserSchema = Joi.object({
-  id: joiObjectId().required().messages({
-    "any.required": "ID is required",
-    "string.pattern.name": "Invalid ID",
-  }),
-});
-
-export const deleteMultipleUsersSchema = Joi.object({
-  ids: Joi.array()
-    .items(
-      joiObjectId().messages({
-        "string.pattern.name": "Invalid ID in list",
-      })
-    )
-    .min(1)
-    .required()
-    .messages({
-      "array.base": "IDs must be an array",
-      "array.min": "At least one ID is required",
-      "any.required": "IDs are required",
-    }),
-});

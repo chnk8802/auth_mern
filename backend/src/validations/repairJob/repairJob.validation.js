@@ -1,13 +1,11 @@
 import Joi from "joi";
-import { joiObjectId } from "../custom/customValidators.js";
-import { createSparePartEntrySchema, updateSparePartEntrySchema } from "../sparePartEntry/sparePartEntry.validation.js";
+import { joiObjectId } from "../custom/custom.validators.js";
+import { createSparePartEntryValidation, updateSparePartEntryValidation } from "./sparePartEntry/sparePartEntry.validation.js";
 
-export const createRepairJobSchema = Joi.object({
+export const createRepairJobValidation = Joi.object({
   repairStatus: Joi.string()
     .valid("pending", "in-progress", "incomplete", "complete", "picked")
     .default("pending"),
-
-  repairJobCode: Joi.string().trim().optional(),
 
   customer: joiObjectId().required(),
 
@@ -29,7 +27,7 @@ export const createRepairJobSchema = Joi.object({
     )
     .optional(),
 
-  spareParts: Joi.array().items(updateSparePartEntrySchema).optional(),
+  spareParts: Joi.array().items(updateSparePartEntryValidation).optional(),
 
   totalSparePartsCost: Joi.number().precision(2).optional(),
 
@@ -52,7 +50,7 @@ export const createRepairJobSchema = Joi.object({
   pickedAt: Joi.date().optional().allow(null),
 });
 
-export const updateRepairJobSchema = Joi.object({
+export const updateRepairJobValidation = Joi.object({
   repairStatus: Joi.string()
     .valid("pending", "in-progress", "incomplete", "complete", "picked")
     .default("pending"),
@@ -76,7 +74,7 @@ export const updateRepairJobSchema = Joi.object({
     )
     .optional(),
 
-  spareParts: Joi.array().items(updateSparePartEntrySchema).optional(),
+  spareParts: Joi.array().items(updateSparePartEntryValidation).optional(),
 
   totalSparePartsCost: Joi.number().precision(2).optional(),
 
