@@ -1,30 +1,35 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
+import {
+  DEVICE_COMPONENTS,
+  PAYMENT_STATUS,
+  REPAIR_STATUS,
+  REPAIR_TYPE,
+} from "../constants/enums.js";
 
 const repairJobSchema = new mongoose.Schema(
   {
-    repairStatus: {
-      type: String,
-      enum: ["pending", "in-progress", "incomplete", "complete", "picked"],
-      default: "pending",
-    },
     repairJobCode: {
       type: String,
       trim: true,
       unique: true,
       immutable: true,
     },
+    repairStatus: {
+      type: String,
+      enum: REPAIR_STATUS,
+      default: "pending",
+    },
     customer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Customer",
-      // required: true,
     },
-    deviceModel: { type: String /* required: true, */ },
+    deviceModel: { type: String },
     deviceIMEI: { type: String },
-    issueDescription: { type: String /* required: true, */ },
+    issueDescription: { type: String },
     repairType: {
       type: String,
-      enum: ["Hardware", "Software", "Both"],
+      enum: REPAIR_TYPE,
       default: "Hardware",
     },
     technician: {
@@ -34,49 +39,27 @@ const repairJobSchema = new mongoose.Schema(
     },
     deviceComponents: {
       type: [String],
-      enum: ["Sim Tray", "Screen", "Front Camera", "Back Camera"],
+      enum: DEVICE_COMPONENTS,
     },
     spareParts: [
-      {
-        sourceType: {
-          type: String,
-          enum: ["In-house", "External"],
-        },
-        sparePart: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "SparePart",
-        },
-        externalPartName: {
-          type: String,
-          trim: true,
-        },
-        supplier: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Supplier",
-        },
-        unitCost: {
-          type: mongoose.Schema.Types.Decimal128,
-        },
-      },
+      { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
     ],
-    // spareParts: [
-    //   { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
-    // ],
-    totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This will be computed in pre-save hook
-    repairCost: {
-      type: mongoose.Schema.Types.Decimal128 /* required: true, */,
-    }, // This is the cost of the repair service itself
-    discount: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // This is the discount applied to the total cost
-    finalCost: { type: mongoose.Schema.Types.Decimal128 }, // This should be totalCost - discount
+    repairCost: { type: mongoose.Schema.Types.Decimal128 },
+    discount: { type: mongoose.Schema.Types.Decimal128, default: 0 },
+    // Tobe auto calculated
+    totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 },
+    totalReceivable: { type: mongoose.Schema.Types.Decimal128 },
+    profit: { type: mongoose.Schema.Types.Decimal128 },
     paymentDetails: {
       paymentStatus: {
         type: String,
-        enum: ["paid", "unpaid", "partial"],
+        enum: PAYMENT_STATUS,
         default: "unpaid",
       },
-      amountPaid: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount paid by the customer
+      amountReceived: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount paid by the customer
       amountDue: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount still due
     },
+    // Tobe auto calculated
     notes: { type: String },
     pickedAt: { type: Date },
   },
@@ -95,9 +78,11 @@ repairJobSchema.pre("save", async function (next) {
       return total + partCost;
     }, 0);
     this.totalSparePartsCost = sparePartsCost;
+
     const repairCost = parseFloat(this.repairCost?.toString() || "0");
     const discount = parseFloat(this.discount?.toString() || "0");
-    this.finalCost = (repairCost - discount).toFixed(2);
+    this.totalReceivable = (repairCost - discount).toFixed(2);
+    this.profit = this.totalReceivable - this.totalSparePartsCost;
 
     // Ensure pickedAt is set to current date if repairStatus is 'picked'
     if (this.isModified("repairStatus") && this.repairStatus === "picked") {

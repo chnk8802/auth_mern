@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { joiObjectId } from "../custom/custom.validators.js";
+import { COUNTRIES, STATES, USER_ROLES } from "../../constants/enums.js";
 
 export const signupUserValidation = Joi.object({
   email: Joi.string()
@@ -32,17 +32,7 @@ export const signupUserValidation = Joi.object({
     street: Joi.string().trim().optional(),
     city: Joi.string().trim().optional(),
     state: Joi.string()
-      .valid(
-        // States
-        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
-        "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
-        "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland",
-        "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
-        "Uttar Pradesh", "Uttarakhand", "West Bengal",
-        // UTs
-        "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
-        "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
-      )
+      .valid(...STATES)
       .default("Uttar Pradesh")
       .optional(),
 
@@ -53,10 +43,10 @@ export const signupUserValidation = Joi.object({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
 
-    country: Joi.string().valid("India").default("India").optional(),
+    country: Joi.string().valid(...COUNTRIES).default("India").optional(),
   }).optional(),
 
-  role: Joi.string().valid("admin", "manager", "technician").required()
+  role: Joi.string().valid(...USER_ROLES).required()
 });
 
 export const loginUserValidation = Joi.object({
@@ -88,23 +78,14 @@ export const updateUserValidation = Joi.object({
     street: Joi.string().trim(),
     city: Joi.string().trim(),
     state: Joi.string()
-      .valid(
-        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-        "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
-        "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
-        "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-        "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-        "Andaman and Nicobar Islands", "Chandigarh",
-        "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir",
-        "Ladakh", "Lakshadweep", "Puducherry"
-      ),
+      .valid(...STATES),
     zip: Joi.string()
       .pattern(/^[1-9][0-9]{5}$/)
       .messages({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
-    country: Joi.string().valid("India"),
+    country: Joi.string().valid(...COUNTRIES),
   }),
 
-  role: Joi.string().valid("admin", "manager", "technician"),
+  role: Joi.string().valid(...USER_ROLES),
 }).min(1);

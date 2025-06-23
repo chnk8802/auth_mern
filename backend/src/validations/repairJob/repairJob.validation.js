@@ -1,47 +1,41 @@
 import Joi from "joi";
 import { joiObjectId } from "../custom/custom.validators.js";
 import { createSparePartEntryValidation, updateSparePartEntryValidation } from "./sparePartEntry/sparePartEntry.validation.js";
+import { DEVICE_COMPONENTS, REPAIR_STATUS, REPAIR_TYPE } from "../../constants/enums.js";
 
 export const createRepairJobValidation = Joi.object({
   repairStatus: Joi.string()
-    .valid("pending", "in-progress", "incomplete", "complete", "picked")
+    .valid(...REPAIR_STATUS)
     .default("pending"),
 
   customer: joiObjectId().required(),
-
   deviceModel: Joi.string().required(),
-
   deviceIMEI: Joi.string().optional().allow(null, ""),
-
-  issueDescription: Joi.string().required(),
-
   repairType: Joi.string()
-    .valid("Hardware", "Software", "Both")
+    .valid(...REPAIR_TYPE)
     .default("Hardware"),
-
+  issueDescription: Joi.string().required(),
+  
   technician: joiObjectId().optional(),
 
   deviceComponents: Joi.array()
     .items(
-      Joi.string().valid("Sim Tray", "Screen", "Front Camera", "Back Camera")
+      Joi.string().valid(...DEVICE_COMPONENTS)
     )
     .optional(),
 
-  spareParts: Joi.array().items(updateSparePartEntryValidation).optional(),
-
-  totalSparePartsCost: Joi.number().precision(2).optional(),
-
   repairCost: Joi.number().precision(2).required(),
-
   discount: Joi.number().precision(2).optional().default(0),
-
+  
+  totalSparePartsCost: Joi.number().precision(2).optional(),
   finalCost: Joi.number().precision(2).optional(),
+  profit: Joi.number().precision(2).optional(),
 
   paymentDetails: Joi.object({
     paymentStatus: Joi.string()
       .valid("paid", "unpaid", "partial")
       .default("unpaid"),
-    amountPaid: Joi.number().precision(2).default(0),
+    amountReceived: Joi.number().precision(2).default(0),
     amountDue: Joi.number().precision(2).default(0),
   }).optional(),
 

@@ -7,9 +7,9 @@ export const createPaymentEntryValidation = Joi.object({
     "string.pattern.name": "Invalid Repair job ID",
   }),
 
-  supplier: joiObjectId().required().messages({
-    "any.required": "Supplier ID is required",
-    "string.pattern.name": "Invalid Supplier ID",
+  sparePartEntry: joiObjectId().required().messages({
+    "any.required": "Spare Part Entry ID is required",
+    "string.pattern.name": "Invalid Spare Part Entry ID",
   }),
 
   amountPaid: Joi.number().required().min(0).messages({

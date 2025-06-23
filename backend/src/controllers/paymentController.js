@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import Payment from "../models/paymentModel.js";
 import flattenObject from "../utils/flattenObject.js";
 import response from "../utils/response.js";
-import { paramIdValidation, multipleIdsValidation } from "../validations/common/common.validation.js";
 import { createError } from "../utils/errorHandler.js";
 import { createPaymentValidation } from "../validations/payment/payment.validation.js";
 
@@ -13,7 +12,9 @@ const createPayment = async (req, res, next) => {
       throw createError(400, error.details.map(d=>d.message).join(", "))
     }
 
-    const payment = new Payment(value);
+    const flattenValue = flattenObject(value)
+
+    const payment = new Payment(flattenValue);
     let savedPayment = await payment.save();
 
     if (!savedPayment) throw createError(500, "Failed to create Payment");

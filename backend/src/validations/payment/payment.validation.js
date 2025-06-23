@@ -1,28 +1,60 @@
 import Joi from "joi";
 import { joiObjectId } from "../custom/custom.validators.js";
-import { PAYMENT_METHODS } from "../../constants/enums.js";
-import { createPaymentEntryValidation, updatePaymentEntryValidation } from "./paymentEntry/paymentEntry.validation.js";
+import { PAYMENT_METHODS, PAYMENT_TYPE } from "../../constants/enums.js";
+import {
+  createPaymentEntryValidation,
+  updatePaymentEntryValidation,
+} from "./paymentEntry/paymentEntry.validation.js";
 
 export const createPaymentValidation = Joi.object({
-  customer: joiObjectId().required(),
-  entries: Joi.array()
+  paymentType: Joi.string()
+    .valid(...PAYMENT_METHODS)
+    .default("Receivable")
+    .required(),
+  customer: Joi.when("paymentType", {
+    is: "Receivable",
+    then: joiObjectId().required(),
+    otherwise: Joi.forbidden(),
+  }),
+  supplier: Joi.when("paymentType", {
+    is: "Payable",
+    then: joiObjectId().required(),
+    otherwise: Joi.forbidden(),
+  }),
+  paymentEntries: Joi.array()
     .items(createPaymentEntryValidation)
     .optional()
     .messages({
-      "array.base": "'entries' must be an array of entry objects",
-      "array.min": "'entries' cannot be empty",
-      "any.required": "'entries' is required",
+      "array.base": "'paymentEntries' must be an array of entry objects",
+      "array.min": "'paymentEntries' cannot be empty",
+      "any.required": "'paymentEntries' is required",
     }),
-
-  paymentMethod: Joi.array()
-    .items(Joi.string().valid(...PAYMENT_METHODS))
+  totalAmount: Joi.number().required().min(0).messages({
+    "any.required": "Total Amount is required",
+    "number.base": "Total Amount must be a number",
+  }),
+  paymentMethod: Joi.string()
+    .valid(...PAYMENT_METHODS)
     .default("Cash")
     .optional(),
 });
 
 export const updatePaymentValidation = Joi.object({
-  customer: joiObjectId().optional(),
-  entries: Joi.array()
+  paymentType: Joi.string()
+    .valid(...PAYMENT_METHODS)
+    .default("Receivable")
+    .optional(),
+  customer: Joi.when("paymentType", {
+    is: "Receivable",
+    then: joiObjectId().required(),
+    otherwise: Joi.forbidden(),
+  }),
+  supplier: Joi.when("paymentType", {
+    is: "Payable",
+    then: joiObjectId().required(),
+    otherwise: Joi.forbidden(),
+  }),
+  paymentEntries: Joi.array()
     .items(joiObjectId())
     .messages({
       "array.base": "'entries' must be an array of valid ObjectIds",

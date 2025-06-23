@@ -5,15 +5,15 @@ import {
   updateRepairJobValidation,
 } from "../validations/repairJob/repairJob.validation.js";
 import response from "../utils/response.js";
+import flattenObjects from "../utils/flattenObject.js"
 import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import { listRepairJobs } from "../services/repairJobServices.js";
-import { paramIdValidation, multipleIdsValidation } from "../validations/common/common.validation.js";
 
 const createRepairJob = async (req, res, next) => {
   try {
     const { error, value } = createRepairJobValidation.validate(req.body, {
-      abortEarly: false,
+      abortEarly: true,
       stripUnknown: true,
     });
     if (error) {
@@ -107,6 +107,7 @@ const getRepairJobById = async (req, res, next) => {
 
 const updateRepairJob = async (req, res, next) => {
   try {
+    console.log(req.user)
     const repairJobId = req.params.id;
 
     const { error, value } = updateRepairJobValidation.validate(req.body, {
@@ -133,7 +134,7 @@ const updateRepairJob = async (req, res, next) => {
         throw createError(404, "Technician not found");
       }
     }
-
+    // flattenObjects(value)
     const updates = {};
     if (Object.keys(value).length > 0) {
       updates.$set = value;
