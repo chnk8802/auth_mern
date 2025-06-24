@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { joiObjectId } from "../../custom/custom.validators.js";
+import {inputDataWrapper, joiObjectId } from "../../custom/custom.validators.js";
 
-export const createSparePartEntryValidation = Joi.object({
+export const createSparePartEntry = Joi.object({
   repairJob: joiObjectId().required(),
   sourceType: Joi.string().valid("In-house", "External").required(),
   sparePart: Joi.when("sourceType", {
@@ -18,7 +18,7 @@ export const createSparePartEntryValidation = Joi.object({
   unitCost: Joi.number().min(0).required(),
 });
 
-export const updateSparePartEntryValidation = Joi.object({
+export const updateSparePartEntry = Joi.object({
   sourceType: Joi.string().valid("In-house", "External"),
   sparePart: Joi.when("sourceType", {
     is: "In-house",
@@ -33,3 +33,6 @@ export const updateSparePartEntryValidation = Joi.object({
   supplier: joiObjectId(),
   unitCost: Joi.number().min(0),
 });
+
+export const createSparePartEntryValidation = inputDataWrapper(createSparePartEntry)
+export const updateSparePartEntryValidation = inputDataWrapper(updateSparePartEntry)

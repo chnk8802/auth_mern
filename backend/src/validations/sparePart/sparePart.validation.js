@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { joiObjectId } from "../custom/custom.validators.js";
+import {inputDataWrapper, joiObjectId } from "../custom/custom.validators.js";
 
-export const createSparePartValidation = Joi.object({
+export const createSparePart = Joi.object({
   brand: Joi.string().trim().required(),
   model: Joi.string().trim().required(),
   name: Joi.string().trim().required(),
@@ -13,7 +13,7 @@ export const createSparePartValidation = Joi.object({
   supplier: joiObjectId().optional(),
 });
 
-export const updateSparePartValidation = Joi.object({
+export const updateSparePart = Joi.object({
   brand: Joi.string().trim(),
   model: Joi.string().trim(),
   name: Joi.string().trim(),
@@ -22,3 +22,7 @@ export const updateSparePartValidation = Joi.object({
   stockQty: Joi.number().min(0),
   supplier: joiObjectId(),
 }).min(1);
+
+
+export const createSparePartValidation = inputDataWrapper(createSparePart)
+export const updateSparePartValidation = inputDataWrapper(updateSparePart)

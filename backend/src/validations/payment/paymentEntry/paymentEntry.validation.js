@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { joiObjectId } from "../../custom/custom.validators.js";
+import { inputDataWrapper, joiObjectId } from "../../custom/custom.validators.js";
 
-export const createPaymentEntryValidation = Joi.object({
+export const createPaymentEntry = Joi.object({
   repairJob: joiObjectId().required().messages({
     "any.required": "Repair job ID is required",
     "string.pattern.name": "Invalid Repair job ID",
@@ -20,7 +20,7 @@ export const createPaymentEntryValidation = Joi.object({
   note: Joi.string().allow("").optional(),
 });
 
-export const updatePaymentEntryValidation = Joi.object({
+export const updatePaymentEntry = Joi.object({
   repairJob: joiObjectId().optional().messages({
     "any.required": "Repair job ID is required",
     "string.pattern.name": "Invalid Repair job ID",
@@ -38,3 +38,6 @@ export const updatePaymentEntryValidation = Joi.object({
 
   note: Joi.string().allow("").optional(),
 }).min(1);
+
+export const createPaymentEntryValidation = inputDataWrapper(createPaymentEntry)
+export const updatePaymentEntryValidation = inputDataWrapper(updatePaymentEntry)

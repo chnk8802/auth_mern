@@ -1,5 +1,5 @@
 // Users
-export const USER_ROLES = ["admin", "manager", "tehnician"];
+export const USER_ROLES = ["admin", "manager", "technician"];
 export const STATES = [
   // States
   "Andhra Pradesh",

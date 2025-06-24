@@ -48,8 +48,9 @@ const getCustomers = async (req, res, next) => {
     if (!customers || customers.length === 0) {
       throw createError(404, "No customers found");
     }
+    console.log(Object.keys(res))
     const totalRecords = await Customer.countDocuments({});
-    response(res, customers, "Customers fetched successfully", {
+    response(res, res.filterData(customers), "Customers fetched successfully", {
       pagination: {
         page,
         limit,
@@ -64,18 +65,13 @@ const getCustomers = async (req, res, next) => {
 
 const getCustomer = async (req, res, next) => {
   try {
-    const {error, value} = paramIdValidation.validate(req.params, {
-      abortEarly: true,
-      stripUnknown: true
-    })
-    if (error) {
-      throw createError(400, error.details.map(d=> d.message).join(", "));
-    }
-    const customer = await Customer.findById(value.id);
+    const {id} = req.params;
+    
+    const customer = await Customer.findById(id);
     if (!customer) {
       throw createError(404, "Customer not found");
     }
-    response(res, customer, "Customer fetched successfully");
+    response(res, res.filterData(customer), "Customer fetched successfully");
   } catch (error) {
     next(error);
   }

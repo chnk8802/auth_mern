@@ -34,8 +34,7 @@ const repairJobSchema = new mongoose.Schema(
     },
     technician: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      filter: { role: "Technician" },
+      ref: "User"
     },
     deviceComponents: {
       type: [String],
@@ -45,9 +44,9 @@ const repairJobSchema = new mongoose.Schema(
       { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
     ],
     repairCost: { type: mongoose.Schema.Types.Decimal128 },
-    discount: { type: mongoose.Schema.Types.Decimal128, default: 0 },
+    discount: { type: mongoose.Schema.Types.Decimal128 },
     // Tobe auto calculated
-    totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128, default: 0 },
+    totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128 },
     totalReceivable: { type: mongoose.Schema.Types.Decimal128 },
     profit: { type: mongoose.Schema.Types.Decimal128 },
     paymentDetails: {
@@ -56,8 +55,8 @@ const repairJobSchema = new mongoose.Schema(
         enum: PAYMENT_STATUS,
         default: "unpaid",
       },
-      amountReceived: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount paid by the customer
-      amountDue: { type: mongoose.Schema.Types.Decimal128, default: 0 }, // Amount still due
+      amountReceived: { type: mongoose.Schema.Types.Decimal128 }, // Amount paid by the customer
+      amountDue: { type: mongoose.Schema.Types.Decimal128 }, // Amount still due
     },
     // Tobe auto calculated
     notes: { type: String },

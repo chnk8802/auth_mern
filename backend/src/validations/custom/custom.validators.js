@@ -11,3 +11,19 @@ export const joiObjectId = () =>
     }
     return value;
   }, "ObjectId Validation");
+/**
+ * Joi custom validator for wrapping input data in data array
+ */
+export const inputDataWrapper = (itemSchema) => {
+  return Joi.object({
+    data: Joi.array()
+      .items(itemSchema)
+      .min(1) // 👈 ensures non-empty array
+      .required()
+      .messages({
+        "any.required": `"data" is required`,
+        "array.base": `"data" must be an array`,
+        "array.min": `"data" must contain at least one item`,
+      }),
+  });
+};

@@ -1,7 +1,8 @@
 import Joi from "joi";
 import { COUNTRIES, STATES } from "../../constants/enums.js";
+import { inputDataWrapper } from "../custom/custom.validators.js";
 
-export const createCustomerValidation = Joi.object({
+const createCustomer = Joi.object({
   fullName: Joi.string().trim().min(3).max(100).required(),
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
@@ -31,7 +32,7 @@ export const createCustomerValidation = Joi.object({
   isBulkCustomer: Joi.boolean().optional(),
 });
 
-export const updateCustomerValidation = Joi.object({
+const updateCustomer = Joi.object({
   fullName: Joi.string().trim().min(3).max(100).optional(),
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
@@ -62,3 +63,7 @@ export const updateCustomerValidation = Joi.object({
   }).optional(),
   isBulkCustomer: Joi.boolean().optional(),
 }).min(1);
+
+
+export const createCustomerValidation = inputDataWrapper(createCustomer)
+export const updateCustomerValidation = inputDataWrapper(updateCustomer)

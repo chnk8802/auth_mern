@@ -5,7 +5,6 @@ import {
   updateRepairJobValidation,
 } from "../validations/repairJob/repairJob.validation.js";
 import response from "../utils/response.js";
-import flattenObjects from "../utils/flattenObject.js"
 import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import { listRepairJobs } from "../services/repairJobServices.js";
@@ -19,7 +18,9 @@ const createRepairJob = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    const customerExists = await Customer.findById(value.customer);
+    const repairJob = value.data[0];
+
+    const customerExists = await Customer.findById(repairJob.customer);
     if (!customerExists) {
       throw createError(404, "Customer not found");
     }
@@ -98,7 +99,7 @@ const getRepairJobById = async (req, res, next) => {
     if (!repairJob) {
       throw createError(404, "Repair job not found");
     }
-    console.log(repairJob)
+    console.log(repairJob);
     response(res, repairJob, "Repair job retrieved successfully");
   } catch (error) {
     next(error);
@@ -107,7 +108,6 @@ const getRepairJobById = async (req, res, next) => {
 
 const updateRepairJob = async (req, res, next) => {
   try {
-    console.log(req.user)
     const repairJobId = req.params.id;
 
     const { error, value } = updateRepairJobValidation.validate(req.body, {
@@ -117,7 +117,6 @@ const updateRepairJob = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-
     if (value?.customer) {
       const customerExists = await Customer.findById({
         _id: value.customer,
