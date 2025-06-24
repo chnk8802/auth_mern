@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import response from "../utils/response.js";
 import { createError } from "../utils/errorHandler.js";
+import { getPaginationOptions } from "../utils/pagination.js";
 
 const getTechnicians = async (req, res, next) => {
   try {
@@ -11,8 +12,8 @@ const getTechnicians = async (req, res, next) => {
       .skip(skip)
       .limit(limit)
       .sort(sort);
-
-    if (!technicinians) {
+    console.log(technicinians);
+    if (!technicinians || technicinians.length === 0) {
       throw createError(400, "No users Found!");
     }
 

@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import RepairJob from "../models/repairJobModel.js";
+import User from "../models/userModel.js";
 import Customer from "../models/customerModel.js";
 import {
   createRepairJobValidation,
@@ -8,6 +10,7 @@ import response from "../utils/response.js";
 import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import { listRepairJobs } from "../services/repairJobServices.js";
+import flattenObject from "../utils/flattenObject.js";
 
 const createRepairJob = async (req, res, next) => {
   try {
@@ -18,14 +21,14 @@ const createRepairJob = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    const repairJob = value.data[0];
-
-    const customerExists = await Customer.findById(repairJob.customer);
+    const repairJobData = flattenObject(value.data[0]);
+    console.log(repairJobData);
+    const customerExists = await Customer.findById(repairJobData.customer);
     if (!customerExists) {
       throw createError(404, "Customer not found");
     }
 
-    const newRepairJob = new RepairJob(value);
+    const newRepairJob = new RepairJob(repairJobData);
     const savedRepairJob = await newRepairJob.save();
 
     if (!savedRepairJob) {
@@ -117,36 +120,38 @@ const updateRepairJob = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    if (value?.customer) {
-      const customerExists = await Customer.findById({
-        _id: value.customer,
-      }).select("customerCode");
+
+    const repairJobUpdates = flattenObject(value.data[0]);
+
+    if (repairJobUpdates?.customer) {
+      const customerExists = await Customer.findById(repairJobUpdates.customer, { customerCode: 1 });
       if (!customerExists) {
         throw createError(404, "customer not found");
       }
     }
-    if (value?.technician) {
-      const technicianExists = await User.findById({
-        _id: value.technician,
-      }).select("userCode");
+    if (repairJobUpdates?.technician) {
+      const technicianExists = await User.findById( repairJobUpdates.technician, { userCode: 1 });
       if (!technicianExists) {
         throw createError(404, "Technician not found");
       }
     }
     // flattenObjects(value)
     const updates = {};
-    if (Object.keys(value).length > 0) {
-      updates.$set = value;
+    if (Object.keys(repairJobUpdates).length > 0) {
+      updates.$set = repairJobUpdates;
     }
 
-    const updatedRepairJob = await RepairJob.findByIdAndUpdate(
-      repairJobId,
-      updates,
-      { new: true }
-    )
-      .populate("customer", "customerCode fullname email phone address")
-      .populate("technician", "userCode fullname email phone")
-      .populate({
+    const updatedRepairJob = await RepairJob.findByIdAndUpdate( repairJobId, updates, { new: true } )
+    .populate([
+      {
+        path: "customer",
+        select: "customerCode fullname email phone address",
+      },
+      {
+        path: "technician",
+        select: "userCode fullname email phone",
+      },
+      {
         path: "spareParts",
         populate: [
           {
@@ -155,17 +160,87 @@ const updateRepairJob = async (req, res, next) => {
           },
           { path: "supplier", select: "supplierCode fullName displayName" },
         ],
-      });
+      },
+    ]);
 
     if (!updatedRepairJob) {
       throw createError(404, "Repair job not found");
     }
-
     response(res, updatedRepairJob, "Repair job updated successfully");
   } catch (error) {
     next(error);
   }
 };
+
+// const updateRepairJob = async (req, res, next) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+//   try {
+//     const repairJobId = req.params.id;
+
+//     const { error, value } = updateRepairJobValidation.validate(req.body, {
+//       abortEarly: false,
+//       stripUnknown: true,
+//     });
+//     if (error) {
+//       throw createError(400, error.details.map((d) => d.message).join(", "));
+//     }
+
+//     const repairJobUpdates = flattenObject(value.data[0]);
+
+//     if (repairJobUpdates?.customer) {
+//       const customerExists = await Customer.findById({
+//         _id: repairJobUpdates.customer,
+//       }).select("customerCode");
+//       if (!customerExists) {
+//         throw createError(404, "customer not found");
+//       }
+//     }
+//     if (repairJobUpdates?.technician) {
+//       const technicianExists = await User.findById({
+//         _id: repairJobUpdates.technician,
+//         role: "technician",
+//       }).select("userCode");
+//       if (!technicianExists) {
+//         throw createError(404, "Technician not found");
+//       }
+//     }
+//     // flattenObjects(value)
+//     const updates = {};
+//     if (Object.keys(repairJobUpdates).length > 0) {
+//       updates.$set = repairJobUpdates;
+//     }
+
+//     const updatedRepairJob = await RepairJob.findByIdAndUpdate(
+//       repairJobId,
+//       updates,
+//       { new: true }
+//     )
+//       .populate("customer", "customerCode fullname email phone address")
+//       .populate("technician", "userCode fullname email phone")
+//       .populate({
+//         path: "spareParts",
+//         populate: [
+//           {
+//             path: "sparePart",
+//             select: "partCode brand model name displayName",
+//           },
+//           { path: "supplier", select: "supplierCode fullName displayName" },
+//         ],
+//       });
+
+//     if (!updatedRepairJob) {
+//       throw createError(404, "Repair job not found");
+//     }
+//     await session.commitTransaction();
+//     session.endSession();
+//     response(res, updatedRepairJob, "Repair job updated successfully");
+//   } catch (error) {
+//     await session.abortTransaction();
+//     session.endSession();
+//     next(error);
+//   }
+// };
 
 const updateRepairJobStatus = async (req, res, next) => {
   try {

@@ -12,14 +12,15 @@ import {paramIdValidation, multipleIdsValidation} from '../validations/common/co
 const createCustomer = async (req, res, next) => {
   try {
     const { error, value } = createCustomerValidation.validate(req.body, {
-      abortEarly: false,
+      abortEarly: true,
       stripUnknown: true,
     });
 
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    const customer = new Customer(value);
+    const customerData = flattenObject(value.data[0]);
+    const customer = new Customer(customerData);
     let savedCustomer = await customer.save();
     if (!savedCustomer) {
       throw createError(400, "Customer creation failed");
@@ -48,9 +49,9 @@ const getCustomers = async (req, res, next) => {
     if (!customers || customers.length === 0) {
       throw createError(404, "No customers found");
     }
-    console.log(Object.keys(res))
+    
     const totalRecords = await Customer.countDocuments({});
-    response(res, res.filterData(customers), "Customers fetched successfully", {
+    response(res, customers, "Customers fetched successfully", {
       pagination: {
         page,
         limit,
@@ -71,7 +72,7 @@ const getCustomer = async (req, res, next) => {
     if (!customer) {
       throw createError(404, "Customer not found");
     }
-    response(res, res.filterData(customer), "Customer fetched successfully");
+    response(res, customer, "Customer fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -89,11 +90,11 @@ const updateCustomer = async (req, res, next) => {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    const flattenedUpdates = flattenObject(value);
+    const customerUpdates = flattenObject(value.data[0])
 
     const updatedCustomer = await Customer.findByIdAndUpdate(
       customerId,
-      flattenedUpdates,
+      customerUpdates,
       {
         new: true,
         runValidators: true,

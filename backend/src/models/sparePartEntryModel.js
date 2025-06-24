@@ -25,6 +25,7 @@ const sparePartEntrySchema = new mongoose.Schema(
     unitCost: {
       type: mongoose.Schema.Types.Decimal128,
     },
+    isPaid: { type: Boolean },
   },
   { timestamps: true }
 );

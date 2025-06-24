@@ -19,8 +19,8 @@ const createSupplier = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-
-    const supplier = new Supplier(value);
+    const supplierData = value.data[0]
+    const supplier = new Supplier(supplierData);
     const savedSupplier = await supplier.save();
     if (!savedSupplier) {
       throw createError(400, "Failed to create supplier");
@@ -42,14 +42,14 @@ const getSuppliers = async (req, res, next) => {
       throw createError(404, "No suppliers found");
     }
 
-    const totalCount = await Supplier.countDocuments();
+    const totalRecords = await Supplier.countDocuments();
 
     response(res, suppliers, "Suppliers retrieved successfully", {
       pagination: {
         page,
         limit,
         sort,
-        totalCount: totalCount,
+        total: totalRecords,
       },
     });
   } catch (error) {
@@ -81,12 +81,11 @@ const updateSupplier = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-
-    const flattenupdated = flattenObject(value);
+    const supplierUpdates = flattenObject(value.data[0]);
 
     const updatedSupplier = await Supplier.findByIdAndUpdate(
       id,
-      flattenupdated,
+      supplierUpdates,
       { new: true, runValidators: true }
     );
 

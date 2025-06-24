@@ -9,6 +9,7 @@ import {
 } from "../validations/repairJob/sparePartEntry/sparePartEntry.validation.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import RepairJob from "../models/repairJobModel.js";
+import flattenObject from "../utils/flattenObject.js";
 
 const createSparePartEntry = async (req, res, next) => {
   try {
@@ -20,31 +21,33 @@ const createSparePartEntry = async (req, res, next) => {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    const repairJobExists = await RepairJob.findById(value.repairJob).select("_id");
+    const sparePartEntryData = flattenObject(value.data[0]);
+
+    const repairJobExists = await RepairJob.findById(sparePartEntryData.repairJob).select("_id");
     if (!repairJobExists) {
       throw createError(404, "Repair Job not found or invalid reference.");
     }
 
-    if (value.sparePart) {
-      const sparePartExists = await SparePart.findById(value.sparePart).select("_id").lean();
+    if (sparePartEntryData.sparePart) {
+      const sparePartExists = await SparePart.findById(sparePartEntryData.sparePart).select("_id").lean();
       if (!sparePartExists) {
         throw createError(404, "Spare Part not found");
       }
     }
 
-    const supplierExists = await Supplier.findById(value.supplier).select("_id").lean();
+    const supplierExists = await Supplier.findById(sparePartEntryData.supplier).select("_id").lean();
     if (!supplierExists) {
       throw createError(404, "Supplier not found");
     }
 
-    const sparePartEntry = new SparePartEntry(value);
+    const sparePartEntry = new SparePartEntry(sparePartEntryData);
     const savedSparePartEntry = await sparePartEntry.save();
     if (!savedSparePartEntry) {
       throw createError(400, "Failed to create SparePartEntry");
     }
 
     const updateRepairJob = await RepairJob.findByIdAndUpdate(
-      value.repairJob,
+      sparePartEntryData.repairJob,
       { $push: { spareParts: savedSparePartEntry._id } },
       { new: true }
     );

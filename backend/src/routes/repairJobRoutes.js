@@ -3,6 +3,7 @@ import auth from '../middlewares/authMiddleware.js';
 import permit from '../middlewares/permissionMiddleware.js';
 import repairJobController from '../controllers/repairJobController.js';
 import sparePartEntryControllers from '../controllers/sparePartEntryControllers.js';
+import { openTransaction } from '../utils/transactionSession.js';
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.get('/search', auth, permit(["admin", "manager", "technician"]), repairJo
 router.delete('/', auth, permit(["admin"]), repairJobController.deleteRepairJobs);
 router.get('/:id', auth, permit(["admin", "manager", "technician"]), repairJobController.getRepairJobById);
 router.patch('/:id', auth, permit(["admin", "manager", "technician"]), repairJobController.updateRepairJob);
+// router.patch('/:id', auth, permit(["admin", "manager", "technician"]), (rq, rs, nx) => openTransaction({req: rq, res: rs, next: nx }, repairJobController.updateRepairJob));
 router.patch('/:id/status', auth, permit(["admin", "manager", "technician"]), repairJobController.updateRepairJobStatus);
 router.delete('/:id', auth, permit(["admin"]), repairJobController.deleteRepairJob);
 

@@ -171,13 +171,8 @@ const deleteUsers = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const { error, value } = multipleIdsValidation.validate(req.params);
-    if (error) {
-      throw createError(400, error.details.map((d) => d.message).join(", "));
-    }
-
-    const user = await User.findByIdAndDelete(value.id);
-
+    const { id } = req.params;
+    let user = await User.findByIdAndDelete(id);
     if (!user) {
       throw createError(404, "User not found");
     }

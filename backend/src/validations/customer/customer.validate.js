@@ -2,7 +2,7 @@ import Joi from "joi";
 import { COUNTRIES, STATES } from "../../constants/enums.js";
 import { inputDataWrapper } from "../custom/custom.validators.js";
 
-const createCustomer = Joi.object({
+export const createCustomer = Joi.object({
   fullName: Joi.string().trim().min(3).max(100).required(),
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
@@ -27,7 +27,7 @@ const createCustomer = Joi.object({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
 
-    country: Joi.string().valid("India").default("India").optional(),
+    country: Joi.string().valid(...COUNTRIES).default("India").optional(),
   }).optional(),
   isBulkCustomer: Joi.boolean().optional(),
 });
