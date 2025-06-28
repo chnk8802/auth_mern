@@ -68,7 +68,8 @@ const data: Payment[] = [
     amount: 721,
     status: "failed",
     email: "carmella@example.com",
-  },{
+  },
+  {
     id: "m5gr84i9",
     amount: 316,
     status: "success",
@@ -188,11 +189,13 @@ export const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
 
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
+      // Format the amount as Indian Rupees with Indian-style grouping
+      const formatted = new Intl.NumberFormat("en-IN", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       }).format(amount);
+
+      console.log(formatted)
 
       return <div className="text-right font-medium">{formatted}</div>;
     },
@@ -305,9 +308,9 @@ export function DataTable() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}

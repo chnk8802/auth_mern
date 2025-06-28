@@ -41,7 +41,7 @@ import {
 const data: Payment[] = [
   {
     id: "m5gr84i9",
-    amount: 316,
+    amount: 31624200,
     status: "success",
     email: "ken99@example.com",
   },
@@ -189,10 +189,10 @@ export const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
 
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
+      // Format the amount as Indian Rupees with Indian-style grouping
+      const formatted = new Intl.NumberFormat("en-IN", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       }).format(amount);
 
       return <div className="text-right font-medium">{formatted}</div>;
