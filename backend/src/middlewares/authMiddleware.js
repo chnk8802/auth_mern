@@ -4,11 +4,8 @@ import { createError } from "../utils/errorHandler.js";
 
 const auth = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw createError(401, "Unauthorized access");
-    }
-    const token = authHeader.split(" ")[1];
+    const cookies = req.cookies;
+    const token = cookies.accessToken;
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     const user = await User.findById(decoded.userId);
     if (!user) {
@@ -20,7 +17,6 @@ const auth = async (req, res, next) => {
       email: user.email,
       fullName: user.fullName,
       role: user.role,
-      permissions: [],
       address: user.address
     };
     req.user = reqUser;

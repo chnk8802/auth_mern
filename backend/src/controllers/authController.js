@@ -8,8 +8,14 @@ import {
 import response from "../utils/response.js";
 import sendResetPasswordEmail from "../utils/email.js";
 import { createError } from "../utils/errorHandler.js";
-import { loginUserValidation, signupUserValidation } from "../validations/user/user.validation.js";
-import { paramIdValidation, multipleIdsValidation } from "../validations/common/common.validation.js";
+import {
+  loginUserValidation,
+  signupUserValidation,
+} from "../validations/user/user.validation.js";
+import {
+  paramIdValidation,
+  multipleIdsValidation,
+} from "../validations/common/common.validation.js";
 
 const register = async (req, res, next) => {
   try {
@@ -56,7 +62,7 @@ const register = async (req, res, next) => {
 const refreshToken = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
-    
+
     if (!refreshToken) {
       throw createError(400, "Refresh token not provided");
     }
@@ -73,13 +79,17 @@ const refreshToken = async (req, res, next) => {
       throw createError(404, "User not found");
     }
 
-    const tokenExists = user.refreshTokens.some(t => t.token === refreshToken);
+    const tokenExists = user.refreshTokens.some(
+      (t) => t.token === refreshToken
+    );
     if (!tokenExists) {
       throw createError(403, "Refresh token not recognized");
     }
 
     // Rotate tokens
-    user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
+    user.refreshTokens = user.refreshTokens.filter(
+      (t) => t.token !== refreshToken
+    );
 
     const newAccessToken = generateAccessToken(user._id);
     const newRefreshToken = generateRefreshToken(user._id);
@@ -153,22 +163,37 @@ const login = async (req, res, next) => {
 
     //  Set secure cookies
     const isProd = process.env.NODE_ENV === "production";
-
-    res.cookie("refreshToken", refreshToken, {
+    
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: isProd,
+      secure: false,
       sameSite: isProd ? "strict" : "Lax",
       path: "/",
     });
 
-    res.cookie("accessToken", accessToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: isProd,
+      secure: false,
       sameSite: isProd ? "strict" : "Lax",
       path: "/",
     });
 
     response(res, safeUser, "Login successful");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const loggedinUserId = req.user._id;
+
+    let currentUser = await User.findById(loggedinUserId);
+    if (!currentUser) {
+      throw createError(404, "User not found");
+    }
+
+    response(res, currentUser, "User fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -180,7 +205,7 @@ const logout = async (req, res, next) => {
     if (!refreshToken) {
       throw createError(204, "Refresh token not provided");
     }
-    
+
     let decoded;
     try {
       decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
@@ -197,7 +222,9 @@ const logout = async (req, res, next) => {
       throw createError(403, "User not found");
     }
 
-    user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
+    user.refreshTokens = user.refreshTokens.filter(
+      (t) => t.token !== refreshToken
+    );
     await user.save();
 
     const isProd = process.env.NODE_ENV === "production";
@@ -260,7 +287,7 @@ const enterOtp = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
     if (!email || !otp) {
-      throw createError(400,"Email and OTP are required");
+      throw createError(400, "Email and OTP are required");
     }
 
     let user = await User.findOne({ email }).select(
@@ -315,7 +342,11 @@ const resetPassword = async (req, res, next) => {
     if (!user) {
       throw createError(500, "Failed to reset password");
     }
-    response(res, null, "Password reset successfully. Please login with your new password.");
+    response(
+      res,
+      null,
+      "Password reset successfully. Please login with your new password."
+    );
   } catch (error) {
     next(error);
   }
@@ -323,6 +354,7 @@ const resetPassword = async (req, res, next) => {
 
 export default {
   register,
+  getCurrentUser,
   refreshToken,
   login,
   logout,

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import type { Payment } from "../types";
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -130,13 +131,6 @@ const data: Payment[] = [
     email: "carmella@example.com",
   },
 ];
-
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
 
 export const columns: ColumnDef<Payment>[] = [
   {

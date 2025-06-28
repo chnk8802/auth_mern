@@ -1,8 +1,6 @@
-// src/routes.tsx
-import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { LoginPage } from "@/features/auth/routes/LoginPage";
-import { RegisterPage } from "@/features/auth/routes/RegisterPage";
+import { createBrowserRouter } from "react-router-dom";
+import { LoginForm } from "@/features/auth/components/login-form";
+import { RegisterForm } from "@/features/auth/components/register-form";
 import { MainLayout } from "@/layouts/MainLayout";
 import { HomePage } from "@/features/home/routes/HomePage";
 import { UsersPage } from "@/features/users/routes/UsersPage";
@@ -10,28 +8,49 @@ import { CustomersPage } from "@/features/customers/routes/CustomersPage";
 import { RepairJobPage } from "@/features/repairJob/routes/RepairJobPage";
 import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
 import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
+import { AuthLayout } from "@/layouts/AuthLayout";
+import { ProtectedRoute } from "./guards/ProtectedRoute";
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>
-      <div><a href="/dashboard">Dashboard</a>
+    element: (
+      <div>
+        <div>
+          <a href="/dashboard">Dashboard</a>
+        </div>
+        <div>
+          <a href="/auth/login">Login</a>
+        </div>
       </div>
-      <div><a href="/login">Login</a></div>
-    </div>,
+    ),
   },
   {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
+    path: "/auth",
+    element: <AuthLayout />,
+    children: [
+      {
+        index: true,
+        element: <LoginForm />,
+      },
+      {
+        path: "login",
+        element: <LoginForm />,
+      },
+      {
+        path: "register",
+        element: <RegisterForm />,
+      },
+    ],
   },
   // Protected Routes
   {
     path: "/dashboard",
-    element: <MainLayout />,
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -70,9 +89,3 @@ const router = createBrowserRouter([
     ),
   },
 ]);
-
-const AppRoutes: React.FC = () => {
-  return <RouterProvider router={router} />;
-};
-
-export default AppRoutes;

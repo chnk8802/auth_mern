@@ -33,21 +33,6 @@ const getUsers = async (req, res, next) => {
   }
 };
 
-const getCurrentUser = async (req, res, next) => {
-  try {
-    const loggedinUserId = req.user._id;
-
-    let currentUser = await User.findById(loggedinUserId);
-    if (!currentUser) {
-      throw createError(404, "User not found");
-    }
-
-    response(res, currentUser, "User fetched successfully");
-  } catch (error) {
-    next(error);
-  }
-};
-
 const getUser = async (req, res, next) => {
   try {
     const { error, value } = paramIdValidation.validate(req.params, {
@@ -189,7 +174,6 @@ const deleteUser = async (req, res, next) => {
 
 export default {
   getUser,
-  getCurrentUser,
   getUsers,
   updateUsers,
   updateUser,

@@ -33,7 +33,7 @@ app.use(cookieParser());
 // Handle CORS
 app.use(
   cors({
-    origin: true, // Allow requests from this origin
+    origin: "http://localhost:5173", // Allow requests from this origin
     credentials: true, // Allow sending cookies and other credentials
   })
 );

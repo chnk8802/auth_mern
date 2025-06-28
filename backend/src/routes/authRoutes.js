@@ -7,6 +7,7 @@ const router = express.Router()
 router.post('/register', authController.register)
 router.post('/refresh-token', authController.refreshToken)
 router.post('/login', authController.login)
+router.get("/me", auth, authController.getCurrentUser);
 router.post('/logout', auth, authController.logout)
 router.post('/forgot-password', authController.forgotPassword)
 router.post('/enter-otp', authController.enterOtp)

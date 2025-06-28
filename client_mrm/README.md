@@ -67,3 +67,73 @@ export default tseslint.config([
   },
 ])
 ```
+src/
+├── app/                       # App-level config
+│   ├── routes.tsx            # All routes defined here (if not using file-based routing)
+│   ├── App.tsx               # Root App component
+│   ├── providers.tsx         # Context providers (theme, auth, etc.)
+│   └── main.tsx              # App entry point (used by Vite)
+│   └── store.ts
+│
+├── assets/                   # Static assets (images, svgs, etc.)
+│
+├── components/               # Global shared UI components
+│   ├── ui/                   # Re-export or customize `shadcn/ui` components
+│   ├── layout/               # Header, Footer, Sidebar
+│   └── common/               # Generic components (e.g., Loader, ModalWrapper)
+│
+├── constants/                # Global constants & enums
+│   ├── routes.ts             # Route paths
+│   ├── messages.ts           # Error/success messages
+│   └── config.ts             # App-wide configuration
+│
+├── features/                 # Feature-based modules (domain-driven)
+│   ├── auth/
+│   │   ├── components/       # LoginForm, SignupForm, etc.
+│   │   ├── api/              # API calls (login, signup)
+│   │   ├── hooks/            # useLogin, useAuth
+│   │   ├── types/            # AuthUser, LoginPayload, etc.
+│   │   ├── store/            # Zustand or context for auth state
+│   │   └── index.ts          # Exports everything cleanly
+│   │
+│   ├── payments/
+│   │   ├── components/       # PaymentTable, PaymentDetailsDrawer
+│   │   ├── api/              # Fetch payments, update payment status
+│   │   ├── hooks/
+│   │   ├── types/
+│   │   └── index.ts
+│   │
+│   └── users/
+│       ├── components/
+│       ├── api/
+│       ├── types/
+│       └── index.ts
+│
+├── hooks/                    # Global reusable hooks (not feature-specific)
+│   ├── useDebounce.ts
+│   ├── useToggle.ts
+│   └── useOutsideClick.ts
+│
+├── lib/                      # Utility libraries & singletons
+│   ├── axios.ts              # Axios instance with interceptors
+│   ├── dayjs.ts              # Day.js config (if used)
+│   └── queryClient.ts        # React Query client setup
+│
+├── pages/ or routes/         # Top-level route components (if using manual routing)
+│   ├── Dashboard.tsx
+│   └── Login.tsx
+│
+├── styles/                   # Global styles, Tailwind config
+│   ├── globals.css
+│   ├── tailwind.css
+│   └── theme.css
+│
+├── types/                    # Shared types/interfaces used across features
+│   ├── api.d.ts
+│   └── index.d.ts
+│
+└── utils/                    # Global helper functions
+    ├── formatCurrency.ts
+    ├── formatDate.ts
+    ├── downloadFile.ts
+    └── validateEmail.ts
