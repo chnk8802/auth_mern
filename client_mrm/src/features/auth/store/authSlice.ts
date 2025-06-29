@@ -24,18 +24,18 @@ const authSlice = createSlice({
       console.log("Inside loginSuccess reducer");
       state.user = action.payload
       state.loading = false
-      state.initialized = true
+      // state.initialized = true
     },
     loginFailure(state, action: PayloadAction<string>) {
       state.loading = false
       state.error = action.payload
-      state.initialized = true
+      // state.initialized = true
     },
     logout(state) {
       state.user = null
       state.error = null
       state.loading = false
-      state.initialized = true
+      // state.initialized = true
     },
     registerStart(state) {
       state.registerLoading = true
