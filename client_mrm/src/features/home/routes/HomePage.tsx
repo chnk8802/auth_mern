@@ -1,12 +1,13 @@
 import React from "react"
+import { Link } from "react-router-dom"
+import { ROUTES } from "@/constants/routes"
 
 export const HomePage: React.FC = () => {
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Dashboard Home</h1>
-      <p className="text-muted-foreground">
-        Welcome to your admin dashboard. Use the sidebar to navigate.
-      </p>
+      <Link to={ROUTES.DASHBOARD} >Dashboard</Link>
+      <br />
+      <Link to={ROUTES.LOGIN} >Login</Link>
     </div>
   )
 }

@@ -21,6 +21,8 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useAppSelector } from "@/hooks/redux";
+import { Link } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 // This is sample data.
 const data = {
@@ -128,9 +130,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <a href="/dashboard">
+        <Link to={ROUTES.DASHBOARD}>
           <TeamSwitcher teams={data.teams} />
-        </a>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

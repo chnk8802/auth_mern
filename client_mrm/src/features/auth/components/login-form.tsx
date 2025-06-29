@@ -6,7 +6,7 @@ import { useState } from "react";
 import { loginFailure, loginStart, loginSuccess } from "../store/authSlice";
 import { useAppDispatch } from "@/hooks/redux";
 import { loginUser } from "../api/authApi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { toast } from "sonner";
 
@@ -61,12 +61,12 @@ export function LoginForm({
         <div className="grid gap-3">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
-            <a
-              href="/auth/forgotpassword"
+            <Link
+              to={ROUTES.FORGOT_PASSWORD}
               className="ml-auto text-sm underline-offset-4 hover:underline"
             >
               Forgot your password?
-            </a>
+            </Link>
           </div>
           <Input
             id="password"
@@ -97,9 +97,9 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <a href="/auth/register" className="underline underline-offset-4">
+        <Link to={ROUTES.REGISTER} className="underline underline-offset-4">
           Sign up
-        </a>
+        </Link>
       </div>
     </form>
   );

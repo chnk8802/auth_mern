@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { RegisterForm } from "@/features/auth/components/register-form";
 import { MainLayout } from "@/layouts/MainLayout";
-import { HomePage } from "@/features/home/routes/HomePage";
+import { DashboardHomePage } from "@/features/dashboardHome/routes/DashboardHomePage";
 import { UsersPage } from "@/features/users/routes/UsersPage";
 import { CustomersPage } from "@/features/customers/routes/CustomersPage";
 import { RepairJobPage } from "@/features/repairJob/routes/RepairJobPage";
@@ -10,20 +10,12 @@ import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
 import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
 import { AuthLayout } from "@/layouts/AuthLayout";
 import { ProtectedRoute } from "./guards/ProtectedRoute";
+import { HomePage } from "@/features/home/routes/HomePage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <div>
-        <div>
-          <a href="/dashboard">Dashboard</a>
-        </div>
-        <div>
-          <a href="/auth/login">Login</a>
-        </div>
-      </div>
-    ),
+    element: <HomePage/>,
   },
   {
     path: "/auth",
@@ -46,6 +38,7 @@ export const router = createBrowserRouter([
   // Protected Routes
   {
     path: "/dashboard",
+    // element: <MainLayout/>,
     element: (
       <ProtectedRoute>
         <MainLayout />
@@ -54,7 +47,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <DashboardHomePage />,
       },
       {
         path: "repairjobs",
