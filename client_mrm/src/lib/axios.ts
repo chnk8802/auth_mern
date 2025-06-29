@@ -1,11 +1,17 @@
 import axios from "axios"
+import { API_CONFIG } from "@/config/api"
 import { store } from "@/app/store"
 import { logout, loginSuccess } from "@/features/auth/store/authSlice"
 
-const api = axios.create({
-  baseURL: "/api",
-  withCredentials: true, // crucial for cookies
-})
+const api = axios.create(API_CONFIG)
+
+// api.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     console.error("API Error:", error);
+//     return Promise.reject(error);
+//   }
+// );
 
 // This tracks whether we are currently refreshing
 let isRefreshing = false

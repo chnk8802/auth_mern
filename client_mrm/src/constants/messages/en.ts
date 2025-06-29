@@ -1,5 +1,3 @@
-// constants/messages/en.ts
-
 const en = {
     AUTH: {
         LOGIN_SUCCESS: "Logged in successfully!",

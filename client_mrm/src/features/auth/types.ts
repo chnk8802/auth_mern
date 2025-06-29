@@ -13,7 +13,6 @@ export interface AuthState {
   registerLoading: boolean
   registerError: string | null
   registeredUser: AuthUser | null
-  initialized: boolean
 }
 
 

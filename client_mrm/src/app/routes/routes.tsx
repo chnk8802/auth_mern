@@ -11,33 +11,48 @@ import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
 import { AuthLayout } from "@/layouts/AuthLayout";
 import { ProtectedRoute } from "./guards/ProtectedRoute";
 import { HomePage } from "@/features/home/routes/HomePage";
+import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
+import { ROUTES } from "@/constants/routes";
+import NotFound from "../NotFound";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage/>,
+    element: <HomePage />,
   },
   {
-    path: "/auth",
+    path: ROUTES.AUTH,
     element: <AuthLayout />,
     children: [
       {
         index: true,
-        element: <LoginForm />,
+        element: (
+          <GuestOnlyRoute>
+            <LoginForm />
+          </GuestOnlyRoute>
+        ),
       },
       {
         path: "login",
-        element: <LoginForm />,
+        element: (
+          <GuestOnlyRoute>
+            <LoginForm />
+          </GuestOnlyRoute>
+        ),
       },
       {
         path: "register",
-        element: <RegisterForm />,
+        element: (
+          <GuestOnlyRoute>
+            <RegisterForm />
+          </GuestOnlyRoute>
+        ),
       },
     ],
   },
   // Protected Routes
   {
-    path: "/dashboard",
+    path: ROUTES.DASHBOARD,
     // element: <MainLayout/>,
     element: (
       <ProtectedRoute>
@@ -74,11 +89,6 @@ export const router = createBrowserRouter([
   // Unknown Routes
   {
     path: "*",
-    element: (
-      <div className="min-h-screen flex items-center justify-center flex-col text-center p-4">
-        <h1 className="text-4xl font-bold text-red-600 mb-4">404</h1>
-        <p className="text-lg text-gray-700">Oops! Page not found.</p>
-      </div>
-    ),
+    element: <NotFound/>,
   },
 ]);

@@ -9,7 +9,6 @@ const initialState: AuthState = {
   registerLoading: false,
   registerError: null,
   registeredUser: null,
-  initialized: false
 }
 
 const authSlice = createSlice({
@@ -21,21 +20,17 @@ const authSlice = createSlice({
       state.error = null
     },
     loginSuccess(state, action: PayloadAction<AuthUser>) {
-      console.log("Inside loginSuccess reducer");
       state.user = action.payload
       state.loading = false
-      // state.initialized = true
     },
     loginFailure(state, action: PayloadAction<string>) {
       state.loading = false
       state.error = action.payload
-      // state.initialized = true
     },
     logout(state) {
       state.user = null
       state.error = null
       state.loading = false
-      // state.initialized = true
     },
     registerStart(state) {
       state.registerLoading = true

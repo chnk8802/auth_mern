@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { Wrench } from "lucide-react";
+// import authImage from "@/assets/repair.png"
 
 export function AuthLayout() {
   return (
