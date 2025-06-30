@@ -113,7 +113,13 @@ const refreshToken = async (req, res, next) => {
       sameSite: isProd ? "Strict" : "Lax",
       path: "/",
     });
-    response(res, null, "Tokens refreshed successfully");
+    const safeUser = {
+      _id: user._id,
+      userCode: user.userCode,
+      email: user.email,
+      role: user.role,
+    };
+    response(res, safeUser, "Tokens refreshed successfully");
   } catch (error) {
     next(error);
   }

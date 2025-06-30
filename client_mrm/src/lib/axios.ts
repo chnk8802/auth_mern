@@ -1,7 +1,7 @@
 import axios from "axios"
 import { API_CONFIG } from "@/config/api"
-import { store } from "@/app/store"
 import { logout, loginSuccess } from "@/features/auth/store/authSlice"
+import {store} from "@/app/store"
 
 const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -9,14 +9,6 @@ const api = axios.create({
   withCredentials: API_CONFIG.WITH_CREDENTIALS,
   timeout: API_CONFIG.TIMEOUT
 })
-
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     console.error("API Error:", error);
-//     return Promise.reject(error);
-//   }
-// );
 
 // This tracks whether we are currently refreshing
 let isRefreshing = false
@@ -53,17 +45,19 @@ api.interceptors.response.use(
       isRefreshing = true
 
       try {
-        const res = await api.post(`/auth/refresh-token`, {
-          withCredentials: API_CONFIG.WITH_CREDENTIALS,
-        })
+        const res = await api.post("/auth/refresh-token")
+        console.log("refresh-token", res)
+        const user = res.data[0];
 
-        console.log("refresh-token",res)
+        if (!user) {
+          throw new Error("No user returned from refresh")
+        }
 
-        const user = res.data.user
         store.dispatch(loginSuccess(user))
 
         processQueue(null, null)
         return api(originalRequest)
+
       } catch (refreshError) {
         processQueue(refreshError, null)
         store.dispatch(logout())
