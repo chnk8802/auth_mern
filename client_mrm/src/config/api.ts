@@ -1,8 +1,8 @@
 export const API_CONFIG = {
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
-  withCredentials: true,
-  headers: {
+  BASE_URL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
+  WITH_CREDENTIALS: true,
+  HEADERS: {
     "Content-Type": "application/json"
   },
-  timeout: 10000,
-};
+  TIMEOUT: 10000
+}

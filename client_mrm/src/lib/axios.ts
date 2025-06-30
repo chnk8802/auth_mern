@@ -3,7 +3,12 @@ import { API_CONFIG } from "@/config/api"
 import { store } from "@/app/store"
 import { logout, loginSuccess } from "@/features/auth/store/authSlice"
 
-const api = axios.create(API_CONFIG)
+const api = axios.create({
+  baseURL: API_CONFIG.BASE_URL,
+  headers: API_CONFIG.HEADERS,
+  withCredentials: API_CONFIG.WITH_CREDENTIALS,
+  timeout: API_CONFIG.TIMEOUT
+})
 
 // api.interceptors.response.use(
 //   (response) => response,
@@ -48,15 +53,17 @@ api.interceptors.response.use(
       isRefreshing = true
 
       try {
-        const res = await axios.get("/api/refresh", {
-          withCredentials: true,
+        const res = await api.post(`/auth/refresh-token`, {
+          withCredentials: API_CONFIG.WITH_CREDENTIALS,
         })
+
+        console.log("refresh-token",res)
 
         const user = res.data.user
         store.dispatch(loginSuccess(user))
 
-        processQueue(null, null) // resolve queued requests
-        return api(originalRequest) // retry original request
+        processQueue(null, null)
+        return api(originalRequest)
       } catch (refreshError) {
         processQueue(refreshError, null)
         store.dispatch(logout())

@@ -14,11 +14,22 @@ import { HomePage } from "@/features/home/routes/HomePage";
 import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
 import { ROUTES } from "@/constants/routes";
 import NotFound from "../NotFound";
+import { GuestLayout } from "@/layouts/GuestLayout";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <GuestLayout/>,
+    children: [
+  {
+    path: "/",
+    element: <HomePage/>,
+  },
+  // Unknown Routes
+  {
+    path: "*",
+    element: <NotFound/>,
+  },]
   },
   {
     path: ROUTES.AUTH,
@@ -53,7 +64,6 @@ export const router = createBrowserRouter([
   // Protected Routes
   {
     path: ROUTES.DASHBOARD,
-    // element: <MainLayout/>,
     element: (
       <ProtectedRoute>
         <MainLayout />
@@ -85,10 +95,5 @@ export const router = createBrowserRouter([
         element: <PaymentsPage />,
       },
     ],
-  },
-  // Unknown Routes
-  {
-    path: "*",
-    element: <NotFound/>,
   },
 ]);
