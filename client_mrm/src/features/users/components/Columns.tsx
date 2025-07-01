@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Printer } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import type { User } from "../types";
@@ -31,10 +31,16 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "userCode",
+
     header: "User Code",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("userCode")}</div>
     ),
+  },
+  {
+    accessorKey: "fullName",
+    header: "Name",
+    cell: ({ row }) => <div>{row.getValue("fullName")}</div>,
   },
   {
     accessorKey: "email",
@@ -64,7 +70,7 @@ export const columns: ColumnDef<User>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("role")}</div>,
+    cell: ({ row }) => <div>{row.getValue("role")}</div>,
   },
   {
     accessorKey: "address",
@@ -80,13 +86,16 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => {
-      const address = row.getValue("address") as User["address"]
+      const address = row.getValue("address") as User["address"];
       return (
-        <div className="lowercase">
-          {address?.street} {address?.city} {address?.state} {address?.country} {address?.zip}</div>
-      )
+        <div>
+          {address?.street} {address?.city} {address?.state} {address?.country}{" "}
+          {address?.zip}
+        </div>
+      );
     },
-  },{
+  },
+  {
     accessorKey: "createdAt",
     header: ({ column }) => {
       return (
@@ -100,10 +109,11 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => {
-      const createdAt = formatDate(row.getValue("createdAt"))
-      return <div className="lowercase">{createdAt}</div>;
+      const createdAt = formatDate(row.getValue("createdAt"));
+      return <div>{createdAt}</div>;
     },
-  },{
+  },
+  {
     accessorKey: "updatedAt",
     header: ({ column }) => {
       return (
@@ -117,10 +127,23 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => {
-      const updatedAt = formatDate(row.getValue("updatedAt"))
-      return <div className="lowercase">{updatedAt}</div>;
+      const updatedAt = formatDate(row.getValue("updatedAt"));
+      return <div>{updatedAt}</div>;
     },
   },
+  {
+  id: "actions",
+  header: "Actions",
+  cell: ({ row }) => (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => handlePrint(row.original)}
+    >
+      <Printer className="w-4 h-4" />
+    </Button>
+  )
+}
   // {
   //   accessorKey: "amount",
   //   header: () => <div className="text-right">Amount</div>,
@@ -144,7 +167,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const data = row.original;
 
-      return (<DataTableActions data={data} />);
+      return <DataTableActions data={data} />;
     },
   },
 ];

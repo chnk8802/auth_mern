@@ -15,9 +15,9 @@ export function DataTableActions({data}: any) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(data._id)}
+              onClick={() => navigator.clipboard.writeText(data.userCode)}
             >
-              Copy payment ID
+              Copy Code
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>

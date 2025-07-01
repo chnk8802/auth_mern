@@ -23,6 +23,7 @@ import {
   Ellipsis,
   Import,
   Printer,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +38,6 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -46,15 +46,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { SearchToggle } from "@/components/common/SearchToggle";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  moduleName?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  moduleName,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -64,9 +67,18 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const [globalFilter, setGlobalFilter] = React.useState<string>("");
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      globalFilter,
+    },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -75,26 +87,28 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
+    /*--------------------- */
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, _columnId, filterValue) => {
+      return row.getVisibleCells().some((cell) =>
+        String(cell.getValue() ?? "")
+          .toLowerCase()
+          .includes(filterValue.toLowerCase())
+      );
     },
+    /*--------------------- */
   });
 
   return (
     <div className="w-full">
-      <div className="flex items-end gap-2 py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
+      <div className="flex items-end justify-end gap-2 py-4">
+        <div className="mr-auto text-xl font-semibold text-foreground">
+          {moduleName}
+        </div>
+        <SearchToggle
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
         />
-
         <Button>Add</Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -105,9 +119,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenuContent align="end">
             <DropdownMenuGroup>
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <Columns3 /> Columns
-                </DropdownMenuSubTrigger>
+                <DropdownMenuSubTrigger>Columns</DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   {table
                     .getAllColumns()
@@ -129,9 +141,6 @@ export function DataTable<TData, TValue>({
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Printer /> Print
-              </DropdownMenuItem>
               <DropdownMenuItem>
                 <Import /> Import
               </DropdownMenuItem>
@@ -156,6 +165,19 @@ export function DataTable<TData, TValue>({
                             header.column.columnDef.header,
                             header.getContext()
                           )}
+                      {/* Optional per-column filter input */}
+                      {/* {header.column.getCanFilter() && (
+                        <Input
+                          className="mt-2 max-w-xs"
+                          placeholder={`Filter ${header.column.id}`}
+                          value={
+                            (header.column.getFilterValue() ?? "") as string
+                          }
+                          onChange={(e) =>
+                            header.column.setFilterValue(e.target.value)
+                          }
+                        />
+                      )} */}
                     </TableHead>
                   );
                 })}
