@@ -1,19 +1,8 @@
-export interface Result {
-    data: [],
-    message: string,
-    meta: 
-}
-interface Address {
-    street: string,
-    city: string,
-    state: string,
-    country: string,
-    zip: string
-}
+import type { Address } from "@/types/api"
 export interface User {
     _id: string,
     userCode: string,
-    fullName:string,
+    fullName?:string,
     email: string,
     role: string,
     address: Address,

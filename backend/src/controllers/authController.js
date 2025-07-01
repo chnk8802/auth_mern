@@ -12,10 +12,6 @@ import {
   loginUserValidation,
   signupUserValidation,
 } from "../validations/user/user.validation.js";
-import {
-  paramIdValidation,
-  multipleIdsValidation,
-} from "../validations/common/common.validation.js";
 
 const register = async (req, res, next) => {
   try {
@@ -61,34 +57,34 @@ const register = async (req, res, next) => {
 
 const refreshToken = async (req, res, next) => {
   try {
-    const { refreshToken } = req.cookies;
+    const tokenFromCookie = req.cookies?.refreshToken;
 
-    if (!refreshToken) {
-      throw createError(400, "Refresh token not provided");
+    if (!tokenFromCookie) {
+      throw createError(401, "Unauthorized");
     }
 
     let decoded;
     try {
-      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      decoded = jwt.verify(tokenFromCookie, process.env.REFRESH_TOKEN_SECRET);
     } catch (err) {
-      throw createError(403, "Invalid or expired refresh token");
+      throw createError(401, "Unauthorized");
     }
 
     const user = await User.findById(decoded.userId).select("+refreshTokens");
     if (!user) {
-      throw createError(404, "User not found");
+      throw createError(401, "Unauthorized");
     }
 
     const tokenExists = user.refreshTokens.some(
-      (t) => t.token === refreshToken
+      (t) => t.token === tokenFromCookie
     );
     if (!tokenExists) {
-      throw createError(403, "Refresh token not recognized");
+      throw createError(401, "Unauthorized");
     }
 
     // Rotate tokens
     user.refreshTokens = user.refreshTokens.filter(
-      (t) => t.token !== refreshToken
+      (t) => t.token !== tokenFromCookie
     );
 
     const newAccessToken = generateAccessToken(user._id);
@@ -99,7 +95,6 @@ const refreshToken = async (req, res, next) => {
 
     const isProd = process.env.NODE_ENV === "production";
 
-    // Set cookies with best practices
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: isProd,

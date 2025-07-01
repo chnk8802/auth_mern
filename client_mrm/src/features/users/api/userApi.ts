@@ -1,7 +1,8 @@
 import api from "@/lib/axios"
-import type { User } from "@/features/users/types"
+import type { ApiResponse } from "@/types/api";
+import type { User } from "../types";
 
-export const getUsers = async ():Promise<User> => {
-        const res = await api.get("users/")
+export const getUsers = async (): Promise<ApiResponse<User[]>> => {
+        const res = await api.get<ApiResponse<User[]>>("users/")
         return res.data;
 }

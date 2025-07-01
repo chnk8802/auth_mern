@@ -46,8 +46,7 @@ api.interceptors.response.use(
 
       try {
         const res = await api.post("/auth/refresh-token")
-        console.log("refresh-token", res)
-        const user = res.data[0];
+        const user = res.data?.data[0];
 
         if (!user) {
           throw new Error("No user returned from refresh")

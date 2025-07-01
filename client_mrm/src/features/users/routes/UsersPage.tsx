@@ -3,18 +3,27 @@ import { useEffect, useState } from "react";
 import { DataTable } from "@/components/ui/data-Table";
 import {columns} from "@/features/users/components/Columns"
 import { getUsers } from "@/features/users/api/userApi";
+import type {User} from "@/features/users/types"
+import { toast } from "sonner";
 
 
 export function UsersPage() {
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState<User[]>([])
   useEffect(() => {
-    console.log("+++++++++")
     const fetchUsers = async () => {
-      const result = await getUsers();
-      console.log(result)
-    }
-    fetchUsers()
-  },[])
+  const promise = getUsers()
+    .then((res) => {
+      setUsers(res.data);
+      return res; // so toast can use res in success message
+    });
+
+  toast.promise(promise, {
+    error: "Failed to fetch users",
+  });
+};
+
+    fetchUsers();
+  }, []);
   return (
     <DataTable columns={columns} data={users}/>
   )
