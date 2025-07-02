@@ -130,20 +130,15 @@ export const columns: ColumnDef<User>[] = [
       const updatedAt = formatDate(row.getValue("updatedAt"));
       return <div>{updatedAt}</div>;
     },
+  },{
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const data = row.original;
+
+      return <DataTableActions data={data} />;
+    },
   },
-  {
-  id: "actions",
-  header: "Actions",
-  cell: ({ row }) => (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => handlePrint(row.original)}
-    >
-      <Printer className="w-4 h-4" />
-    </Button>
-  )
-}
   // {
   //   accessorKey: "amount",
   //   header: () => <div className="text-right">Amount</div>,
@@ -161,13 +156,5 @@ export const columns: ColumnDef<User>[] = [
   //     return <div className="text-right font-medium">{formatted}</div>;
   //   },
   // },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const data = row.original;
-
-      return <DataTableActions data={data} />;
-    },
-  },
+  
 ];

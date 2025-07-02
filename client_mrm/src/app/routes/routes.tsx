@@ -3,7 +3,7 @@ import { LoginForm } from "@/features/auth/components/login-form";
 import { RegisterForm } from "@/features/auth/components/register-form";
 import { MainLayout } from "@/layouts/MainLayout";
 import { DashboardHomePage } from "@/features/dashboardHome/routes/DashboardHomePage";
-import { UsersPage } from "@/features/users/routes/UsersPage";
+import { UsersPage } from "@/features/users/routes/UserListPage";
 import { CustomersPage } from "@/features/customers/routes/CustomersPage";
 import { RepairJobPage } from "@/features/repairJob/routes/RepairJobPage";
 import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
@@ -15,21 +15,23 @@ import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
 import { ROUTES } from "@/constants/routes";
 import NotFound from "../NotFound";
 import { GuestLayout } from "@/layouts/GuestLayout";
+import UserDetailPage from "@/features/users/routes/UserDetailsPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <GuestLayout/>,
+    element: <GuestLayout />,
     children: [
-  {
-    path: "/",
-    element: <HomePage/>,
-  },
-  // Unknown Routes
-  {
-    path: "*",
-    element: <NotFound/>,
-  },]
+      {
+        path: "/",
+        element: <HomePage />,
+      },
+      // Unknown Routes
+      {
+        path: "*",
+        element: <NotFound />,
+      },
+    ],
   },
   {
     path: ROUTES.AUTH,
@@ -80,7 +82,16 @@ export const router = createBrowserRouter([
       },
       {
         path: "users",
-        element: <UsersPage />,
+        children: [
+          {
+            index: true,
+            element: <UsersPage />,
+          },
+          {
+            path: ":userId",
+            element: <UserDetailPage />,
+          },
+        ],
       },
       {
         path: "customers",

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -59,6 +60,7 @@ export function DataTable<TData, TValue>({
   data,
   moduleName,
 }: DataTableProps<TData, TValue>) {
+  const navigate = useNavigate();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -165,19 +167,6 @@ export function DataTable<TData, TValue>({
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                      {/* Optional per-column filter input */}
-                      {/* {header.column.getCanFilter() && (
-                        <Input
-                          className="mt-2 max-w-xs"
-                          placeholder={`Filter ${header.column.id}`}
-                          value={
-                            (header.column.getFilterValue() ?? "") as string
-                          }
-                          onChange={(e) =>
-                            header.column.setFilterValue(e.target.value)
-                          }
-                        />
-                      )} */}
                     </TableHead>
                   );
                 })}
@@ -190,6 +179,8 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => navigate(row.original._id)}
+                  className="cursor-pointer hover:bg-muted transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

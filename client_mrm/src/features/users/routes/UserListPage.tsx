@@ -5,7 +5,6 @@ import { columns } from "@/features/users/components/Columns";
 import { getUsers } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
 import { toast } from "sonner";
-import { UserIcon } from "lucide-react";
 
 export function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
