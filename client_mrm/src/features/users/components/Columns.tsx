@@ -31,7 +31,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "userCode",
-
+    enableHiding: false,
     header: "User Code",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("userCode")}</div>
@@ -97,6 +97,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "createdAt",
+    
     header: ({ column }) => {
       return (
         <Button

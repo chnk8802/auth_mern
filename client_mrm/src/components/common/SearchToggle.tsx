@@ -9,6 +9,10 @@ export const SearchToggle = ({ globalFilter, setGlobalFilter }: {
 }) => {
   const [searchOpen, setSearchOpen] = useState(false);
 
+  const handleClear = () => {
+    setGlobalFilter("");     // Clear input
+    setSearchOpen(false);    // Close search input
+  };
   return (
     <div className={``}>
       {searchOpen ? (
@@ -20,7 +24,7 @@ export const SearchToggle = ({ globalFilter, setGlobalFilter }: {
             className="max-w-sm"
             autoFocus
           />
-          <Button variant="ghost" size="icon" onClick={() => setSearchOpen(false)}>
+          <Button variant="ghost" size="icon" onClick={handleClear}>
             <X />
           </Button>
         </div>
