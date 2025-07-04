@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Edit, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 
 interface DetailToolbarProps {
   title: string;
@@ -10,7 +11,12 @@ interface DetailToolbarProps {
   actions?: ReactNode; // For extra buttons
 }
 
-export function DetailToolbar({ title, onEdit, onDelete, actions }: DetailToolbarProps) {
+export function DetailToolbar({
+  title,
+  onEdit,
+  onDelete,
+  actions,
+}: DetailToolbarProps) {
   const navigate = useNavigate();
 
   return (
@@ -30,9 +36,11 @@ export function DetailToolbar({ title, onEdit, onDelete, actions }: DetailToolba
           </Button>
         )}
         {onDelete && (
-          <Button variant="destructive" onClick={onDelete}>
-            <Trash2 />
-          </Button>
+          <DeleteConfirmDialog onConfirm={onDelete}>
+            <Button variant="destructive">
+              <Trash2 />
+            </Button>
+          </DeleteConfirmDialog>
         )}
       </div>
     </div>

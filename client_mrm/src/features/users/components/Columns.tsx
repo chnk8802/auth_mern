@@ -1,12 +1,20 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Printer } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import type { User } from "../types";
 import { DataTableActions } from "@/components/common/DataTableActions";
 import { formatDate } from "@/lib/utils";
 
-export const columns: ColumnDef<User>[] = [
+type UserColumnsProps = {
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
+};
+
+export const getUserColumns = ({
+  onEdit,
+  onDelete,
+}: UserColumnsProps): ColumnDef<User>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -28,18 +36,55 @@ export const columns: ColumnDef<User>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    enablePinning: true,
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const data = row.original;
+
+      return (
+        <DataTableActions
+          data={data}
+          onEdit={() => onEdit(data)}
+          onDelete={() => onDelete(data)}
+        />
+      );
+    },
+    enableHiding: false,
+    enablePinning: true,
   },
   {
     accessorKey: "userCode",
     enableHiding: false,
-    header: "User Code",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          User Code
+          <ArrowUpDown />
+        </Button>
+      );
+    },
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("userCode")}</div>
     ),
   },
   {
     accessorKey: "fullName",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Full Name
+          <ArrowUpDown />
+        </Button>
+      );
+    },
     cell: ({ row }) => <div>{row.getValue("fullName")}</div>,
   },
   {
@@ -97,7 +142,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "createdAt",
-    
+
     header: ({ column }) => {
       return (
         <Button
@@ -131,14 +176,6 @@ export const columns: ColumnDef<User>[] = [
       const updatedAt = formatDate(row.getValue("updatedAt"));
       return <div>{updatedAt}</div>;
     },
-  },{
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const data = row.original;
-
-      return <DataTableActions data={data} />;
-    },
   },
   // {
   //   accessorKey: "amount",
@@ -157,5 +194,4 @@ export const columns: ColumnDef<User>[] = [
   //     return <div className="text-right font-medium">{formatted}</div>;
   //   },
   // },
-  
 ];

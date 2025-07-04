@@ -1,21 +1,34 @@
 import { createBrowserRouter } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
+import {NotFound} from "@/app/NotFound";
+
+// Layouts
+import { MainLayout } from "@/layouts/MainLayout";
+import { GuestLayout } from "@/layouts/GuestLayout";
+import { AuthLayout } from "@/layouts/AuthLayout";
+
+// Guest
+import { HomePage } from "@/features/home/routes/HomePage";
+
+// Auth
+import { ProtectedRoute } from "./guards/ProtectedRoute";
+import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { RegisterForm } from "@/features/auth/components/register-form";
-import { MainLayout } from "@/layouts/MainLayout";
+
+// Dashboard
 import { DashboardHomePage } from "@/features/dashboardHome/routes/DashboardHomePage";
+
+// Modules
+// User
 import { UsersPage } from "@/features/users/routes/UserListPage";
+import {UserDetailPage} from "@/features/users/routes/UserDetailsPage";
+import {UserEditPage} from "@/features/users/routes/UserEditPage";
+// Others
 import { CustomersPage } from "@/features/customers/routes/CustomersPage";
 import { RepairJobPage } from "@/features/repairJob/routes/RepairJobPage";
 import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
 import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
-import { AuthLayout } from "@/layouts/AuthLayout";
-import { ProtectedRoute } from "./guards/ProtectedRoute";
-import { HomePage } from "@/features/home/routes/HomePage";
-import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
-import { ROUTES } from "@/constants/routes";
-import NotFound from "../NotFound";
-import { GuestLayout } from "@/layouts/GuestLayout";
-import UserDetailPage from "@/features/users/routes/UserDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -90,6 +103,10 @@ export const router = createBrowserRouter([
           {
             path: ":userId",
             element: <UserDetailPage />,
+          },
+          {
+            path: ":userId/edit",
+            element: <UserEditPage />,
           },
         ],
       },

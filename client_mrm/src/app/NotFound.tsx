@@ -1,12 +1,11 @@
-import { Link } from "react-router-dom"
-import notFoundImage from "@/assets/not-found.png" 
+import { Link } from "react-router-dom";
+import notFoundImage from "@/assets/not-found.png";
 
-const NotFound = () => {
+export const NotFound = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 text-center">
-      {/* Placeholder for your PNG image */}
       <img
-        src={notFoundImage} // 🔁 Replace this with your actual image path
+        src={notFoundImage}
         alt="Not Found"
         className="w-64 h-64 object-contain mb-8"
       />
@@ -24,7 +23,5 @@ const NotFound = () => {
         Go back home
       </Link>
     </div>
-  )
-}
-
-export default NotFound
+  );
+};

@@ -2,9 +2,6 @@ import * as React from "react";
 import {
   Bot,
   Folder,
-  Frame,
-  Map,
-  PieChart,
   Settings2,
   Wrench,
 } from "lucide-react";
@@ -92,12 +89,12 @@ const data = {
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: Settings2,
       items: [
         {
           title: "General",
-          url: "#",
+          url: "/settings/general",
         },
         {
           title: "Users",
@@ -105,24 +102,7 @@ const data = {
         },
       ],
     },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  ]
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

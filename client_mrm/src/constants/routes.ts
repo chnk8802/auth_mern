@@ -10,9 +10,10 @@ export const ROUTES = {
   DASHBOARD: "/dashboard",
 
   USERS: {
-    LIST: "/users",
-    ME: "/users/me",
-    DETAILS: (id: string | number) => `/users/${id}`,
+    ME: "/dashboard/users/me",
+    LIST: "/dashboard/users",
+    EDIT: (id: string | number) => `/dashboard/users/${id}/edit`,
+    DETAILS: (id: string | number) => `/dashboard/users/${id}`,
   },
 
   PAYMENTS: {
