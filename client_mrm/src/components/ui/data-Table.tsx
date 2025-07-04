@@ -104,7 +104,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
 
   return (
     <div
-      className={state === "expanded" && isMobile !== true ? "w-265" : "w-full"}
+      className={state === "expanded" && isMobile !== true ? "w-full" : "w-full"}
     >
       <div className="flex items-end justify-end gap-2 py-4">
         <div className="mr-auto text-xl font-semibold text-foreground">
