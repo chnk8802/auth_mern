@@ -1,5 +1,4 @@
 import { MoreHorizontal } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -38,6 +37,7 @@ export function DataTableActions({ data, onEdit, onDelete }: any) {
           Edit
         </DropdownMenuItem>
         <DropdownMenuItem
+        className="py-0"
           variant="destructive"
         >
           <DeleteConfirmDialog
@@ -45,7 +45,7 @@ export function DataTableActions({ data, onEdit, onDelete }: any) {
               onDelete(data);
             }}
           >
-            <Button className="p-0" variant="ghost" onClick={(e) => e.stopPropagation()}>Delete</Button>
+            <Button className="p-0 text-destructive hover:text-destructive hover:bg-transparent" variant="ghost" onClick={(e) => e.stopPropagation()}>Delete</Button>
           </DeleteConfirmDialog>
         </DropdownMenuItem>
       </DropdownMenuContent>
