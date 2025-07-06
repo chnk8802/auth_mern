@@ -1,12 +1,14 @@
 // constants/routes.ts
 // Only for frontend
 export const ROUTES = {
-  ROOT: "/",
-  AUTH: "/auth",
-  LOGIN: "/auth/login",
-  REGISTER: "/auth/register",
-  FORGOT_PASSWORD:"/auth/forgot-password",
-  
+  GUEST_PATHS: {
+    ROOT: "/",
+    AUTH: "/auth",
+    LOGIN: "/auth/login",
+    REGISTER: "/auth/register",
+    FORGOT_PASSWORD: "/auth/forgot-password",
+  },
+
   DASHBOARD: "/dashboard",
 
   USERS: {
@@ -14,6 +16,12 @@ export const ROUTES = {
     LIST: "/dashboard/users",
     EDIT: (id: string | number) => `/dashboard/users/${id}/edit`,
     DETAILS: (id: string | number) => `/dashboard/users/${id}`,
+  },
+  CUSTOMERS: {
+    ME: "/dashboard/customers/me",
+    LIST: "/dashboard/customers",
+    EDIT: (id: string | number) => `/dashboard/customers/${id}/edit`,
+    DETAILS: (id: string | number) => `/dashboard/customers/${id}`,
   },
 
   PAYMENTS: {

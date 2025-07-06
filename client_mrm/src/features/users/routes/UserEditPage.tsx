@@ -1,5 +1,9 @@
 import type { User } from "@/features/users/types";
 import { EditUserForm } from "@/features/users/components/UserEditForm";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { getUserById } from "../api/userApi";
 
 const mockUser: User = {
   _id: "1",
@@ -19,15 +23,39 @@ const mockUser: User = {
 };
 
 export function UserEditPage() {
+  const {userId} = useParams()
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchUser = async () => {
+      try {
+        const res = await getUserById(userId);
+        setUser(res.data[0]);
+      } catch (err) {
+        console.error("Failed to fetch user", err);
+        toast.error("Failed to fetch user");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [userId]);
+
   const handleEdit = (data: User) => {
     console.log("Edited user:", data);
-    // call API to update user
   };
+
+  if (loading) return <div className="p-6 text-center">Loading...</div>;
+  if (!user) return <div className="p-6 text-center">User not found</div>;
 
   return (
     <div className="p-6">
       <h1 className="text-xl font-bold mb-4">Edit User</h1>
-      <EditUserForm user={mockUser} onSubmit={handleEdit} />
+      <EditUserForm user={user} onSubmit={handleEdit} />
     </div>
   );
 }

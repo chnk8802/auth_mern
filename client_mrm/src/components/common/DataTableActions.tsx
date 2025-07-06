@@ -9,7 +9,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 
-export function DataTableActions({ data, onEdit, onDelete }: any) {
+type DataTableActionsProps<T> = {
+  data: any;
+  onEdit: (item: T) => void;
+  onDelete: (item: T) => void;
+  copyField?: keyof T;
+};
+
+
+export function DataTableActions<T>({ data, onEdit, onDelete, copyField }: DataTableActionsProps<T>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -19,14 +27,16 @@ export function DataTableActions({ data, onEdit, onDelete }: any) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            navigator.clipboard.writeText(data.userCode);
-          }}
-        >
-          Copy Code
-        </DropdownMenuItem>
+        {copyField && (
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(data[copyField]);
+            }}
+          >
+            Copy Code
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={(e) => {

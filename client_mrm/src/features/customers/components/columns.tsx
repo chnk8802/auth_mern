@@ -2,19 +2,19 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import type { User } from "../types";
+import type { Customer } from "@/features/customers/types";
 import { DataTableActions } from "@/components/common/DataTableActions";
 import { formatDate } from "@/lib/utils";
 
-type UserColumnsProps = {
-  onEdit: (user: User) => void;
-  onDelete: (user: User) => void;
+type CustomerColumnsProps = {
+  onEdit: (customer: Customer) => void;
+  onDelete: (customer: Customer) => void;
 };
 
-export const getUserColumns = ({
+export const getCustomerColumns = ({
   onEdit,
   onDelete,
-}: UserColumnsProps): ColumnDef<User>[] => [
+}: CustomerColumnsProps): ColumnDef<Customer>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -48,7 +48,7 @@ export const getUserColumns = ({
           data={data}
           onEdit={() => onEdit(data)}
           onDelete={() => onDelete(data)}
-          copyField={"userCode" as keyof User}
+          copyField={"customerCode" as keyof Customer}
         />
       );
     },
@@ -56,7 +56,7 @@ export const getUserColumns = ({
     enablePinning: true,
   },
   {
-    accessorKey: "userCode",
+    accessorKey: "customerCode",
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -64,13 +64,13 @@ export const getUserColumns = ({
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          User Code
+          Customer Code
           <ArrowUpDown />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("userCode")}</div>
+      <div className="capitalize">{row.getValue("customerCode")}</div>
     ),
   },
   {
@@ -89,34 +89,22 @@ export const getUserColumns = ({
     cell: ({ row }) => <div>{row.getValue("fullName")}</div>,
   },
   {
-    accessorKey: "email",
+    accessorKey: "isBulkCustomer",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Is Bulk Customer
           <ArrowUpDown />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "role",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Role
-          <ArrowUpDown />
-        </Button>
-      );
+    cell: ({ row }) => {
+        const isBulkCustomer = row.getValue("isBulkCustomer") as boolean;
+        return <div>{isBulkCustomer ? "Yes" : "No"}</div>;
     },
-    cell: ({ row }) => <div>{row.getValue("role")}</div>,
   },
   {
     accessorKey: "address",
@@ -132,7 +120,7 @@ export const getUserColumns = ({
       );
     },
     cell: ({ row }) => {
-      const address = row.getValue("address") as User["address"];
+      const address = row.getValue("address") as Customer["address"];
       return (
         <div>
           {address?.street} {address?.city} {address?.state} {address?.country}{" "}
@@ -177,22 +165,5 @@ export const getUserColumns = ({
       const updatedAt = formatDate(row.getValue("updatedAt"));
       return <div>{updatedAt}</div>;
     },
-  },
-  // {
-  //   accessorKey: "amount",
-  //   header: () => <div className="text-right">Amount</div>,
-  //   cell: ({ row }) => {
-  //     const amount = parseFloat(row.getValue("amount"));
-
-  //     // Format the amount as Indian Rupees with Indian-style grouping
-  //     const formatted = new Intl.NumberFormat("en-IN", {
-  //       style: "currency",
-  //       currency: "INR",
-  //     }).format(amount);
-
-  //     console.log(formatted)
-
-  //     return <div className="text-right font-medium">{formatted}</div>;
-  //   },
-  // },
+  }
 ];

@@ -7,7 +7,7 @@ export const getUsers = async (): Promise<ApiResponse<User[]>> => {
         return res.data;
 }
 
-export const getUser = async (id: string): Promise<ApiResponse<User[]>> => {
+export const getUserById = async (id: string): Promise<ApiResponse<User[]>> => {
         const res = await api.get<ApiResponse<User[]>>(`users/${id}`)
         return res.data;
 }

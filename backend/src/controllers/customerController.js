@@ -7,7 +7,10 @@ import {
   createCustomerValidation,
   updateCustomerValidation,
 } from "../validations/customer/customer.validate.js";
-import {paramIdValidation, multipleIdsValidation} from '../validations/common/common.validation.js'
+import {
+  paramIdValidation,
+  multipleIdsValidation,
+} from "../validations/common/common.validation.js";
 
 const createCustomer = async (req, res, next) => {
   try {
@@ -49,7 +52,7 @@ const getCustomers = async (req, res, next) => {
     if (!customers || customers.length === 0) {
       throw createError(404, "No customers found");
     }
-    
+
     const totalRecords = await Customer.countDocuments({});
     response(res, customers, "Customers fetched successfully", {
       pagination: {
@@ -66,8 +69,8 @@ const getCustomers = async (req, res, next) => {
 
 const getCustomer = async (req, res, next) => {
   try {
-    const {id} = req.params;
-    
+    const { id } = req.params;
+
     const customer = await Customer.findById(id);
     if (!customer) {
       throw createError(404, "Customer not found");
@@ -90,7 +93,7 @@ const updateCustomer = async (req, res, next) => {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    const customerUpdates = flattenObject(value.data[0])
+    const customerUpdates = flattenObject(value.data[0]);
 
     const updatedCustomer = await Customer.findByIdAndUpdate(
       customerId,
@@ -112,20 +115,15 @@ const updateCustomer = async (req, res, next) => {
 
 const deleteCustomer = async (req, res, next) => {
   try {
-    const { error, value } = multipleIdsValidation.validate(req.params, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
-    if (error) {
-      throw createError(400, error.details.map((d) => d.message).join(", "));
-    }
+    const id = req.params.id;
 
-    const result = await Customer.findByIdAndDelete(value.id);
+    const result = await Customer.findByIdAndDelete(id);
     if (!result) {
       throw createError(404, "Record not found");
     }
 
     const deletedresult = {
+      customerCode: result.customerCode,
       _id: result._id,
     };
 
@@ -137,15 +135,11 @@ const deleteCustomer = async (req, res, next) => {
 
 const deleteCustomers = async (req, res, next) => {
   try {
-    const { error, value } = multipleIdsValidation.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
-    if (error) {
-      throw createError(400, error.details.map((d) => d.message).join(", "));
+    const ids = req.body.ids;
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw createError(400, "Invalid or missing IDs for deletion");
     }
-
-    const result = await Customer.deleteMany({ _id: { $in: value.ids } });
+    const result = await Customer.deleteMany({ _id: { $in: ids } });
 
     if (result.deletedCount === 0) {
       throw createError(404, "No records found for deletion");

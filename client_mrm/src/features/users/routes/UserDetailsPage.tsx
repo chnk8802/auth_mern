@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { getUser } from "@/features/users/api/userApi";
+import { getUserById } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
 import { DetailGrid } from "@/components/common/DetailGrid";
 import { DetailItem } from "@/components/common/DetailItem";
@@ -24,7 +24,7 @@ export function UserDetailPage() {
       const result = await deleteUser(user._id);
       console.log("results", result)
       toast.success(`${result.data[0].userCode} deleted successfully`);
-      // navigate(ROUTES.USERS.LIST);
+      navigate(ROUTES.USERS.LIST);
     } catch (err) {
       console.error("Delete failed", err);
       toast.error("Failed to delete user");
@@ -36,7 +36,7 @@ export function UserDetailPage() {
 
     const fetchUser = async () => {
       try {
-        const res = await getUser(userId);
+        const res = await getUserById(userId);
         setUser(res.data[0]);
       } catch (err) {
         console.error("Failed to fetch user", err);
