@@ -87,6 +87,20 @@ export const getCustomerColumns = ({
       );
     },
     cell: ({ row }) => <div>{row.getValue("fullName")}</div>,
+  },{
+    accessorKey: "phone",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Phone
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue("phone")}</div>,
   },
   {
     accessorKey: "isBulkCustomer",

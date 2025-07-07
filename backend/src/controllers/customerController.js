@@ -15,14 +15,16 @@ import {
 const createCustomer = async (req, res, next) => {
   try {
     const { error, value } = createCustomerValidation.validate(req.body, {
-      abortEarly: true,
+      abortEarly: false,
       stripUnknown: true,
     });
-
+    
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
+    
     const customerData = flattenObject(value.data[0]);
+    
     const customer = new Customer(customerData);
     let savedCustomer = await customer.save();
     if (!savedCustomer) {

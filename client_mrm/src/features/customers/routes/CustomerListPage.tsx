@@ -49,7 +49,7 @@ export function CustomersPage() {
         onDelete: handleRowDelete,
       })}
       data={customers}
-      moduleName={"Customers"}
+      moduleName={"Customer"}
     />
   );
 }

@@ -13,7 +13,7 @@ export const createCustomer = Joi.object({
     }),
   address: Joi.object({
     street: Joi.string().trim().optional(),
-    city: Joi.string().trim().required(),
+    city: Joi.string().trim().optional(),
     state: Joi.string()
       .trim()
       .valid(...STATES)

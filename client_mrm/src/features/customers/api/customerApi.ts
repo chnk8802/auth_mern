@@ -12,12 +12,12 @@ export const getCustomerById = async (id: string): Promise<ApiResponse<Customer[
   return res.data;
 };
 
-export const createCustomer = async (customerData: Omit<Customer, "_id">): Promise<ApiResponse<Customer[]>> => {
+export const createCustomer = async (customerData: {data: Customer[]}): Promise<ApiResponse<Customer[]>> => {
   const response = await api.post<ApiResponse<Customer[]>>("/customers", customerData);
   return response.data;
 };
 
-export const updateCustomer = async (id: string, customerData: {data: Customer[]}): Promise<ApiResponse<Customer[]>> => {
+export const updateCustomer = async (id: string, customerData: {data: Partial<Customer>[]}): Promise<ApiResponse<Customer[]>> => {
   const response = await api.patch<ApiResponse<Customer[]>>(`/customers/${id}`, customerData);
   return response.data;
 };

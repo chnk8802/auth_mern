@@ -27,7 +27,6 @@ export function EditCustomerForm({
   const form = useForm<Customer>({
     defaultValues: {
       ...customer,
-      email: customer.email ?? "",
     },
   });
 
@@ -81,17 +80,16 @@ export function EditCustomerForm({
               </FormItem>
             )}
           />
-          {/* email doesb't updates as it is not present in customer model and edit sutomer form is sending full document data everythime some field updates */}
           <FormField
             control={form.control}
-            name="email"
+            name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Phone</FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
-                    placeholder="john@example.com"
+                    type="phone"
+                    placeholder="9876543210"
                     {...field}
                   />
                 </FormControl>

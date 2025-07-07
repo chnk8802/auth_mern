@@ -76,7 +76,7 @@ export function CustomerDetailPage() {
             (customer.email ? customer.email.split("@")[0] : "")
           }
         />
-        <DetailItem label="Email" value={customer.email} />
+        <DetailItem label="Phone" value={customer.phone} />
         <DetailItem
           label="Is Bulk Customer"
           value={customer.isBulkCustomer ? "Yes" : "No"}

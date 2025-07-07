@@ -1,4 +1,4 @@
-import { MoreHorizontal } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,8 +22,8 @@ export function DataTableActions<T>({ data, onEdit, onDelete, copyField }: DataT
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal />
+          {/* <span className="sr-only">Open Menu</span> */}
+          <MoreVertical/>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

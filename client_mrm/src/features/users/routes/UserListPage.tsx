@@ -7,7 +7,7 @@ import { deleteUser, getUsers } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
 import { useNavigate } from "react-router-dom";
 
-export function UsersPage() {
+export function UsersListPage() {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
 

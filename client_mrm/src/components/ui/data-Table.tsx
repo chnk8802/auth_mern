@@ -42,6 +42,7 @@ import {
 import { SearchToggle } from "@/components/common/SearchToggle";
 import { useSidebar } from "./sidebar";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/constants/routes";
 
 interface DataTableProps<TData extends { _id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -108,12 +109,14 @@ export function DataTable<TData extends { _id: string }, TValue>({
     >
       <div className="flex items-end justify-end gap-2 py-4">
         <div className="mr-auto text-xl font-semibold text-foreground">
-          {moduleName}
+          {moduleName}s
         </div>
+        
         <SearchToggle
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
+        <Button onClick={() => navigate(`/dashboard/${moduleName}s/new`)}>Add {moduleName}</Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">

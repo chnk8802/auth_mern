@@ -18,7 +18,7 @@ export const inputDataWrapper = (itemSchema) => {
   return Joi.object({
     data: Joi.array()
       .items(itemSchema)
-      .min(1) // 👈 ensures non-empty array
+      .min(1)
       .required()
       .messages({
         "any.required": `"data" is required`,

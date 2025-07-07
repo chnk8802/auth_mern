@@ -2,10 +2,9 @@ import type { Address } from "@/types/api"
 export interface Customer {
     _id: string,
     customerCode: string,
-    fullName?:string,
+    fullName?: string,
     phone?: string,
-    email?: string,
-    isBulkCustomer?: boolean,
+    isBulkCustomer: boolean,
     address: Address,
     createdAt: string,
     updatedAt: string

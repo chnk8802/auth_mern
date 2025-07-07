@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
-import {NotFound} from "@/app/NotFound";
+import { NotFound } from "@/app/NotFound";
 
 // Layouts
 import { MainLayout } from "@/layouts/MainLayout";
@@ -21,11 +21,12 @@ import { DashboardHomePage } from "@/features/dashboardHome/routes/DashboardHome
 
 // Modules
 // User
-import { UsersPage } from "@/features/users/routes/UserListPage";
-import {UserDetailPage} from "@/features/users/routes/UserDetailsPage";
-import {UserEditPage} from "@/features/users/routes/UserEditPage";
+import { UsersListPage } from "@/features/users/routes/UserListPage";
+import { UserDetailPage } from "@/features/users/routes/UserDetailsPage";
+import { UserEditPage } from "@/features/users/routes/UserEditPage";
 // Customer
 import { CustomersPage } from "@/features/customers/routes/CustomerListPage";
+import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
 import { CustomerDetailPage } from "@/features/customers/routes/CustomerDetailsPage";
 import { CustomerEditPage } from "@/features/customers/routes/CustomerEditPage";
 // Others
@@ -88,39 +89,51 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     handle: {
-    breadcrumb: () => "Dashboard",
-  },
+      breadcrumb: () => "Dashboard",
+    },
+
     children: [
       {
         index: true,
         element: <DashboardHomePage />,
+        handle: {
+          breadcrumb: "Home",
+        },
       },
       {
         path: "repairjobs",
         element: <RepairJobPage />,
+        handle: {
+          breadcrumb: () => "Repair Job",
+        },
       },
       {
         path: "users",
+        handle: {
+          breadcrumb: "Users",
+        },
         children: [
           {
             index: true,
-            element: <UsersPage />,
+            element: <UsersListPage />,
             handle: {
-              breadcrumb: "Users",
+              breadcrumb: "Users List",
             },
           },
           {
             path: ":userId",
             element: <UserDetailPage />,
             handle: {
-              breadcrumb: ({ params }: { params: { userId: string } }) => `User ${params.userId}`,
+              breadcrumb: ({ params }: { params: { userId: string } }) =>
+                `${params.userId}`,
             },
           },
           {
             path: ":userId/edit",
             element: <UserEditPage />,
             handle: {
-              breadcrumb: ({ params }: { params: { userId: string } }) => `Edit User ${params.userId}`,
+              breadcrumb: ({ params }: { params: { userId: string } }) =>
+                `Edit ${params.userId}`,
             },
           },
         ],
@@ -128,8 +141,8 @@ export const router = createBrowserRouter([
       {
         path: "customers",
         handle: {
-    breadcrumb: () => "Customers",
-  },
+          breadcrumb: () => "Customers",
+        },
         children: [
           {
             index: true,
@@ -140,7 +153,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "new",
-            element: <CustomerEditPage />,
+            element: <CustomerAddPage />,
             handle: {
               breadcrumb: "New Customer",
             },
@@ -149,14 +162,16 @@ export const router = createBrowserRouter([
             path: ":customerId",
             element: <CustomerDetailPage />,
             handle: {
-              breadcrumb: ({ params }: { params: { customerId: string } }) => `${params.customerId}`,
+              breadcrumb: ({ params }: { params: { customerId: string } }) =>
+                `${params.customerId}`,
             },
           },
           {
             path: ":customerId/edit",
             element: <CustomerEditPage />,
             handle: {
-              breadcrumb: ({ params }: { params: { customerId: string } }) => `Edit ${params.customerId}`,
+              breadcrumb: ({ params }: { params: { customerId: string } }) =>
+                `Edit ${params.customerId}`,
             },
           },
         ],
@@ -164,10 +179,16 @@ export const router = createBrowserRouter([
       {
         path: "technicians",
         element: <TechniciansPage />,
+        handle: {
+          breadcrumb: () => "Technicians",
+        },
       },
       {
         path: "payments",
         element: <PaymentsPage />,
+        handle: {
+          breadcrumb: () => "Payments",
+        },
       },
     ],
   },
