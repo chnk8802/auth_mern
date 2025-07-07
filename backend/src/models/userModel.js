@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema(
       state: {
         type: String,
         enum: [...STATES],
-        default: "Uttar Pradesh",
+        default: "uttar_pradesh",
         trim: true,
       },
       zip: {
@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema(
       country: {
         type: String,
         enum: [...COUNTRIES],
-        default: "India",
+        default: "india",
       },
     },
     role: {

@@ -44,7 +44,6 @@ export function CustomerEditPage() {
     const payload = { data: [{ ...changedFields }] };
     const submitUpdate = async () => {
       try {
-        console.log(payload);
         const result = await updateCustomer(customerId, payload);
         toast.success("Customer details updated");
         navigate(ROUTES.CUSTOMERS.DETAILS(result.data[0]._id));

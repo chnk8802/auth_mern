@@ -16,7 +16,7 @@ export const createSupplier = Joi.object({
     city: Joi.string().trim().required(),
     state: Joi.string()
       .valid(...STATES)
-      .default("Uttar Pradesh")
+      .default("uttar_pradesh")
       .optional(),
 
     zip: Joi.string()
@@ -26,7 +26,7 @@ export const createSupplier = Joi.object({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
 
-    country: Joi.string().valid(...COUNTRIES).default("India").optional(),
+    country: Joi.string().valid(...COUNTRIES).default("india").optional(),
   }).optional(),
 });
 
@@ -44,7 +44,7 @@ export const updateSupplier = Joi.object({
     city: Joi.string().trim().optional(),
     state: Joi.string()
       .valid(...STATES)
-      .default("Uttar Pradesh")
+      .default("uttar_pradesh")
       .optional(),
 
     zip: Joi.string()

@@ -50,7 +50,7 @@ const customerSchema = mongoose.Schema(
       country: {
         type: String,
         enum: [...COUNTRIES],
-        default: "India",
+        default: "india",
       },
     },
     isBulkCustomer: {

@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Bell,
-  ChevronsUpDown,
-  LogOut,
-} from "lucide-react";
+import { Bell, ChevronsUpDown, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -28,24 +24,29 @@ import { useAppDispatch } from "@/hooks/redux";
 import { logout } from "@/features/auth/store/authSlice";
 import { logoutUser } from "@/features/auth/api/authApi";
 import { ROUTES } from "@/constants/routes";
-
+import { toast } from "sonner";
 
 interface NavUserProps {
   user: AuthUser;
 }
 
-export function NavUser({user}: NavUserProps ) {
+export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
-   const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await logoutUser();
       dispatch(logout());
-      navigate(ROUTES.LOGIN);
+      toast.success("Logout successful");
+      console.log("Logout path:", ROUTES.GUEST_PATHS.LOGIN);
+      setTimeout(() => {
+        navigate(ROUTES.GUEST_PATHS.LOGIN);
+      }, 50);
     } catch (error) {
       console.error("Logout failed", error);
+      toast.error("Logout failed. Please try again.");
     }
   };
   return (
@@ -59,10 +60,18 @@ export function NavUser({user}: NavUserProps ) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
-                <AvatarFallback className="rounded-lg">{user.fullName ? user.fullName[0]: user.email[0].toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.fullName
+                    ? user.fullName[0]
+                    : user.email[0].toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.fullName ? user.fullName : user.email.split("@")[0] + ` (${user.role})`}</span>
+                <span className="truncate font-medium">
+                  {user.fullName
+                    ? user.fullName
+                    : user.email.split("@")[0] + ` (${user.role})`}
+                </span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -78,10 +87,18 @@ export function NavUser({user}: NavUserProps ) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
-                  <AvatarFallback className="rounded-lg">{user.fullName ? user.fullName[0]: user.email[0].toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user.fullName
+                      ? user.fullName[0]
+                      : user.email[0].toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.fullName ? user.fullName : user.email.split("@")[0] + ` (${user.role})`}</span>
+                  <span className="truncate font-medium">
+                    {user.fullName
+                      ? user.fullName
+                      : user.email.split("@")[0] + ` (${user.role})`}
+                  </span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>
@@ -94,7 +111,7 @@ export function NavUser({user}: NavUserProps ) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem onClick={handleLogout} variant="destructive">
               <LogOut />
               Log out
             </DropdownMenuItem>

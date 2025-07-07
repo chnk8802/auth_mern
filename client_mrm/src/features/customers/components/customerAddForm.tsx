@@ -14,15 +14,18 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Customer } from "../types";
 import { motion } from "framer-motion";
+import { Combobox } from "@/components/common/Combobox";
+import { indianStates } from "@/constants/indianStates";
+import { countries } from "@/constants/countries";
 
 type AddCustomerFormProps = {
   onSubmit: (data: Customer) => void;
 };
 
-export function AddCustomerForm({
-  onSubmit,
-}: AddCustomerFormProps) {
-  const form = useForm<Customer>({});
+export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
+  const form = useForm<Customer>({
+    
+  });
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -62,11 +65,7 @@ export function AddCustomerForm({
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input
-                    type="phone"
-                    placeholder="9876543210"
-                    {...field}
-                  />
+                  <Input type="phone" placeholder="9876543210" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -135,7 +134,12 @@ export function AddCustomerForm({
                 <FormItem>
                   <FormLabel>State</FormLabel>
                   <FormControl>
-                    <Input placeholder="State" {...field} />
+                    <Combobox
+                      value={field.value}
+                      onChange={field.onChange}
+                      options={indianStates}
+                      placeholder="Select state"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -149,7 +153,12 @@ export function AddCustomerForm({
                 <FormItem>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
-                    <Input placeholder="Country" {...field} />
+                    <Combobox
+                      value={field.value}
+                      onChange={field.onChange}
+                      options={countries}
+                      placeholder="Select Country"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

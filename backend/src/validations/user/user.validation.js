@@ -3,7 +3,7 @@ import { COUNTRIES, STATES, USER_ROLES } from "../../constants/enums.js";
 
 export const signupUserValidation = Joi.object({
   email: Joi.string()
-    .email({ tlds: { allow: false } }) // Relaxed validation (no .com/.in restriction)
+    .email({ tlds: { allow: false } })
     .required()
     .messages({
       "string.email": "Invalid email format",
@@ -33,7 +33,7 @@ export const signupUserValidation = Joi.object({
     city: Joi.string().trim().optional(),
     state: Joi.string()
       .valid(...STATES)
-      .default("Uttar Pradesh")
+      .default("uttar_pradesh")
       .optional(),
 
     zip: Joi.string()
@@ -43,7 +43,7 @@ export const signupUserValidation = Joi.object({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
 
-    country: Joi.string().valid(...COUNTRIES).default("India").optional(),
+    country: Joi.string().valid(...COUNTRIES).default("ndia").optional(),
   }).optional(),
 
   role: Joi.string().valid(...USER_ROLES).required()

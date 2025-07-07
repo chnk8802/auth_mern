@@ -12,6 +12,8 @@ import {
   deleteCustomer,
   getCustomerById,
 } from "@/features/customers/api/customerApi";
+import { formatSnakeCaseLabel } from "@/lib/utils";
+import { CircleX, CircleCheck } from "lucide-react";
 
 export function CustomerDetailPage() {
   const navigate = useNavigate();
@@ -69,13 +71,7 @@ export function CustomerDetailPage() {
       />
       <DetailGrid>
         <DetailItem label="Customer Code" value={customer.customerCode} />
-        <DetailItem
-          label="Name"
-          value={
-            customer.fullName ||
-            (customer.email ? customer.email.split("@")[0] : "")
-          }
-        />
+        <DetailItem label="Full Name" value={customer.fullName} />
         <DetailItem label="Phone" value={customer.phone} />
         <DetailItem
           label="Is Bulk Customer"
@@ -86,8 +82,8 @@ export function CustomerDetailPage() {
           value={[
             customer.address?.street,
             customer.address?.city,
-            customer.address?.state,
-            customer.address?.country,
+            formatSnakeCaseLabel(customer.address?.state),
+            formatSnakeCaseLabel(customer.address?.country),
             customer.address?.zip,
           ]
             .filter(Boolean)

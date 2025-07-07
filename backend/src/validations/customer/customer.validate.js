@@ -17,7 +17,7 @@ export const createCustomer = Joi.object({
     state: Joi.string()
       .trim()
       .valid(...STATES)
-      .default("Uttar Pradesh")
+      .default("uttar_pradesh")
       .optional(),
 
     zip: Joi.string()
@@ -27,7 +27,7 @@ export const createCustomer = Joi.object({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
 
-    country: Joi.string().valid(...COUNTRIES).default("India").optional(),
+    country: Joi.string().valid(...COUNTRIES).default("india").optional(),
   }).optional(),
   isBulkCustomer: Joi.boolean().optional(),
 });
@@ -46,7 +46,7 @@ const updateCustomer = Joi.object({
     city: Joi.string().trim().optional(),
     state: Joi.string()
       .valid(...STATES)
-      .default("Uttar Pradesh")
+      .default("uttar_pradesh")
       .optional(),
 
     zip: Joi.string()
@@ -58,7 +58,7 @@ const updateCustomer = Joi.object({
 
     country: Joi.string()
       .valid(...COUNTRIES)
-      .default("India")
+      .default("india")
       .optional(),
   }).optional(),
   isBulkCustomer: Joi.boolean().optional(),

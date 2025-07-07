@@ -5,20 +5,24 @@ import { loginSuccess, logout } from "@/features/auth/store/authSlice";
 
 export const AuthLoader = () => {
   const dispatch = useAppDispatch();
+
   useEffect(() => {
-    const loadUser = async () => {
+    const initializeAuth = async () => {
       try {
         const user = await fetchCurrentUser();
-        if (!user) throw new Error("Not authenticated");
-        dispatch(loginSuccess(user));
+        if (user) {
+          dispatch(loginSuccess(user));
+        } else {
+          dispatch(logout());
+        }
       } catch (error) {
-        const err = error as Error;
-        console.error("Failed to fetch current user:", err.message);
+        console.error("AuthLoader: Failed to fetch user", error);
         dispatch(logout());
       }
     };
 
-    loadUser()
+    initializeAuth();
   }, [dispatch]);
+
   return null;
 };

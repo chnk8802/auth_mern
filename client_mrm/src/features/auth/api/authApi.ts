@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { AuthUser } from "../types";
+import type { AuthUser } from "@/features/auth/types";
 
 // Login
 export const loginUser = async (credentials: { email: string; password: string }): Promise<AuthUser> => {
@@ -20,6 +20,7 @@ export const registerUser = async (payload: {
 // Get current user
 export const fetchCurrentUser = async (): Promise<AuthUser> => {
   const res = await api.get("/auth/me");
+  console.log("res", res)
   return res.data.data[0];
 };
 

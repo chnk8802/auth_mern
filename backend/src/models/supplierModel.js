@@ -31,7 +31,7 @@ const supplierSchema = new mongoose.Schema(
         required: true,
         trim: true,
       },
-      country: { type: String, enum: [...COUNTRIES], default: "India",},
+      country: { type: String, enum: [...COUNTRIES], default: "india",},
       zip: { type: String },
     },
   },

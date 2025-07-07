@@ -17,6 +17,11 @@ export function formatDate(dateInput: Date | string): string {
 
   return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
 }
+export function formatSnakeCaseLabel(input: string): string {
+  return input
+    .replace(/_/g, " ")                // snake_case → snake case
+    .replace(/\b\w/g, (char) => char.toUpperCase()) // Capitalize each word
+}
 
 
 export function getChangedFields<T extends Record<string, any>>(current: T, original: T): Partial<T> {

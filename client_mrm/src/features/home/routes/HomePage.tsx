@@ -7,7 +7,7 @@ export const HomePage: React.FC = () => {
     <div className="space-y-4">
       <Link to={ROUTES.DASHBOARD} >Dashboard</Link>
       <br />
-      <Link to={ROUTES.LOGIN} >Login</Link>
+      <Link to={ROUTES.GUEST_PATHS.LOGIN} >Login</Link>
     </div>
   )
 }
