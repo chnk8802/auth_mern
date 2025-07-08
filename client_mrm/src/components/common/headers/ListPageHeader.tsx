@@ -21,22 +21,23 @@ export function ListPageHeader({
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   return (
-    <div className="flex items-end justify-end gap-2 py-4">
+    <div className="flex items-end justify-end gap-12 py-4">
       <div className="flex-1">
-        <Button
-          variant="ghost"
-          className="mr-2 cursor-pointer"
-          onClick={() => navigate(ROUTES.DASHBOARD)}
-        >
-          <ChevronLeft />
-        </Button>
-      </div>
-
-      {title && !isMobile && (
-        <div className="flex-1 flex-wrap text-lg font-semibold text-foreground">
+        {isMobile && (
+          <Button
+            variant="ghost"
+            className="cursor-pointer"
+            onClick={() => navigate(ROUTES.DASHBOARD)}
+          >
+            <ChevronLeft />
+          </Button>
+        )}
+        {title && !isMobile && (
+        <div className="flex-1 flex-wrap text-2xl font-semibold text-foreground">
           {title}
         </div>
       )}
+      </div>
       <div className="flex flex-wrap gap-2 items-center justify-between">
         {filters && <>{filters}</>}
         {actions && <>{actions}</>}

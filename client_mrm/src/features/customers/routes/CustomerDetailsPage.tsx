@@ -5,7 +5,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { DetailGrid } from "@/components/common/DetailGrid";
 import { DetailItem } from "@/components/common/DetailItem";
-import { DetailToolbar } from "@/components/common/headers/DetailPageToolbar";
 import type { Customer } from "@/features/customers/types";
 import { ROUTES } from "@/constants/routes";
 import {
@@ -17,7 +16,16 @@ import { DetailsPageHeader } from "@/components/common/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { SquarePen, Trash2 } from "lucide-react";
+import { Ellipsis, SquarePen, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function CustomerDetailPage() {
   const isMobile = useIsMobile();
@@ -49,7 +57,7 @@ export function CustomerDetailPage() {
 
     try {
       const result = await deleteCustomer(customer._id);
-      
+
       toast.success(`${result.data[0].customerCode} deleted successfully`);
       navigate(ROUTES.CUSTOMERS.LIST);
     } catch (err) {
@@ -62,10 +70,40 @@ export function CustomerDetailPage() {
   if (!customer)
     return (
       <div className="p-6 text-start">
-        <DetailToolbar title="Customer Details" />
+        <DetailsPageHeader title="Customer Details" />
         Customer not found.
       </div>
     );
+
+  function More() {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Ellipsis />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>More Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem onClick={() => console.log("Duplicate")}>
+              Duplicate
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => console.log("Download PDF")}>
+              Download PDF
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => console.log("Print")}>
+              Print
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
 
   return (
     <>
@@ -75,15 +113,31 @@ export function CustomerDetailPage() {
         actions={
           <>
             <Button
+              size={isMobile ? "icon" : "default"}
               onClick={() => navigate(ROUTES.CUSTOMERS.EDIT(customer._id))}
             >
-              {isMobile ? <SquarePen /> : "Edit"}
+              {isMobile ? (
+                <SquarePen />
+              ) : (
+                <>
+                  <SquarePen /> Edit
+                </>
+              )}
             </Button>
             <DeleteConfirmDialog onConfirm={() => handleDelete()}>
-              <Button >{isMobile ? <Trash2 /> : "Delete"}</Button>
+              <Button size={isMobile ? "icon" : "default"}>
+                {isMobile ? (
+                  <Trash2 />
+                ) : (
+                  <>
+                    <Trash2 /> Delete
+                  </>
+                )}
+              </Button>
             </DeleteConfirmDialog>
           </>
         }
+        more={<>{<More />}</>}
       />
       <DetailGrid>
         <DetailItem label="Customer Code" value={customer.customerCode} />

@@ -17,14 +17,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  CirclePlus,
-  Download,
-  Ellipsis,
-  Import,
-  List,
-  Plus,
-} from "lucide-react";
+import { Download, Ellipsis, Import, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -46,10 +39,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { SearchToggle } from "@/components/common/SearchToggle";
+// import { SearchToggle } from "@/components/common/SearchToggle";
 import { useSidebar } from "./sidebar";
 import { cn } from "@/lib/utils/utils";
 import { ListPageHeader } from "../common/headers/ListPageHeader";
+import { SearchDrawer } from "../common/SearchDrawer";
 
 interface DataTableProps<TData extends { _id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -119,7 +113,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
-            <Ellipsis className="h-4 w-4" />
+            <Ellipsis size="icon" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -172,7 +166,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
         }
         filters={
           <>
-            <SearchToggle
+            <SearchDrawer
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
             />

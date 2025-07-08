@@ -11,9 +11,24 @@ import { DetailToolbar } from "@/components/common/headers/DetailPageToolbar";
 import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
 import { formatSnakeCaseLabel } from "@/lib/utils/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Ellipsis, SquarePen, Trash2 } from "lucide-react";
+import { DetailsPageHeader } from "@/components/common/headers/DetailsHeader";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 
 export function UserDetailPage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { userId } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -23,7 +38,7 @@ export function UserDetailPage() {
 
     try {
       const result = await deleteUser(user._id);
-      console.log("results", result)
+      console.log("results", result);
       toast.success(`${result.data[0].userCode} deleted successfully`);
       navigate(ROUTES.USERS.LIST);
     } catch (err) {
@@ -59,12 +74,69 @@ export function UserDetailPage() {
       </div>
     );
 
+  function More() {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Ellipsis />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>More Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem onClick={() => console.log("Duplicate")}>
+              Duplicate
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => console.log("Download PDF")}>
+              Download PDF
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => console.log("Print")}>
+              Print
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
   return (
     <>
-      <DetailToolbar
-        title="User Details"
-        onEdit={() => navigate(ROUTES.USERS.EDIT(user._id))}
-        onDelete={() => handleDelete()}
+      <DetailsPageHeader
+        title="Users Details"
+        onBack={() => navigate(ROUTES.USERS.LIST)}
+        actions={
+          <>
+            <Button
+              size={isMobile ? "icon" : "default"}
+              onClick={() => navigate(ROUTES.USERS.EDIT(user._id))}
+            >
+              {isMobile ? (
+                <SquarePen />
+              ) : (
+                <>
+                  <SquarePen /> Edit
+                </>
+              )}
+            </Button>
+            <DeleteConfirmDialog onConfirm={() => handleDelete()}>
+              <Button size={isMobile ? "icon" : "default"}>
+                {isMobile ? (
+                  <Trash2 />
+                ) : (
+                  <>
+                    <Trash2 /> Delete
+                  </>
+                )}
+              </Button>
+            </DeleteConfirmDialog>
+          </>
+        }
+        more={<>{<More />}</>}
       />
       <DetailGrid>
         <DetailItem label="User Code" value={user.userCode} />

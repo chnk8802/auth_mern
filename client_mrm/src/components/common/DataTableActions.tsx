@@ -1,4 +1,4 @@
-import { MoreVertical } from "lucide-react";
+import { Copy, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,14 +16,17 @@ type DataTableActionsProps<T> = {
   copyField?: keyof T;
 };
 
-
-export function DataTableActions<T>({ data, onEdit, onDelete, copyField }: DataTableActionsProps<T>) {
+export function DataTableActions<T>({
+  data,
+  onEdit,
+  onDelete,
+  copyField,
+}: DataTableActionsProps<T>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
-          {/* <span className="sr-only">Open Menu</span> */}
-          <MoreVertical/>
+          <MoreVertical />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -34,7 +37,7 @@ export function DataTableActions<T>({ data, onEdit, onDelete, copyField }: DataT
               navigator.clipboard.writeText(data[copyField]);
             }}
           >
-            Copy Code
+            Copy Code <Copy />
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
@@ -46,16 +49,19 @@ export function DataTableActions<T>({ data, onEdit, onDelete, copyField }: DataT
         >
           Edit
         </DropdownMenuItem>
-        <DropdownMenuItem
-        className="py-0"
-          variant="destructive"
-        >
+        <DropdownMenuItem className="py-0" variant="destructive">
           <DeleteConfirmDialog
             onConfirm={() => {
               onDelete(data);
             }}
           >
-            <Button className="p-0 text-destructive hover:text-destructive hover:bg-transparent" variant="ghost" onClick={(e) => e.stopPropagation()}>Delete</Button>
+            <Button
+              className="p-0 text-destructive hover:text-destructive hover:bg-transparent"
+              variant="ghost"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Delete
+            </Button>
           </DeleteConfirmDialog>
         </DropdownMenuItem>
       </DropdownMenuContent>
