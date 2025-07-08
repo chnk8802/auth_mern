@@ -65,7 +65,7 @@ export const loginUserValidation = Joi.object({
     }),
 });
 
-export const updateUserValidation = Joi.object({
+const updateUser = Joi.object({
   fullName: Joi.string().trim().min(3).max(100),
 
   phone: Joi.string()
@@ -89,3 +89,5 @@ export const updateUserValidation = Joi.object({
 
   role: Joi.string().valid(...USER_ROLES),
 }).min(1);
+
+export const updateUserValidation = inputDataWrapper(updateUser)

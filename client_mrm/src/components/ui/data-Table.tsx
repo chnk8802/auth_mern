@@ -41,7 +41,7 @@ import {
 } from "@/components/ui/table";
 import { SearchToggle } from "@/components/common/SearchToggle";
 import { useSidebar } from "./sidebar";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { ROUTES } from "@/constants/routes";
 
 interface DataTableProps<TData extends { _id: string }, TValue> {

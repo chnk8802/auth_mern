@@ -23,9 +23,7 @@ type AddCustomerFormProps = {
 };
 
 export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
-  const form = useForm<Customer>({
-    
-  });
+  const form = useForm<Customer>({});
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -185,7 +183,9 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
-          <Button type="submit">Add User</Button>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? "Adding..." : "Add Customer"}
+          </Button>
         </motion.div>
       </form>
     </Form>

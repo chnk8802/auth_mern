@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/ui/data-Table";
 import { getCustomerColumns } from "@/features/customers/components/columns";
-import { getCustomers, deleteCustomer } from "@/features/customers/api/customerApi";
+import {
+  getCustomers,
+  deleteCustomer,
+} from "@/features/customers/api/customerApi";
 import type { Customer } from "@/features/customers/types";
 import { useNavigate } from "react-router-dom";
 
@@ -14,9 +17,14 @@ export function CustomersPage() {
   const fetchCustomers = async () => {
     try {
       const res = await getCustomers();
+      if (res.data.length === 0) {
+        setCustomers([]);
+        return;
+      }
       setCustomers(res.data);
-    } catch (error) {
-      toast.error("Failed to fetch users");
+    } catch (error: any) {
+      toast.error("Failed to fetch customers");
+      console.error(error.response?.data?.message || error.message);
     }
   };
 
@@ -41,7 +49,6 @@ export function CustomersPage() {
   useEffect(() => {
     fetchCustomers();
   }, []);
-
   return (
     <DataTable
       columns={getCustomerColumns({

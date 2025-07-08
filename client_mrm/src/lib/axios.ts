@@ -1,7 +1,7 @@
 import axios from "axios"
 import { API_CONFIG } from "@/config/api"
 import { logout, loginSuccess } from "@/features/auth/store/authSlice"
-import {store} from "@/app/store"
+import { store } from "@/app/store"
 
 const api = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -47,7 +47,6 @@ api.interceptors.response.use(
       try {
         const res = await api.post("/auth/refresh-token")
         const user = res.data?.data[0];
-
         if (!user) {
           throw new Error("No user returned from refresh")
         }
@@ -55,6 +54,7 @@ api.interceptors.response.use(
         store.dispatch(loginSuccess(user))
 
         processQueue(null, null)
+        
         return api(originalRequest)
 
       } catch (refreshError) {

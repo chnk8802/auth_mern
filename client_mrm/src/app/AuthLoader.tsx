@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "@/hooks/redux";
 import { fetchCurrentUser } from "@/features/auth/api/authApi";
 import { loginSuccess, logout } from "@/features/auth/store/authSlice";
+import { toast } from "sonner";
 
 export const AuthLoader = () => {
   const dispatch = useAppDispatch();
@@ -9,14 +10,18 @@ export const AuthLoader = () => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const user = await fetchCurrentUser();
-        if (user) {
-          dispatch(loginSuccess(user));
-        } else {
+        const res = await fetchCurrentUser();
+        if (!res || !res.data || res.data.length === 0) {
+          throw new Error("No user data found");
+        }
+        const user = res.data[0];
+        if (!user) {
           dispatch(logout());
         }
-      } catch (error) {
+        dispatch(loginSuccess(user));
+      } catch (error: any) {
         console.error("AuthLoader: Failed to fetch user", error);
+        toast.error(error.response.data.message || "Failed to fetch user data");
         dispatch(logout());
       }
     };

@@ -210,7 +210,9 @@ export function EditCustomerForm({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
-          <Button type="submit">Update User</Button>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? "Updating..." : "Update Customer"}
+          </Button>
         </motion.div>
       </form>
     </Form>

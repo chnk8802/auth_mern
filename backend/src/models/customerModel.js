@@ -36,7 +36,7 @@ const customerSchema = mongoose.Schema(
       state: {
         type: String,
         enum: [...STATES],
-        default: "Uttar Pradesh",
+        default: "uttar_pradesh",
         trim: true,
       },
       zip: {

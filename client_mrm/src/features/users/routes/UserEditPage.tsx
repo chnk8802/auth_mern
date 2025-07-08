@@ -1,29 +1,15 @@
 import type { User } from "@/features/users/types";
 import { EditUserForm } from "@/features/users/components/UserEditForm";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getUserById } from "../api/userApi";
-
-const mockUser: User = {
-  _id: "1",
-  userCode: "U123",
-  fullName: "John Doe",
-  email: "john@example.com",
-  role: "admin",
-  address: {
-    street: "123 Main St",
-    city: "Anytown",
-    state: "CA",
-    country: "USA",
-    zip: "90001",
-  },
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-};
+import { getUserById, updateUser } from "../api/userApi";
+import { getChangedFields } from "@/lib/utils/utils";
+import { ROUTES } from "@/constants/routes";
 
 export function UserEditPage() {
-  const {userId} = useParams()
+  const navigate = useNavigate();
+  const { userId } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -45,15 +31,46 @@ export function UserEditPage() {
     fetchUser();
   }, [userId]);
 
-  const handleEdit = (data: User) => {
-    console.log("Edited user:", data);
+  const handleEdit = (updateUserData: User) => {
+    if (!userId || !user) {
+      toast.error("User ID or original data is missing");
+      return;
+    }
+    const changedFields = getChangedFields(updateUserData, user);
+    console.log("Changed fields:", changedFields, updateUserData, user);
+    if (Object.keys(changedFields).length === 0) {
+      toast.info("No changes detected");
+      return;
+    }
+    const payload = { data: [changedFields] };
+    const submitUpdate = async () => {
+      try {
+        const result = await updateUser(userId, payload);
+        console.log("Update result:", result);
+        toast.success("User details updated");
+        navigate(ROUTES.USERS.DETAILS(result.data[0]._id));
+      } catch (error: any) {
+        console.error(
+          "Update failed:",
+          error,
+          error.response?.data?.message || error.message
+        );
+        toast.error(
+          `Unable to update user: ${
+            error.response?.data?.message || "Unknown error"
+          }`
+        );
+      }
+    };
+
+    submitUpdate();
   };
 
-  if (loading) return <div className="p-6 text-center">Loading...</div>;
-  if (!user) return <div className="p-6 text-center">User not found</div>;
+  if (loading) return <div className="p-2 text-center">Loading...</div>;
+  if (!user) return <div className="p-2 text-center">User not found</div>;
 
   return (
-    <div className="p-6">
+    <div className="p-2">
       <h1 className="text-xl font-bold mb-4">Edit User</h1>
       <EditUserForm user={user} onSubmit={handleEdit} />
     </div>

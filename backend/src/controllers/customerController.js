@@ -51,9 +51,6 @@ const getCustomers = async (req, res, next) => {
     const { page, limit, skip, sort } = getPaginationOptions(req.query);
 
     const customers = await Customer.find().sort(sort).skip(skip).limit(limit);
-    if (!customers || customers.length === 0) {
-      throw createError(404, "No customers found");
-    }
 
     const totalRecords = await Customer.countDocuments({});
     response(res, customers, "Customers fetched successfully", {
@@ -74,9 +71,7 @@ const getCustomer = async (req, res, next) => {
     const { id } = req.params;
 
     const customer = await Customer.findById(id);
-    if (!customer) {
-      throw createError(404, "Customer not found");
-    }
+    
     response(res, customer, "Customer fetched successfully");
   } catch (error) {
     next(error);
@@ -105,9 +100,6 @@ const updateCustomer = async (req, res, next) => {
         runValidators: true,
       }
     );
-    if (!updatedCustomer) {
-      throw createError(404, "Customer not found");
-    }
 
     response(res, updatedCustomer, "Customer updated successfully");
   } catch (error) {

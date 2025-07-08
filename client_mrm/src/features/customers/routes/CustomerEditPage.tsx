@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import type { Customer } from "@/features/customers/types";
 import { EditCustomerForm } from "@/features/customers/components/customerEditForm";
 import { getCustomerById, updateCustomer } from "../api/customerApi";
-import { getChangedFields } from "@/lib/utils";
+import { getChangedFields } from "@/lib/utils/utils";
 import { ROUTES } from "@/constants/routes";
 
 export function CustomerEditPage() {
@@ -31,12 +31,12 @@ export function CustomerEditPage() {
     fetchCustomer();
   }, [customerId]);
 
-  const handleEdit = (updatedData: Customer) => {
+  const handleEdit = (data: Customer) => {
     if (!customerId || !customer) {
       toast.error("Customer ID or original data is missing");
       return;
     }
-    const changedFields = getChangedFields(updatedData, customer);
+    const changedFields = getChangedFields(data, customer);
     if (Object.keys(changedFields).length === 0) {
       toast.info("No changes detected");
       return;
@@ -56,12 +56,12 @@ export function CustomerEditPage() {
     submitUpdate();
   };
 
-  if (loading) return <div className="p-6 text-center">Loading...</div>;
+  if (loading) return <div className="p-2 text-center">Loading...</div>;
   if (!customer)
-    return <div className="p-6 text-center">Customer not found</div>;
+    return <div className="p-2 text-center">Customer not found</div>;
 
   return (
-    <div className="p-6">
+    <div className="p-2">
       <h1 className="text-xl font-bold mb-4">Edit Customer</h1>
       <EditCustomerForm customer={customer} onSubmit={handleEdit} />
     </div>

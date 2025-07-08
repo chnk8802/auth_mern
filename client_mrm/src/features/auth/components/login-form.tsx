@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +24,15 @@ export function LoginForm({
 
     try {
       const user = await loginUser({ email, password });
-      dispatch(loginSuccess(user));
+      if (!user || !user.data || user.data.length === 0) {
+        throw new Error("Login failed. Please try again.");
+      }
+      
+      const userData = user.data[0];
+      if (!userData) {
+        throw new Error("Login failed. Please try again.");
+      }
+      dispatch(loginSuccess(userData));
       toast.success("Login Successful")
       navigate(ROUTES.DASHBOARD);
     } catch (error: any) {

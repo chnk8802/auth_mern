@@ -15,9 +15,6 @@ const getUsers = async (req, res, next) => {
 
     const users = await User.find({}).skip(skip).limit(limit).sort(sort);
 
-    if (!users) {
-      throw createError(404, "No users Found!");
-    }
     const totalRecords = await User.countDocuments({});
 
     response(res, users, "Users fetched successfully", {
@@ -45,10 +42,6 @@ const getUser = async (req, res, next) => {
     }
 
     const user = await User.findById(value.id);
-
-    if (!user) {
-      throw createError(404, "User not found");
-    }
 
     response(res, user, "User fetched successfully");
   } catch (error) {

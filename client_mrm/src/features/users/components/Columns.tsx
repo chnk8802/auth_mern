@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import type { User } from "../types";
 import { DataTableActions } from "@/components/common/DataTableActions";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatSnakeCaseLabel } from "@/lib/utils/utils";
 
 type UserColumnsProps = {
   onEdit: (user: User) => void;
@@ -133,10 +133,15 @@ export const getUserColumns = ({
     },
     cell: ({ row }) => {
       const address = row.getValue("address") as User["address"];
+      const street = address?.street || "";
+      const city = address?.city || "";
+      const state = address?.state || "";
+      const country = address?.country || "";
+      const zip = address?.zip || "";
       return (
         <div>
-          {address?.street} {address?.city} {address?.state} {address?.country}{" "}
-          {address?.zip}
+          {street} {city} {formatSnakeCaseLabel(state)}{" "}
+          {formatSnakeCaseLabel(country)} {zip}
         </div>
       );
     },

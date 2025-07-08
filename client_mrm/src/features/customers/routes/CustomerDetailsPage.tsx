@@ -12,7 +12,7 @@ import {
   deleteCustomer,
   getCustomerById,
 } from "@/features/customers/api/customerApi";
-import { formatSnakeCaseLabel } from "@/lib/utils";
+import { formatSnakeCaseLabel } from "@/lib/utils/utils";
 import { CircleX, CircleCheck } from "lucide-react";
 
 export function CustomerDetailPage() {

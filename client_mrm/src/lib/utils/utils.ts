@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { isPlainObject, isEqual } from "lodash";
 
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -17,10 +18,9 @@ export function formatDate(dateInput: Date | string): string {
 
   return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
 }
+
 export function formatSnakeCaseLabel(input: string): string {
-  return input
-    .replace(/_/g, " ")                // snake_case → snake case
-    .replace(/\b\w/g, (char) => char.toUpperCase()) // Capitalize each word
+  return input.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
 

@@ -27,7 +27,7 @@ const supplierSchema = new mongoose.Schema(
       state: {
         type: String,
         enum: [...STATES],
-        default: "Uttar Pradesh",
+        default: "uttar_pradesh",
         required: true,
         trim: true,
       },
