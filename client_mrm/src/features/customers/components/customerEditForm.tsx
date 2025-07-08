@@ -114,7 +114,6 @@ export function EditCustomerForm({
           />
         </motion.div>
 
-        {/* Animated Address Section */}
         <motion.div
           initial="hidden"
           animate="show"
@@ -211,7 +210,7 @@ export function EditCustomerForm({
           animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
           <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? "Updating..." : "Update Customer"}
+            {form.formState.isSubmitting ? "Updating..." : "Update"}
           </Button>
         </motion.div>
       </form>

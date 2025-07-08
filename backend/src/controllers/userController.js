@@ -106,16 +106,12 @@ const updateUser = async (req, res, next) => {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    const flattenedUpdates = flattenObject(value);
+    const flattenedUpdates = flattenObject(value.data[0]);
 
     const updatedUser = await User.findByIdAndUpdate(userId, flattenedUpdates, {
       new: true,
       runValidators: true,
     });
-
-    if (!updatedUser) {
-      throw createError(404, "User not found");
-    }
 
     response(res, updatedUser, "User updated successfully");
   } catch (error) {

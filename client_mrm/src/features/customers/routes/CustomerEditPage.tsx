@@ -6,6 +6,9 @@ import { EditCustomerForm } from "@/features/customers/components/customerEditFo
 import { getCustomerById, updateCustomer } from "../api/customerApi";
 import { getChangedFields } from "@/lib/utils/utils";
 import { ROUTES } from "@/constants/routes";
+import { BasePageHeader } from "@/components/common/headers/BasePageHeader";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export function CustomerEditPage() {
   const navigate = useNavigate();
@@ -61,8 +64,8 @@ export function CustomerEditPage() {
     return <div className="p-2 text-center">Customer not found</div>;
 
   return (
-    <div className="p-2">
-      <h1 className="text-xl font-bold mb-4">Edit Customer</h1>
+    <div>
+      <BasePageHeader title="Edit Customer" subtitle="" actions={<Button className="btn"><Plus/></Button>} />
       <EditCustomerForm customer={customer} onSubmit={handleEdit} />
     </div>
   );

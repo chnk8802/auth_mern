@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 import { Combobox } from "@/components/common/Combobox";
 import { indianStates } from "@/constants/indianStates";
 import { countries } from "@/constants/countries";
+import { useState } from "react";
 
 type AddCustomerFormProps = {
   onSubmit: (data: Customer) => void;
@@ -24,19 +25,28 @@ type AddCustomerFormProps = {
 
 export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
   const form = useForm<Customer>({});
+  const [saveAndNew, setSaveAndNew] = useState(false);
+
+  const handleSubmit = async (data: Customer) => {
+    await onSubmit(data);
+    if (saveAndNew) {
+      form.reset();
+    }
+    setSaveAndNew(false);
+  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="max-w-4xl space-y-6"
       >
-        {/* Animated Main Fields */}
+        
         <motion.div
           initial="hidden"
           animate="show"
@@ -87,7 +97,6 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
           />
         </motion.div>
 
-        {/* Animated Address Section */}
         <motion.div
           initial="hidden"
           animate="show"
@@ -183,8 +192,21 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.3 } }}
         >
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? "Adding..." : "Add Customer"}
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            className="mr-2"
+            onClick={() => setSaveAndNew(false)}
+          >
+            {form.formState.isSubmitting ? "saving..." : "Save"}
+          </Button>
+          <Button
+            type="submit"
+            variant="secondary"
+            disabled={form.formState.isSubmitting}
+            onClick={() => setSaveAndNew(true)}
+          >
+            {form.formState.isSubmitting ? "saving..." : "Save and New"}
           </Button>
         </motion.div>
       </form>

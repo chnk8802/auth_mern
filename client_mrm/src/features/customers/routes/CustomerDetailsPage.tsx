@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { DetailGrid } from "@/components/common/DetailGrid";
 import { DetailItem } from "@/components/common/DetailItem";
-import { DetailToolbar } from "@/components/common/DetailPageToolbar";
+import { DetailToolbar } from "@/components/common/headers/DetailPageToolbar";
 import type { Customer } from "@/features/customers/types";
 import { ROUTES } from "@/constants/routes";
 import {
@@ -13,9 +13,14 @@ import {
   getCustomerById,
 } from "@/features/customers/api/customerApi";
 import { formatSnakeCaseLabel } from "@/lib/utils/utils";
-import { CircleX, CircleCheck } from "lucide-react";
+import { DetailsPageHeader } from "@/components/common/headers/DetailsHeader";
+import { Button } from "@/components/ui/button";
+import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { SquarePen, Trash2 } from "lucide-react";
 
 export function CustomerDetailPage() {
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { customerId } = useParams();
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -44,7 +49,7 @@ export function CustomerDetailPage() {
 
     try {
       const result = await deleteCustomer(customer._id);
-      console.log("results", result);
+      
       toast.success(`${result.data[0].customerCode} deleted successfully`);
       navigate(ROUTES.CUSTOMERS.LIST);
     } catch (err) {
@@ -64,10 +69,21 @@ export function CustomerDetailPage() {
 
   return (
     <>
-      <DetailToolbar
+      <DetailsPageHeader
         title="Customer Details"
-        onEdit={() => navigate(ROUTES.CUSTOMERS.EDIT(customer._id))}
-        onDelete={() => handleDelete()}
+        onBack={() => navigate(ROUTES.CUSTOMERS.LIST)}
+        actions={
+          <>
+            <Button
+              onClick={() => navigate(ROUTES.CUSTOMERS.EDIT(customer._id))}
+            >
+              {isMobile ? <SquarePen /> : "Edit"}
+            </Button>
+            <DeleteConfirmDialog onConfirm={() => handleDelete()}>
+              <Button >{isMobile ? <Trash2 /> : "Delete"}</Button>
+            </DeleteConfirmDialog>
+          </>
+        }
       />
       <DetailGrid>
         <DetailItem label="Customer Code" value={customer.customerCode} />

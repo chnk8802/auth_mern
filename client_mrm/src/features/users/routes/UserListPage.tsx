@@ -45,7 +45,7 @@ export function UsersListPage() {
         onDelete: handleRowDelete,
       })}
       data={users}
-      moduleName={"Users"}
+      moduleName={"User"}
     />
   );
 }

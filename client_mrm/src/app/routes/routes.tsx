@@ -15,6 +15,7 @@ import { ProtectedRoute } from "./guards/ProtectedRoute";
 import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { RegisterForm } from "@/features/auth/components/register-form";
+import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
 
 // Dashboard
 import { DashboardHomePage } from "@/features/dashboardHome/routes/DashboardHomePage";
@@ -75,6 +76,13 @@ export const router = createBrowserRouter([
         element: (
           <GuestOnlyRoute>
             <RegisterForm />
+          </GuestOnlyRoute>
+        ),
+      },{
+        path: "forgot-password",
+        element: (
+          <GuestOnlyRoute>
+            <ForgotPasswordForm />
           </GuestOnlyRoute>
         ),
       },

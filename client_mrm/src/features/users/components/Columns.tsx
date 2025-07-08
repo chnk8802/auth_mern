@@ -116,7 +116,7 @@ export const getUserColumns = ({
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue("role")}</div>,
+    cell: ({ row }) => <div>{formatSnakeCaseLabel(row.getValue("role"))}</div>,
   },
   {
     accessorKey: "address",

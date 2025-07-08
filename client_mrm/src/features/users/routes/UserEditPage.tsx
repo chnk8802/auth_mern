@@ -37,7 +37,7 @@ export function UserEditPage() {
       return;
     }
     const changedFields = getChangedFields(updateUserData, user);
-    console.log("Changed fields:", changedFields, updateUserData, user);
+    console.log("Changed fields:", changedFields);
     if (Object.keys(changedFields).length === 0) {
       toast.info("No changes detected");
       return;
@@ -48,7 +48,7 @@ export function UserEditPage() {
         const result = await updateUser(userId, payload);
         console.log("Update result:", result);
         toast.success("User details updated");
-        navigate(ROUTES.USERS.DETAILS(result.data[0]._id));
+        // navigate(ROUTES.USERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
         console.error(
           "Update failed:",

@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { COUNTRIES, STATES, USER_ROLES } from "../../constants/enums.js";
+import { inputDataWrapper } from "../custom/custom.validators.js";
 
 export const signupUserValidation = Joi.object({
   email: Joi.string()
@@ -25,7 +26,8 @@ export const signupUserValidation = Joi.object({
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
     .optional()
     .messages({
-      "string.pattern.base": "Phone number must be a valid 10-digit Indian number",
+      "string.pattern.base":
+        "Phone number must be a valid 10-digit Indian number",
     }),
 
   address: Joi.object({
@@ -43,10 +45,15 @@ export const signupUserValidation = Joi.object({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
 
-    country: Joi.string().valid(...COUNTRIES).default("ndia").optional(),
+    country: Joi.string()
+      .valid(...COUNTRIES)
+      .default("ndia")
+      .optional(),
   }).optional(),
 
-  role: Joi.string().valid(...USER_ROLES).required()
+  role: Joi.string()
+    .valid(...USER_ROLES)
+    .required(),
 });
 
 export const loginUserValidation = Joi.object({
@@ -54,15 +61,14 @@ export const loginUserValidation = Joi.object({
     .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in)$/)
     .required()
     .messages({
-      "string.pattern.base": "Email must be a valid address ending with .com or .in",
+      "string.pattern.base":
+        "Email must be a valid address ending with .com or .in",
       "string.empty": "Email is required",
     }),
 
-  password: Joi.string()
-    .required()
-    .messages({
-      "string.empty": "Password is required",
-    }),
+  password: Joi.string().required().messages({
+    "string.empty": "Password is required",
+  }),
 });
 
 const updateUser = Joi.object({
@@ -71,14 +77,14 @@ const updateUser = Joi.object({
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
     .messages({
-      "string.pattern.base": "Phone number must be a valid 10-digit Indian number",
+      "string.pattern.base":
+        "Phone number must be a valid 10-digit Indian number",
     }),
 
   address: Joi.object({
     street: Joi.string().trim(),
     city: Joi.string().trim(),
-    state: Joi.string()
-      .valid(...STATES),
+    state: Joi.string().valid(...STATES),
     zip: Joi.string()
       .pattern(/^[1-9][0-9]{5}$/)
       .messages({
@@ -90,4 +96,4 @@ const updateUser = Joi.object({
   role: Joi.string().valid(...USER_ROLES),
 }).min(1);
 
-export const updateUserValidation = inputDataWrapper(updateUser)
+export const updateUserValidation = inputDataWrapper(updateUser);

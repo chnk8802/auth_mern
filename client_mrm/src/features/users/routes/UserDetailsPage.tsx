@@ -7,9 +7,10 @@ import { getUserById } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
 import { DetailGrid } from "@/components/common/DetailGrid";
 import { DetailItem } from "@/components/common/DetailItem";
-import { DetailToolbar } from "@/components/common/DetailPageToolbar";
+import { DetailToolbar } from "@/components/common/headers/DetailPageToolbar";
 import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
+import { formatSnakeCaseLabel } from "@/lib/utils/utils";
 
 export function UserDetailPage() {
   const navigate = useNavigate();
@@ -72,14 +73,14 @@ export function UserDetailPage() {
           value={user.fullName || user.email.split("@")[0]}
         />
         <DetailItem label="Email" value={user.email} />
-        <DetailItem label="Role" value={user.role} />
+        <DetailItem label="Role" value={formatSnakeCaseLabel(user.role)} />
         <DetailItem
           label="Address"
           value={[
             user.address?.street,
             user.address?.city,
-            user.address?.state,
-            user.address?.country,
+            formatSnakeCaseLabel(user.address?.state),
+            formatSnakeCaseLabel(user.address?.country),
             user.address?.zip,
           ]
             .filter(Boolean)

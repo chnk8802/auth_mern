@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createCustomer } from "../api/customerApi";
 import { toast } from "sonner";
 import { ROUTES } from "@/constants/routes";
+import { FormHeader } from "@/components/common/headers/FormHeader";
 
 export function CustomerAddPage() {
   const navigate = useNavigate();
@@ -26,8 +27,8 @@ export function CustomerAddPage() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Add Customer</h1>
+    <div>
+      <FormHeader title="Add Customer" />
       <AddCustomerForm onSubmit={handleAdd} />
     </div>
   );

@@ -17,7 +17,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Download, Ellipsis, Import } from "lucide-react";
+import {
+  CirclePlus,
+  Download,
+  Ellipsis,
+  Import,
+  List,
+  Plus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -42,7 +49,7 @@ import {
 import { SearchToggle } from "@/components/common/SearchToggle";
 import { useSidebar } from "./sidebar";
 import { cn } from "@/lib/utils/utils";
-import { ROUTES } from "@/constants/routes";
+import { ListPageHeader } from "../common/headers/ListPageHeader";
 
 interface DataTableProps<TData extends { _id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -103,61 +110,80 @@ export function DataTable<TData extends { _id: string }, TValue>({
     /*--------------------- */
   });
 
+  function ColumnVisibilityDropdown<TData>({
+    table,
+  }: {
+    table: ReturnType<typeof useReactTable<TData>>;
+  }) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Ellipsis className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuGroup>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Columns</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Import className="mr-2 h-4 w-4" /> Import
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Download className="mr-2 h-4 w-4" /> Export
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
   return (
     <div
-      className={state === "expanded" && isMobile !== true ? "w-full" : "w-full"}
+      className={
+        state === "expanded" && isMobile !== true ? "w-full" : "w-full"
+      }
     >
-      <div className="flex items-end justify-end gap-2 py-4">
-        <div className="mr-auto text-xl font-semibold text-foreground">
-          {moduleName}s
-        </div>
-        
-        <SearchToggle
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
-        <Button onClick={() => navigate(`/dashboard/${moduleName}s/new`)}>Add {moduleName}</Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              <Ellipsis />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>Columns</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  {table
-                    .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => {
-                      return (
-                        <DropdownMenuCheckboxItem
-                          key={column.id}
-                          className="capitalize"
-                          checked={column.getIsVisible()}
-                          onCheckedChange={(value) =>
-                            column.toggleVisibility(!!value)
-                          }
-                        >
-                          {column.id}
-                        </DropdownMenuCheckboxItem>
-                      );
-                    })}
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Import /> Import
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Download /> Export
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <ListPageHeader
+        title={`${moduleName}s`}
+        actions={
+          <Button onClick={() => navigate(`/dashboard/${moduleName}s/new`)}>
+            {isMobile ? <Plus /> : `Add ${moduleName}`}
+          </Button>
+        }
+        filters={
+          <>
+            <SearchToggle
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          </>
+        }
+        more={
+          <>
+            <ColumnVisibilityDropdown table={table} />
+          </>
+        }
+      />
 
       <div className="rounded-md border">
         <Table>

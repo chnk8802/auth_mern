@@ -37,9 +37,7 @@ export function EditUserForm({ user, onSubmit }: EditUserFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-4xl space-y-6"
-      >
-        {/* Animated Main Fields */}
+        className="max-w-4xl space-y-6">
         <motion.div
           initial="hidden"
           animate="show"
@@ -113,8 +111,7 @@ export function EditUserForm({ user, onSubmit }: EditUserFormProps) {
             )}
           />
         </motion.div>
-
-        {/* Animated Address Section */}
+        
         <motion.div
           initial="hidden"
           animate="show"
