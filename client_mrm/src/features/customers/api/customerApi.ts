@@ -7,8 +7,8 @@ export const createCustomer = async (customerData: {data: Omit<Customer, "_id">[
   return response.data;
 };
 
-export const getCustomers = async (): Promise<ApiResponse<Customer[]>> => {
-  const res = await api.get<ApiResponse<Customer[]>>("/customers");
+export const getCustomers = async ({page, limit}:{page: number, limit: number}): Promise<ApiResponse<Customer[]>> => {
+  const res = await api.get<ApiResponse<Customer[]>>(`/customers?page=${page}&limit=${limit}`);
   return res.data;
 };
 

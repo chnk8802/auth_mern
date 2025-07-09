@@ -10,11 +10,15 @@ import { useNavigate } from "react-router-dom";
 export function UsersListPage() {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [total, setTotal] = useState(0);
 
   const fetchUsers = async () => {
     try {
-      const res = await getUsers();
+      const res = await getUsers({page, limit}); // Fetching all users with a large limit
       setUsers(res.data);
+      setTotal(res.meta.pagination.total)
     } catch (error) {
       toast.error("Failed to fetch users");
     }
@@ -46,6 +50,11 @@ export function UsersListPage() {
       })}
       data={users}
       moduleName={"User"}
+      page={page}
+      setPage={setPage}
+      limit={limit}
+      setLimit={setLimit}
+      total={total}
     />
   );
 }

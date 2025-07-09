@@ -34,6 +34,7 @@ import { CustomerEditPage } from "@/features/customers/routes/CustomerEditPage";
 import { RepairJobPage } from "@/features/repairJob/routes/RepairJobPage";
 import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
 import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
+import { PermissionDenied } from "@/app/PermissionDenied";
 
 export const router = createBrowserRouter([
   {
@@ -126,6 +127,13 @@ export const router = createBrowserRouter([
             element: <UsersListPage />,
             handle: {
               breadcrumb: "Users List",
+            },
+          },
+          {
+            path: "new",
+            element: <PermissionDenied />,
+            handle: {
+              breadcrumb: "New User",
             },
           },
           {

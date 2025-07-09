@@ -11,6 +11,7 @@ export function CustomerAddPage() {
 
   const handleAdd = (customerData: Omit<Customer, "_id">) => {
     const payload = { data: [customerData] };
+    console.log(payload)
 
     const submitAdd = async () => {
       try {

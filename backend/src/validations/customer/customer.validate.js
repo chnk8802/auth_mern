@@ -3,7 +3,11 @@ import { COUNTRIES, STATES } from "../../constants/enums.js";
 import { inputDataWrapper } from "../custom/custom.validators.js";
 
 export const createCustomer = Joi.object({
-  fullName: Joi.string().trim().min(3).max(100).required(),
+  fullName: Joi.string().trim().min(3).max(100).required().messages({
+    "any.required": `"fullName" is required`,
+    "string.empty": `"fullName" cannot be empty`,
+    "string.min": `"fullName" must be at least 3 characters`,
+  }),
   phone: Joi.string()
     .pattern(/^(\+91[\-\s]?)?[0-9]{10}$/)
     .optional()

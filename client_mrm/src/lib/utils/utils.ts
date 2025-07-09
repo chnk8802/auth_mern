@@ -23,6 +23,31 @@ export function formatSnakeCaseLabel(input: string): string {
   return input.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
+export function cleanObject<T extends object>(obj: T): T {
+  const cleaned = {} as T;
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (
+      value === undefined ||
+      value === null ||
+      (typeof value === "string" && value.trim() === "")
+    ) {
+      continue;
+    }
+
+    if (typeof value === "object" && !Array.isArray(value)) {
+      const nested = cleanObject(value);
+      if (Object.keys(nested).length > 0) {
+        cleaned[key as keyof T] = nested;
+      }
+    } else {
+      cleaned[key as keyof T] = value;
+    }
+  }
+
+  return cleaned;
+}
+
 
 export function getChangedFields<T extends Record<string, any>>(current: T, original: T): Partial<T> {
   const diff: Partial<T> = {};

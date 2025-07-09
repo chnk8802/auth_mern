@@ -13,11 +13,17 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Download, Ellipsis, Import, Plus } from "lucide-react";
+import {
+  Download,
+  Ellipsis,
+  Import,
+  MoveLeftIcon,
+  MoveRightIcon,
+  Plus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -30,6 +36,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import {
   Table,
@@ -39,7 +47,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import { SearchToggle } from "@/components/common/SearchToggle";
 import { useSidebar } from "./sidebar";
 import { cn } from "@/lib/utils/utils";
 import { ListPageHeader } from "../common/headers/ListPageHeader";
@@ -49,23 +56,36 @@ interface DataTableProps<TData extends { _id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   moduleName?: string;
+  page?: number;
+  setPage?: (page: number) => void;
+  limit?: number;
+  setLimit?: (limit: number) => void;
+  total?: number;
 }
 
 export function DataTable<TData extends { _id: string }, TValue>({
   columns,
   data,
   moduleName,
+  page,
+  setPage,
+  limit,
+  setLimit,
+  total,
 }: DataTableProps<TData, TValue>) {
   const navigate = useNavigate();
-  const { isMobile, state } = useSidebar();
+  const { isMobile } = useSidebar();
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>({
+      createdAt: false,
+      updatedAt: false,
+    });
   const [rowSelection, setRowSelection] = React.useState({});
-
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
   const [columnPinning, setColumnPinning] = React.useState<ColumnPinningState>({
     left: ["select", "actions"],
@@ -76,6 +96,10 @@ export function DataTable<TData extends { _id: string }, TValue>({
     data,
     columns,
     state: {
+      pagination: {
+        pageIndex: (page || 1) - 1,
+        pageSize: limit || 10,
+      },
       sorting,
       columnFilters,
       columnVisibility,
@@ -87,7 +111,24 @@ export function DataTable<TData extends { _id: string }, TValue>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+
+    manualPagination: true,
+    pageCount: total && limit ? Math.ceil(total / limit) : -1,
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const next = updater({
+          pageIndex: (page || 1) - 1,
+          pageSize: limit || 10,
+        });
+        setPage?.(next.pageIndex + 1);
+        setLimit?.(next.pageSize);
+      } else {
+        setPage?.(updater.pageIndex + 1);
+        setLimit?.(updater.pageSize);
+      }
+    },
+    // getPaginationRowModel: getPaginationRowModel(),
+
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -113,7 +154,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
-            <Ellipsis size="icon" />
+            <Ellipsis />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -152,11 +193,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
   }
 
   return (
-    <div
-      className={
-        state === "expanded" && isMobile !== true ? "w-full" : "w-full"
-      }
-    >
+    <div className="">
       <ListPageHeader
         title={`${moduleName}s`}
         actions={
@@ -179,23 +216,21 @@ export function DataTable<TData extends { _id: string }, TValue>({
         }
       />
 
-      <div className="rounded-md border">
+      <div className="border rounded-md m-2 max-h-[calc(100vh-210px)] overflow-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+              <TableRow key={headerGroup.id} className="shadow-sm">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -205,17 +240,15 @@ export function DataTable<TData extends { _id: string }, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={(e) => {
-                    // Prevent navigation if the clicked element is an interactive element
+                  onDoubleClick={(e) => {
                     const target = e.target as HTMLElement;
                     if (
-                      target.closest("button") || // avoid buttons
-                      target.closest("input") || // avoid checkboxes
-                      target.closest("a") // avoid links
+                      target.closest("button") ||
+                      target.closest("input") ||
+                      target.closest("a")
                     ) {
                       return;
                     }
-
                     navigate(row.original._id);
                   }}
                   className="cursor-pointer hover:bg-muted transition-colors"
@@ -224,14 +257,13 @@ export function DataTable<TData extends { _id: string }, TValue>({
                     <TableCell
                       key={cell.id}
                       className={cn({
-                        "sticky left-0 z-30 bg-white shadow-md":
+                        "sticky left-0 bg-white shadow-md":
                           cell.column.getIsPinned() === "left" &&
                           cell.column.id === "select",
-                        "sticky left-[20px] z-20 bg-white":
+
+                        "sticky left-[24px] bg-white":
                           cell.column.getIsPinned() === "left" &&
                           cell.column.id === "actions",
-                        "sticky right-0 z-10 bg-white":
-                          cell.column.getIsPinned() === "right",
                       })}
                     >
                       {flexRender(
@@ -256,19 +288,50 @@ export function DataTable<TData extends { _id: string }, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end space-x-2 p-4">
         <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length} row(s) selected on this
+          page. {total} total record(s).
         </div>
-        <div className="space-x-2">
+        <div className="flex space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <span className="hidden md:inline">{limit} Records</span>
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent>
+              <DropdownMenuRadioGroup
+                value={String(limit)}
+                onValueChange={(value) => setLimit?.(parseInt(value))}
+              >
+                <DropdownMenuRadioItem value="10">
+                  10 Records
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="25">
+                  25 Records
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="50">
+                  50 Records
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="100">
+                  100 Records
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="200">
+                  200 Records
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            <MoveLeftIcon /> Previous
           </Button>
           <Button
             variant="outline"
@@ -276,7 +339,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            Next <MoveRightIcon />
           </Button>
         </div>
       </div>

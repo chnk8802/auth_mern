@@ -11,7 +11,7 @@ import {
   deleteCustomer,
   getCustomerById,
 } from "@/features/customers/api/customerApi";
-import { formatSnakeCaseLabel } from "@/lib/utils/utils";
+import { formatDate, formatSnakeCaseLabel } from "@/lib/utils/utils";
 import { DetailsPageHeader } from "@/components/common/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
@@ -106,7 +106,7 @@ export function CustomerDetailPage() {
   }
 
   return (
-    <>
+    <div className="px-4">
       <DetailsPageHeader
         title="Customer Details"
         onBack={() => navigate(ROUTES.CUSTOMERS.LIST)}
@@ -159,7 +159,12 @@ export function CustomerDetailPage() {
             .filter(Boolean)
             .join(", ")}
         />
+        <DetailItem label="Created at" value={formatDate(customer.createdAt)} />
+        <DetailItem
+          label="Last updated"
+          value={formatDate(customer.updatedAt)}
+        />
       </DetailGrid>
-    </>
+    </div>
   );
 }

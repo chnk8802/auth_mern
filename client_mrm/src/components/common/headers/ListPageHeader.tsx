@@ -21,7 +21,7 @@ export function ListPageHeader({
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   return (
-    <div className="flex items-end justify-end gap-12 py-4">
+    <div className="flex items-end justify-end p-4">
       <div className="flex-1">
         {isMobile && (
           <Button

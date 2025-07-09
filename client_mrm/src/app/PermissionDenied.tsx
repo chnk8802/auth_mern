@@ -1,24 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import notFoundImage from "@/assets/not-found.png";
+import noPermission from "@/assets/no-permission.png";
 import { Button } from "@/components/ui/button";
 
-export const NotFound = () => {
+export const PermissionDenied = () => {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 text-center">
+    <div className="flex flex-col items-center justify-center bg-background px-4 text-center">
       <img
-        src={notFoundImage}
+        src={noPermission}
         alt="Not Found"
         className="w-64 h-64 object-contain mb-8"
       />
 
       <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
-        404 - Page Not Found
+        Permission Denied
       </h1>
       <p className="text-muted-foreground text-lg mb-6">
-        The page you’re looking for doesn’t exist or was moved.
+        You do not have permission to perform this action.
       </p>
-      <Button size="lg" onClick={() => navigate("/")}>Go back</Button>
+      <Button size="lg" onClick={() => navigate(-1)}>Go back</Button>
     </div>
   );
 };

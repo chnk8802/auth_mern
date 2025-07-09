@@ -18,6 +18,8 @@ import { Combobox } from "@/components/common/Combobox";
 import { indianStates } from "@/constants/indianStates";
 import { countries } from "@/constants/countries";
 import { useState } from "react";
+import { cleanObject } from "@/lib/utils/utils";
+import { toast } from "sonner";
 
 type AddCustomerFormProps = {
   onSubmit: (data: Customer) => void;
@@ -27,8 +29,17 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
   const form = useForm<Customer>({});
   const [saveAndNew, setSaveAndNew] = useState(false);
 
-  const handleSubmit = async (data: Customer) => {
-    await onSubmit(data);
+  const handleSubmit = (data: Customer) => {
+    
+    const cleanedData = cleanObject(data);
+    if (Object.keys(cleanedData).length === 0) {
+      toast.error("No valid data to submit");
+      form.reset();
+      return;
+    }
+
+    console.log("Form data submitted no undefined:", cleanedData);
+    onSubmit(cleanedData);
     if (saveAndNew) {
       form.reset();
     }
@@ -46,7 +57,6 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="max-w-4xl space-y-6"
       >
-        
         <motion.div
           initial="hidden"
           animate="show"

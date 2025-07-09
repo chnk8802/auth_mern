@@ -10,7 +10,7 @@ import { DetailItem } from "@/components/common/DetailItem";
 import { DetailToolbar } from "@/components/common/headers/DetailPageToolbar";
 import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
-import { formatSnakeCaseLabel } from "@/lib/utils/utils";
+import { formatDate, formatSnakeCaseLabel } from "@/lib/utils/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -105,7 +105,7 @@ export function UserDetailPage() {
   }
 
   return (
-    <>
+    <div className="px-4">
       <DetailsPageHeader
         title="Users Details"
         onBack={() => navigate(ROUTES.USERS.LIST)}
@@ -158,7 +158,9 @@ export function UserDetailPage() {
             .filter(Boolean)
             .join(", ")}
         />
+        <DetailItem label="Created at" value={formatDate(user.createdAt)} />
+        <DetailItem label="Last updated" value={formatDate(user.updatedAt)} />
       </DetailGrid>
-    </>
+    </div>
   );
 }

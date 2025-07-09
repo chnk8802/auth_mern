@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { Label } from "../ui/label";
 
 export const SearchDrawer = ({
   globalFilter,
@@ -28,7 +29,10 @@ export const SearchDrawer = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>
         <Button variant="outline" size="icon">
           <Search />
@@ -41,21 +45,17 @@ export const SearchDrawer = ({
         </DialogHeader>
 
         <div
-          className="overflow-y-auto grid gap-3"
+          className="overflow-y-auto grid gap-4"
           style={{ maxHeight: "calc(100vh - 160px)" }}
         >
-          <div className="grid gap-2">
-            <label
-              htmlFor="search"
-              className="text-sm font-medium text-gray-500"
-            >
-              Search
-            </label>
+          <div className="grid gap-2 p-1">
+            <Label className="text-sm font-medium text-gray-500">Search</Label>
             <Input
               id="search"
               placeholder={`Type to search ...`}
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
+              className=""
             />
           </div>
         </div>

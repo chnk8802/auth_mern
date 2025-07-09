@@ -7,10 +7,6 @@ import {
   createCustomerValidation,
   updateCustomerValidation,
 } from "../validations/customer/customer.validate.js";
-import {
-  paramIdValidation,
-  multipleIdsValidation,
-} from "../validations/common/common.validation.js";
 
 const createCustomer = async (req, res, next) => {
   try {
@@ -27,9 +23,7 @@ const createCustomer = async (req, res, next) => {
     
     const customer = new Customer(customerData);
     let savedCustomer = await customer.save();
-    if (!savedCustomer) {
-      throw createError(400, "Customer creation failed");
-    }
+    
     const safeCustomer = {
       _id: savedCustomer._id,
       customerCode: savedCustomer.customerCode,

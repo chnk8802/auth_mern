@@ -13,14 +13,18 @@ import { useNavigate } from "react-router-dom";
 export function CustomersPage() {
   const navigate = useNavigate();
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [total, setTotal] = useState(0);
 
   const fetchCustomers = async () => {
     try {
-      const res = await getCustomers();
+      const res = await getCustomers({page, limit});
       if (res.data.length === 0) {
         setCustomers([]);
         return;
       }
+      setTotal(res.meta.pagination.total);
       setCustomers(res.data);
     } catch (error: any) {
       toast.error("Failed to fetch customers");
@@ -48,15 +52,22 @@ export function CustomersPage() {
 
   useEffect(() => {
     fetchCustomers();
-  }, []);
+  }, [page, limit]);
   return (
-    <DataTable
-      columns={getCustomerColumns({
-        onEdit: handleRowEdit,
-        onDelete: handleRowDelete,
-      })}
-      data={customers}
-      moduleName={"Customer"}
-    />
+    <>
+      <DataTable
+        columns={getCustomerColumns({
+          onEdit: handleRowEdit,
+          onDelete: handleRowDelete,
+        })}
+        data={customers}
+        moduleName={"Customer"}
+        page={page}
+        setPage={setPage}
+        limit={limit}
+        setLimit={setLimit}
+        total={total}
+      />
+    </>
   );
 }
