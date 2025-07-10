@@ -14,6 +14,7 @@ const statusMap: Record<
       | "default"
       | "secondary"
       | "destructive"
+      | "primary"
       | "outline"
       | "success"
       | "warning";
@@ -22,6 +23,7 @@ const statusMap: Record<
   pending: { label: "Pending", variant: "secondary" },
   in_progress: { label: "In Progress", variant: "warning" },
   completed: { label: "Completed", variant: "success" },
+  incomplete: { label: "Incomplete", variant: "primary" },
   picked: { label: "Picked", variant: "default" },
 };
 

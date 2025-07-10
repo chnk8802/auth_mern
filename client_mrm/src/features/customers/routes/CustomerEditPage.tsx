@@ -65,7 +65,7 @@ export function CustomerEditPage() {
 
   return (
     <div>
-      <BasePageHeader title="Edit Customer" subtitle="" actions={<Button className="btn"><Plus/></Button>} />
+      
       <EditCustomerForm customer={customer} onSubmit={handleEdit} />
     </div>
   );

@@ -117,17 +117,16 @@ export function RepairJobDetailPage() {
           <>
             {repairJob.repairJobCode}{" "}
             <RepairJobStatusBadge status={repairJob.repairStatus} />{" "}
-            <PaymentStatusBadge
-              status={repairJob?.paymentDetails?.paymentStatus}
+            <PaymentStatusBadge status={repairJob?.paymentDetails?.paymentStatus}
             />{" "}
           </>
         }
-        onBack={() => navigate(ROUTES.CUSTOMERS.LIST)}
+        onBack={() => navigate(ROUTES.REPAIR_JOBS.LIST)}
         actions={
           <>
             <Button
               size={isMobile ? "icon" : "default"}
-              onClick={() => navigate(ROUTES.CUSTOMERS.EDIT(repairJob._id))}
+              onClick={() => navigate(ROUTES.REPAIR_JOBS.EDIT(repairJob._id))}
             >
               {isMobile ? (
                 <SquarePen />
@@ -155,7 +154,7 @@ export function RepairJobDetailPage() {
       <>
         <DetailViewSection title="Repair Job Information">
           <DetailItem
-            label="Repair Stataus"
+            label="Repair Status"
             value={<RepairJobStatusBadge status={repairJob.repairStatus} />}
           />
 

@@ -1,14 +1,13 @@
 import type { ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
 
 // Section wrapper with title
 export function DetailViewSection({
   title,
   children,
 }: {
-  title: string;
+  title?: string;
   children: ReactNode;
 }) {
   return (

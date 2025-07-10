@@ -1,11 +1,14 @@
 import type { User } from "@/features/users/types";
 import { EditUserForm } from "@/features/users/components/UserEditForm";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getUserById, updateUser } from "../api/userApi";
 import { getChangedFields } from "@/lib/utils/utils";
 import { ROUTES } from "@/constants/routes";
+import { DetailToolbar } from "@/components/common/headers/DetailPageToolbar";
+import { FormHeader } from "@/components/common/headers/FormHeader";
+import { Button } from "@/components/ui/button";
 
 export function UserEditPage() {
   const navigate = useNavigate();
@@ -48,7 +51,7 @@ export function UserEditPage() {
         const result = await updateUser(userId, payload);
         console.log("Update result:", result);
         toast.success("User details updated");
-        // navigate(ROUTES.USERS.DETAILS(result.data[0]._id));
+        navigate(ROUTES.USERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
         console.error(
           "Update failed:",
@@ -71,7 +74,10 @@ export function UserEditPage() {
 
   return (
     <div className="p-2">
-      <h1 className="text-xl font-bold mb-4">Edit User</h1>
+      <FormHeader
+        title="Edit User"
+        backLink={ROUTES.USERS.LIST}
+      />
       <EditUserForm user={user} onSubmit={handleEdit} />
     </div>
   );
