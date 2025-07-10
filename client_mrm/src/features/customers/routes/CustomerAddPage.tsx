@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createCustomer } from "../api/customerApi";
 import { toast } from "sonner";
 import { ROUTES } from "@/constants/routes";
-import { FormHeader } from "@/components/common/headers/FormHeader";
+import { FormHeader } from "@/components/headers/FormHeader";
 
 export function CustomerAddPage() {
   const navigate = useNavigate();

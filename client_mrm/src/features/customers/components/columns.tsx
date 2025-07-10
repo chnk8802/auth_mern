@@ -3,7 +3,7 @@ import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import type { Customer } from "@/features/customers/types";
-import { DataTableActions } from "@/components/common/DataTableActions";
+import { DataTableActions } from "@/components/listView/DataTableActions";
 import { formatDate } from "@/lib/utils/utils";
 import { formatSnakeCaseLabel } from "@/lib/utils/utils";
 

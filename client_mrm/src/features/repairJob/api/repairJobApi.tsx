@@ -2,7 +2,7 @@ import api from "@/lib/axios";
 import type { RepairJob } from "@/features/repairJob/types";
 import type { ApiResponse } from "@/types/api";
 
-export const createCustomer = async (repairjobData: {data: Omit<RepairJob, "_id">[]}): Promise<ApiResponse<RepairJob[]>> => {
+export const createRepairJob = async (repairjobData: {data: Omit<RepairJob, "_id">[]}): Promise<ApiResponse<RepairJob[]>> => {
   const response = await api.post<ApiResponse<RepairJob[]>>("/repairjobs", repairjobData);
   return response.data;
 };

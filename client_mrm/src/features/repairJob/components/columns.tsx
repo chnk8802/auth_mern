@@ -3,7 +3,7 @@ import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import type { RepairJob } from "@/features/repairJob/types";
-import { DataTableActions } from "@/components/common/DataTableActions";
+import { DataTableActions } from "@/components/listView/DataTableActions";
 import { formatCurrency, formatDate, parseDecimal } from "@/lib/utils/utils";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";

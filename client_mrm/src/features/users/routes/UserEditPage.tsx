@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { getUserById, updateUser } from "../api/userApi";
 import { getChangedFields } from "@/lib/utils/utils";
 import { ROUTES } from "@/constants/routes";
-import { DetailToolbar } from "@/components/common/headers/DetailPageToolbar";
-import { FormHeader } from "@/components/common/headers/FormHeader";
+import { DetailToolbar } from "@/components/headers/DetailPageToolbar";
+import { FormHeader } from "@/components/headers/FormHeader";
 import { Button } from "@/components/ui/button";
 
 export function UserEditPage() {

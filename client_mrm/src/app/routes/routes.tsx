@@ -36,6 +36,7 @@ import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
 import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
 import { PermissionDenied } from "@/app/PermissionDenied";
 import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetailsPage";
+import { RepairJobAddPage } from "@/features/repairJob/routes/RepairJobAddPage";
 
 export const router = createBrowserRouter([
   {
@@ -142,7 +143,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "new",
-            element: <RepairJobDetailPage />,
+            element: <RepairJobAddPage />,
             handle: {
               breadcrumb: "Repair Job",
             },

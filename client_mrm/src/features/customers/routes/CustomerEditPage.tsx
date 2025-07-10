@@ -6,7 +6,7 @@ import { EditCustomerForm } from "@/features/customers/components/customerEditFo
 import { getCustomerById, updateCustomer } from "../api/customerApi";
 import { getChangedFields } from "@/lib/utils/utils";
 import { ROUTES } from "@/constants/routes";
-import { BasePageHeader } from "@/components/common/headers/BasePageHeader";
+import { BasePageHeader } from "@/components/headers/BasePageHeader";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 

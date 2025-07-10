@@ -5,8 +5,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { getUserById } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
-import { DetailViewSection, DetailGrid, DetailItem } from "@/components/common/DetailViewComponents";
-import { DetailToolbar } from "@/components/common/headers/DetailPageToolbar";
+import { DetailViewSection, DetailItem } from "@/components/detailView/DetailViewComponents";
+import { DetailToolbar } from "@/components/headers/DetailPageToolbar";
 import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
 import { formatDate, formatSnakeCaseLabel } from "@/lib/utils/utils";
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Ellipsis, SquarePen, Trash2 } from "lucide-react";
-import { DetailsPageHeader } from "@/components/common/headers/DetailsHeader";
+import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 
@@ -137,7 +137,7 @@ export function UserDetailPage() {
         }
         more={<>{<More />}</>}
       />
-      <DetailGrid>
+      <DetailViewSection>
         <DetailItem label="User Code" value={user.userCode} />
         <DetailItem
           label="Name"
@@ -159,7 +159,7 @@ export function UserDetailPage() {
         />
         <DetailItem label="Created at" value={formatDate(user.createdAt)} />
         <DetailItem label="Last updated" value={formatDate(user.updatedAt)} />
-      </DetailGrid>
+      </DetailViewSection>
     </div>
   );
 }

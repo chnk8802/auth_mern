@@ -13,7 +13,7 @@ export const Navbar = () => {
           <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
             <Wrench />
           </div>
-          <div className="pl-2">MyApp</div>
+          <div className="pl-2">MRM</div>
         </Link>
       </div>
       <div className="hidden md:flex items-center gap-4">
@@ -24,7 +24,7 @@ export const Navbar = () => {
           Dashboard
         </Link>
       </div>
-      <Link to={ROUTES.LOGIN}>
+      <Link to={ROUTES.GUEST_PATHS.LOGIN}>
         <Button variant="outline" size="sm">
           Login
         </Button>

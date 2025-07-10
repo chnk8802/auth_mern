@@ -50,8 +50,8 @@ import {
 } from "@/components/ui/table";
 import { useSidebar } from "./sidebar";
 import { cn } from "@/lib/utils/utils";
-import { ListPageHeader } from "../common/headers/ListPageHeader";
-import { SearchDrawer } from "../common/SearchDrawer";
+import { ListPageHeader } from "../headers/ListPageHeader";
+import { SearchDrawer } from "../listView/SearchDrawer";
 
 interface DataTableProps<TData extends { _id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];

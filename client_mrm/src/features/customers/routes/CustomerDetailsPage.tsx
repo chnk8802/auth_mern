@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { DetailViewSection, DetailGrid, DetailItem } from "@/components/common/DetailViewComponents";
+import { DetailViewSection, DetailItem } from "@/components/detailView/DetailViewComponents";
 import type { Customer } from "@/features/customers/types";
 import { ROUTES } from "@/constants/routes";
 import {
@@ -11,7 +11,7 @@ import {
   getCustomerById,
 } from "@/features/customers/api/customerApi";
 import { formatDate, formatSnakeCaseLabel } from "@/lib/utils/utils";
-import { DetailsPageHeader } from "@/components/common/headers/DetailsHeader";
+import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -138,7 +138,7 @@ export function CustomerDetailPage() {
         }
         more={<>{<More />}</>}
       />
-      <DetailGrid>
+      <DetailViewSection>
         <DetailItem label="Customer Code" value={customer.customerCode} />
         <DetailItem label="Full Name" value={customer.fullName} />
         <DetailItem label="Phone" value={customer.phone} />
@@ -163,7 +163,7 @@ export function CustomerDetailPage() {
           label="Last updated"
           value={formatDate(customer.updatedAt)}
         />
-      </DetailGrid>
+      </DetailViewSection>
     </div>
   );
 }

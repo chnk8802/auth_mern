@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import {
   DetailViewSection,
   DetailItem,
-} from "@/components/common/DetailViewComponents";
+} from "@/components/detailView/DetailViewComponents";
 import type { RepairJob } from "@/features/repairJob/types";
 import { ROUTES } from "@/constants/routes";
 import {
@@ -14,7 +14,7 @@ import {
   deleteRepairJob,
 } from "@/features/repairJob/api/repairJobApi";
 import { formatCurrency, formatDate, parseDecimal } from "@/lib/utils/utils";
-import { DetailsPageHeader } from "@/components/common/headers/DetailsHeader";
+import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
