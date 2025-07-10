@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import pluralize from "pluralize"
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -192,9 +193,9 @@ export function DataTable<TData extends { _id: string }, TValue>({
   return (
     <div className="">
       <ListPageHeader
-        title={`${moduleName}s`}
+        title={pluralize(moduleName || "")}
         actions={
-          <Button onClick={() => navigate(`/dashboard/${moduleName}s/new`)}>
+          <Button onClick={() => navigate(`/dashboard/${pluralize(moduleName?.replace(/\s+/g, "").toLowerCase() || "")}/new`)}>
             {isMobile ? <Plus /> : `Add ${moduleName}`}
           </Button>
         }

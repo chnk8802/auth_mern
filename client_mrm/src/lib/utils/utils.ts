@@ -7,6 +7,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const parseDecimal = (value: any): number => {
+  if (typeof value === "object" && value !== null && "$numberDecimal" in value) {
+    return parseFloat(value.$numberDecimal);
+  }
+  return typeof value === "number" ? value : 0;
+};
+
+export const formatCurrency = (
+  amount: number,
+  currency: string = "INR",
+  locale: string = "en-IN"
+): string => {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+  }).format(amount);
+};
+
+
 export function formatDate(dateInput: Date | string): string {
   const date = new Date(dateInput);
   const dd = String(date.getDate()).padStart(2, '0');

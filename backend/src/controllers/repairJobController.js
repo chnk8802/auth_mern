@@ -48,8 +48,8 @@ const getAllRepairJobs = async (req, res, next) => {
     const { page, limit, skip, sort } = getPaginationOptions(req.query);
 
     const repairJobs = await RepairJob.find({})
-      .populate("customer", "customerCode fullname email phone address")
-      .populate("technician", "userCode fullname email phone")
+      .populate("customer", "customerCode fullName phone address")
+      .populate("technician", "userCode fullName email phone role")
       .populate({
         path: "spareParts",
         populate: [
@@ -86,8 +86,8 @@ const getRepairJobById = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
     const repairJob = await RepairJob.findById(repairJobId)
-      .populate("customer", "customerCode fullname email phone address")
-      .populate("technician", "userCode fullname email phone")
+      .populate("customer", "customerCode fullName email phone address")
+      .populate("technician", "userCode fullName email phone")
       .populate({
         path: "spareParts",
         populate: [

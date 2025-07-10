@@ -25,6 +25,7 @@ import { logout } from "@/features/auth/store/authSlice";
 import { logoutUser } from "@/features/auth/api/authApi";
 import { ROUTES } from "@/constants/routes";
 import { toast } from "sonner";
+import { ModeToggle } from "@/components/ModeToggle";
 
 interface NavUserProps {
   user: AuthUser;

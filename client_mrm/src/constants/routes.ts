@@ -14,19 +14,25 @@ export const ROUTES = {
   USERS: {
     ME: "/dashboard/users/me",
     LIST: "/dashboard/users",
-    EDIT: (id: string | number) => `/dashboard/users/${id}/edit`,
-    DETAILS: (id: string | number) => `/dashboard/users/${id}`,
+    EDIT: (id: string) => `/dashboard/users/${id}/edit`,
+    DETAILS: (id: string) => `/dashboard/users/${id}`,
   },
   CUSTOMERS: {
     NEW: "/dashboard/customers/new",
     LIST: "/dashboard/customers",
-    EDIT: (id: string | number) => `/dashboard/customers/${id}/edit`,
-    DETAILS: (id: string | number) => `/dashboard/customers/${id}`,
+    EDIT: (id: string) => `/dashboard/customers/${id}/edit`,
+    DETAILS: (id: string) => `/dashboard/customers/${id}`,
+  },
+  REPAIR_JOBS: {
+    NEW: "/dashboard/repairjobs/new",
+    LIST: "/dashboard/repairjobs",
+    EDIT: (id: string) => `/dashboard/repairjobs/${id}/edit`,
+    DETAILS: (id: string) => `/dashboard/repairjobs/${id}`,
   },
 
   PAYMENTS: {
     LIST: "/payments",
-    DETAILS: (id: string | number) => `/payments/${id}`,
+    DETAILS: (id: string) => `/payments/${id}`,
   },
 
   SETTINGS: "/settings",

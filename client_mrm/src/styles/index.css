@@ -50,7 +50,8 @@
   body {
     @apply bg-background text-foreground;
   }
-} 
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -120,5 +121,9 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+}
+
+body {
+  font-family: "Poppins", sans-serif;
 }
 

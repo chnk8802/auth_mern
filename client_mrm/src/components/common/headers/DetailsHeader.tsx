@@ -37,6 +37,7 @@ export function DetailsPageHeader({
         <div className="flex-1 flex-wrap justify-start text-2xl font-semibold text-foreground">
           {title}
         </div>
+        
       )}
       </div>
       

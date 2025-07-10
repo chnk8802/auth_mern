@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { DetailGrid } from "@/components/common/DetailGrid";
-import { DetailItem } from "@/components/common/DetailItem";
+import { DetailViewSection, DetailGrid, DetailItem } from "@/components/common/DetailViewComponents";
 import type { Customer } from "@/features/customers/types";
 import { ROUTES } from "@/constants/routes";
 import {

@@ -31,10 +31,11 @@ import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
 import { CustomerDetailPage } from "@/features/customers/routes/CustomerDetailsPage";
 import { CustomerEditPage } from "@/features/customers/routes/CustomerEditPage";
 // Others
-import { RepairJobPage } from "@/features/repairJob/routes/RepairJobPage";
+import { RepairJobListPage } from "@/features/repairJob/routes/RepairJobListPage";
 import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
 import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
 import { PermissionDenied } from "@/app/PermissionDenied";
+import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -79,7 +80,8 @@ export const router = createBrowserRouter([
             <RegisterForm />
           </GuestOnlyRoute>
         ),
-      },{
+      },
+      {
         path: "forgot-password",
         element: (
           <GuestOnlyRoute>
@@ -111,10 +113,41 @@ export const router = createBrowserRouter([
       },
       {
         path: "repairjobs",
-        element: <RepairJobPage />,
         handle: {
           breadcrumb: () => "Repair Job",
         },
+        children: [
+          {
+            index: true,
+            element: <RepairJobListPage />,
+            handle: {
+              breadcrumb: "Repair Jobs List",
+            },
+          },
+          {
+            path: ":repairJobId",
+            element: <RepairJobDetailPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { repairJobId: string } }) =>
+                `${params.repairJobId}`,
+            },
+          },
+          {
+            path: ":repairJobId/edit",
+            element: <RepairJobDetailPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { repairJobId: string } }) =>
+                `Edit ${params.repairJobId}`,
+            },
+          },
+          {
+            path: "new",
+            element: <RepairJobDetailPage />,
+            handle: {
+              breadcrumb: "Repair Job",
+            },
+          },
+        ],
       },
       {
         path: "users",
@@ -127,13 +160,6 @@ export const router = createBrowserRouter([
             element: <UsersListPage />,
             handle: {
               breadcrumb: "Users List",
-            },
-          },
-          {
-            path: "new",
-            element: <PermissionDenied />,
-            handle: {
-              breadcrumb: "New User",
             },
           },
           {
@@ -152,6 +178,13 @@ export const router = createBrowserRouter([
                 `Edit ${params.userId}`,
             },
           },
+          {
+            path: "new",
+            element: <PermissionDenied />,
+            handle: {
+              breadcrumb: "New User",
+            },
+          },
         ],
       },
       {
@@ -168,13 +201,6 @@ export const router = createBrowserRouter([
             },
           },
           {
-            path: "new",
-            element: <CustomerAddPage />,
-            handle: {
-              breadcrumb: "New Customer",
-            },
-          },
-          {
             path: ":customerId",
             element: <CustomerDetailPage />,
             handle: {
@@ -188,6 +214,13 @@ export const router = createBrowserRouter([
             handle: {
               breadcrumb: ({ params }: { params: { customerId: string } }) =>
                 `Edit ${params.customerId}`,
+            },
+          },
+          {
+            path: "new",
+            element: <CustomerAddPage />,
+            handle: {
+              breadcrumb: "New Customer",
             },
           },
         ],
