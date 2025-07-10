@@ -111,7 +111,11 @@ export function DataTable<TData extends { _id: string }, TValue>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    // Manual Pagination
     manualPagination: true,
     pageCount: total && limit ? Math.ceil(total / limit) : -1,
     onPaginationChange: (updater) => {
@@ -127,13 +131,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
         setLimit?.(updater.pageSize);
       }
     },
-    // getPaginationRowModel: getPaginationRowModel(),
-
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    /*--------------------- */
+    // Filters
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: (row, _columnId, filterValue) => {
       return row.getVisibleCells().some((cell) =>
@@ -142,7 +140,6 @@ export function DataTable<TData extends { _id: string }, TValue>({
           .includes(filterValue.toLowerCase())
       );
     },
-    /*--------------------- */
   });
 
   function ColumnVisibilityDropdown<TData>({
@@ -257,11 +254,11 @@ export function DataTable<TData extends { _id: string }, TValue>({
                     <TableCell
                       key={cell.id}
                       className={cn({
-                        "sticky left-0 bg-white shadow-md":
+                        "sticky left-0 shadow-md":
                           cell.column.getIsPinned() === "left" &&
                           cell.column.id === "select",
 
-                        "sticky left-[24px] bg-white":
+                        "sticky left-[24px]":
                           cell.column.getIsPinned() === "left" &&
                           cell.column.id === "actions",
                       })}
@@ -290,15 +287,13 @@ export function DataTable<TData extends { _id: string }, TValue>({
 
       <div className="flex items-center justify-end space-x-2 p-4">
         <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected on this
-          page. {total} total record(s).
+          Total {total}
         </div>
         <div className="flex space-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <span className="hidden md:inline">{limit} Records</span>
+                {limit} Records
               </Button>
             </DropdownMenuTrigger>
 
@@ -324,6 +319,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
+
           </DropdownMenu>
           <Button
             variant="outline"
@@ -331,7 +327,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <MoveLeftIcon /> Previous
+            <MoveLeftIcon /> {!isMobile && "Previous"}
           </Button>
           <Button
             variant="outline"
@@ -339,7 +335,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next <MoveRightIcon />
+            {!isMobile && "Next"} <MoveRightIcon />
           </Button>
         </div>
       </div>

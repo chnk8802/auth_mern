@@ -46,6 +46,16 @@ api.interceptors.response.use(
 
       try {
         const res = await api.post("/auth/refresh-token")
+        //         const res = await axios.post(
+        //   `${API_CONFIG.BASE_URL}/auth/refresh-token`,
+        //   {},
+        //   {
+        //     headers: API_CONFIG.HEADERS,
+        //     withCredentials: API_CONFIG.WITH_CREDENTIALS,
+        //     timeout: API_CONFIG.TIMEOUT,
+        //   }
+        // );
+
         const user = res.data?.data[0];
         if (!user) {
           throw new Error("No user returned from refresh")
@@ -54,10 +64,11 @@ api.interceptors.response.use(
         store.dispatch(loginSuccess(user))
 
         processQueue(null, null)
-        
+        console.log("======")
         return api(originalRequest)
 
       } catch (refreshError) {
+        console.log("+++++++")
         processQueue(refreshError, null)
         store.dispatch(logout())
         return Promise.reject(refreshError)
