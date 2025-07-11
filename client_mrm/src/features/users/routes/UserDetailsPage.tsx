@@ -5,11 +5,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { getUserById } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
-import { DetailViewSection, DetailItem } from "@/components/detailView/DetailViewComponents";
 import { DetailToolbar } from "@/components/headers/DetailPageToolbar";
 import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
-import { formatDate, formatSnakeCaseLabel } from "@/lib/utils/utils";
+import { formatDate, formatSnakeCaseLabel } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +23,9 @@ import { Ellipsis, SquarePen, Trash2 } from "lucide-react";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { Section } from "@/components/layout/sectionLayouts/sections";
+import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
+import { ColumnGrid } from "@/components/layout/sectionLayouts/grids";
 
 export function UserDetailPage() {
   const navigate = useNavigate();
@@ -137,29 +139,31 @@ export function UserDetailPage() {
         }
         more={<>{<More />}</>}
       />
-      <DetailViewSection>
-        <DetailItem label="User Code" value={user.userCode} />
-        <DetailItem
-          label="Name"
-          value={user.fullName || user.email.split("@")[0]}
-        />
-        <DetailItem label="Email" value={user.email} />
-        <DetailItem label="Role" value={formatSnakeCaseLabel(user.role)} />
-        <DetailItem
-          label="Address"
-          value={[
-            user.address?.street,
-            user.address?.city,
-            formatSnakeCaseLabel(user.address?.state),
-            formatSnakeCaseLabel(user.address?.country),
-            user.address?.zip,
-          ]
-            .filter(Boolean)
-            .join(", ")}
-        />
-        <DetailItem label="Created at" value={formatDate(user.createdAt)} />
-        <DetailItem label="Last updated" value={formatDate(user.updatedAt)} />
-      </DetailViewSection>
+      <Section>
+        <ColumnGrid>
+          <DetailItem label="User Code" value={user.userCode} />
+          <DetailItem
+            label="Name"
+            value={user.fullName || user.email.split("@")[0]}
+          />
+          <DetailItem label="Email" value={user.email} />
+          <DetailItem label="Role" value={formatSnakeCaseLabel(user.role)} />
+          <DetailItem
+            label="Address"
+            value={[
+              user.address?.street,
+              user.address?.city,
+              formatSnakeCaseLabel(user.address?.state),
+              formatSnakeCaseLabel(user.address?.country),
+              user.address?.zip,
+            ]
+              .filter(Boolean)
+              .join(", ")}
+          />
+          <DetailItem label="Created at" value={formatDate(user.createdAt)} />
+          <DetailItem label="Last updated" value={formatDate(user.updatedAt)} />
+        </ColumnGrid>
+      </Section>
     </div>
   );
 }

@@ -18,7 +18,7 @@ export type RepairJob = {
     repairType: "Hardware" | "Software" | string;
     technician?: User;
     deviceComponents?: string[];
-    spareParts: (string | SparePartEntry)[];
+    spareParts?: string[];
     repairCost?: number | null;
     discount?: number | null;
     totalSparePartsCost?: number | null;
@@ -26,9 +26,9 @@ export type RepairJob = {
     profit?: number | null;
     paymentDetails?: PaymentDetails;
     notes?: string;
-    pickedAt?: string;
-    createdAt: string;
-    updatedAt: string;
+    pickedAt?: Date;
+    createdAt: Date;
+    updatedAt: Date;
 };
 
 export type SparePartEntry = {

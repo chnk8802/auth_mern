@@ -49,7 +49,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSidebar } from "./sidebar";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 import { ListPageHeader } from "../headers/ListPageHeader";
 import { SearchDrawer } from "../listView/SearchDrawer";
 

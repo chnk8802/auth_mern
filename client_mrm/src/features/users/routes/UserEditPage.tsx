@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getUserById, updateUser } from "../api/userApi";
-import { getChangedFields } from "@/lib/utils/utils";
+import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
 import { DetailToolbar } from "@/components/headers/DetailPageToolbar";
 import { FormHeader } from "@/components/headers/FormHeader";

@@ -3,17 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import {
-  DetailViewSection,
-  DetailItem,
-} from "@/components/detailView/DetailViewComponents";
 import type { RepairJob } from "@/features/repairJob/types";
 import { ROUTES } from "@/constants/routes";
 import {
   getRepairjobById,
   deleteRepairJob,
 } from "@/features/repairJob/api/repairJobApi";
-import { formatCurrency, formatDate, parseDecimal } from "@/lib/utils/utils";
+import { formatCurrency, formatDate, parseDecimal } from "@/lib/utils";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
@@ -30,6 +26,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PaymentStatusBadge } from "@/components/common/PaymentStatusBadge";
 import { RepairJobStatusBadge } from "@/components/common/RepairJobStatusBadge";
+import { Section } from "@/components/layout/sectionLayouts/sections";
+import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
 
 export function RepairJobDetailPage() {
   const isMobile = useIsMobile();
@@ -117,7 +115,8 @@ export function RepairJobDetailPage() {
           <>
             {repairJob.repairJobCode}{" "}
             <RepairJobStatusBadge status={repairJob.repairStatus} />{" "}
-            <PaymentStatusBadge status={repairJob?.paymentDetails?.paymentStatus}
+            <PaymentStatusBadge
+              status={repairJob?.paymentDetails?.paymentStatus}
             />{" "}
           </>
         }
@@ -152,66 +151,68 @@ export function RepairJobDetailPage() {
         more={<>{<More />}</>}
       />
       <>
-        <DetailViewSection title="Repair Job Information">
-          <DetailItem
-            label="Repair Status"
-            value={<RepairJobStatusBadge status={repairJob.repairStatus} />}
-          />
+        <Section title="Repair Job Information" col={4}>
+            <DetailItem
+              label="Repair Status"
+              value={<RepairJobStatusBadge status={repairJob.repairStatus} />}
+            />
 
-          <DetailItem
-            label="Customer"
-            value={
-              repairJob.customer?.fullName
-                ? repairJob.customer.fullName
-                : repairJob.customer?.customerCode
-            }
-            ref={{
-              module: "customers", // or whatever your module name is
-              id: repairJob.customer?._id ?? "",
-            }}
-          />
-          <DetailItem label="Repair Job Code" value={repairJob.repairJobCode} />
-          <DetailItem label="Device Model" value={repairJob.deviceModel} />
-          <DetailItem label="Device IMEI" value={repairJob.deviceIMEI} />
-          <DetailItem
-            label="Issue Description"
-            value={repairJob.issueDescription}
-          />
-          <DetailItem label="Repair Type" value={repairJob.repairType} />
-          <DetailItem
-            label="Technician"
-            value={
-              repairJob.technician?.fullName
-                ? repairJob.technician.fullName
-                : repairJob.technician?.userCode
-            }
-            ref={{
-              module: "users",
-              id: repairJob.technician?._id ?? "",
-            }}
-          />
-          <DetailItem
-            label="Device Components"
-            value={
-              repairJob.deviceComponents?.length
-                ? repairJob.deviceComponents.join(", ")
-                : "None"
-            }
-          />
-          <DetailViewSection title="">
-            <DetailItem label="Spare Parts" value="To be implemented" />
-          </DetailViewSection>
-          <DetailItem label="Notes" value={repairJob.notes ?? "None"} />
-          <DetailItem
-            label="Picked At"
-            value={
-              repairJob.pickedAt ? formatDate(repairJob.pickedAt) : "Not picked"
-            }
-          />
-        </DetailViewSection>
+            <DetailItem
+              label="Customer"
+              value={
+                repairJob.customer?.fullName
+                  ? repairJob.customer.fullName
+                  : repairJob.customer?.customerCode
+              }
+              ref={{
+                module: "customers", // or whatever your module name is
+                id: repairJob.customer?._id ?? "",
+              }}
+            />
+            <DetailItem
+              label="Repair Job Code"
+              value={repairJob.repairJobCode}
+            />
+            <DetailItem label="Device Model" value={repairJob.deviceModel} />
+            <DetailItem label="Device IMEI" value={repairJob.deviceIMEI} />
+            <DetailItem
+              label="Issue Description"
+              value={repairJob.issueDescription}
+            />
+            <DetailItem label="Repair Type" value={repairJob.repairType} />
+            <DetailItem
+              label="Technician"
+              value={
+                repairJob.technician?.fullName
+                  ? repairJob.technician.fullName
+                  : repairJob.technician?.userCode
+              }
+              ref={{
+                module: "users",
+                id: repairJob.technician?._id ?? "",
+              }}
+            />
+            <DetailItem
+              label="Device Components"
+              value={
+                repairJob.deviceComponents?.length
+                  ? repairJob.deviceComponents.join(", ")
+                  : "None"
+              }
+            />
+              <DetailItem label="Spare Parts" value="To be implemented" />
+            <DetailItem label="Notes" value={repairJob.notes ?? "None"} />
+            <DetailItem
+              label="Picked At"
+              value={
+                repairJob.pickedAt
+                  ? formatDate(repairJob.pickedAt)
+                  : "Not picked"
+              }
+            />
+        </Section>
 
-        <DetailViewSection title="Financial Details">
-          <DetailViewSection title="">
+        <Section title="Financial Details" col={4}>
             <DetailItem
               label="Repair Cost"
               value={formatCurrency(parseDecimal(repairJob.repairCost))}
@@ -230,8 +231,7 @@ export function RepairJobDetailPage() {
               label="Profit"
               value={formatCurrency(parseDecimal(repairJob.profit))}
             />
-          </DetailViewSection>
-          <DetailViewSection title="Payment Details">
+
             <DetailItem
               label="Payment Status"
               value={
@@ -257,19 +257,18 @@ export function RepairJobDetailPage() {
                 parseDecimal(repairJob.paymentDetails?.amountDue ?? 0)
               )}
             />
-          </DetailViewSection>
-        </DetailViewSection>
+        </Section>
 
-        <DetailViewSection title="Audit Trail">
-          <DetailItem
-            label="Created At"
-            value={formatDate(repairJob.createdAt)}
-          />
-          <DetailItem
-            label="Updated At"
-            value={formatDate(repairJob.updatedAt)}
-          />
-        </DetailViewSection>
+        <Section title="Audit Trail" col={4}>
+            <DetailItem
+              label="Created At"
+              value={formatDate(repairJob.createdAt)}
+            />
+            <DetailItem
+              label="Updated At"
+              value={formatDate(repairJob.updatedAt)}
+            />
+        </Section>
       </>
     </div>
   );

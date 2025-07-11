@@ -3,14 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { DetailViewSection, DetailItem } from "@/components/detailView/DetailViewComponents";
 import type { Customer } from "@/features/customers/types";
 import { ROUTES } from "@/constants/routes";
 import {
   deleteCustomer,
   getCustomerById,
 } from "@/features/customers/api/customerApi";
-import { formatDate, formatSnakeCaseLabel } from "@/lib/utils/utils";
+import { formatDate, formatSnakeCaseLabel } from "@/lib/utils";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
@@ -25,6 +24,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Section } from "@/components/layout/sectionLayouts/sections";
+import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
+import { ColumnGrid } from "@/components/layout/sectionLayouts/grids";
 
 export function CustomerDetailPage() {
   const isMobile = useIsMobile();
@@ -138,32 +140,37 @@ export function CustomerDetailPage() {
         }
         more={<>{<More />}</>}
       />
-      <DetailViewSection>
-        <DetailItem label="Customer Code" value={customer.customerCode} />
-        <DetailItem label="Full Name" value={customer.fullName} />
-        <DetailItem label="Phone" value={customer.phone} />
-        <DetailItem
-          label="Is Bulk Customer"
-          value={customer.isBulkCustomer ? "Yes" : "No"}
-        />
-        <DetailItem
-          label="Address"
-          value={[
-            customer.address?.street,
-            customer.address?.city,
-            formatSnakeCaseLabel(customer.address?.state),
-            formatSnakeCaseLabel(customer.address?.country),
-            customer.address?.zip,
-          ]
-            .filter(Boolean)
-            .join(", ")}
-        />
-        <DetailItem label="Created at" value={formatDate(customer.createdAt)} />
-        <DetailItem
-          label="Last updated"
-          value={formatDate(customer.updatedAt)}
-        />
-      </DetailViewSection>
+      <Section>
+        <ColumnGrid>
+          <DetailItem label="Customer Code" value={customer.customerCode} />
+          <DetailItem label="Full Name" value={customer.fullName} />
+          <DetailItem label="Phone" value={customer.phone} />
+          <DetailItem
+            label="Is Bulk Customer"
+            value={customer.isBulkCustomer ? "Yes" : "No"}
+          />
+          <DetailItem
+            label="Address"
+            value={[
+              customer.address?.street,
+              customer.address?.city,
+              formatSnakeCaseLabel(customer.address?.state),
+              formatSnakeCaseLabel(customer.address?.country),
+              customer.address?.zip,
+            ]
+              .filter(Boolean)
+              .join(", ")}
+          />
+          <DetailItem
+            label="Created at"
+            value={formatDate(customer.createdAt)}
+          />
+          <DetailItem
+            label="Last updated"
+            value={formatDate(customer.updatedAt)}
+          />
+        </ColumnGrid>
+      </Section>
     </div>
   );
 }

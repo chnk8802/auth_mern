@@ -13,13 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Customer } from "../types";
-import { motion } from "framer-motion";
 import { Combobox } from "@/components/common/Combobox";
 import { indianStates } from "@/constants/indianStates";
 import { countries } from "@/constants/countries";
 import { useState } from "react";
-import { cleanObject } from "@/lib/utils/utils";
+import { cleanObject } from "@/lib/utils";
 import { toast } from "sonner";
+import {
+  AnimatedSection,
+  Section,
+} from "@/components/layout/sectionLayouts/sections";
+import { ColumnGrid } from "@/components/layout/sectionLayouts/grids";
 
 type AddCustomerFormProps = {
   onSubmit: (data: Customer) => void;
@@ -30,7 +34,6 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
   const [saveAndNew, setSaveAndNew] = useState(false);
 
   const handleSubmit = (data: Customer) => {
-    
     const cleanedData = cleanObject(data);
     if (Object.keys(cleanedData).length === 0) {
       toast.error("No valid data to submit");
@@ -38,7 +41,6 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
       return;
     }
 
-    console.log("Form data submitted no undefined:", cleanedData);
     onSubmit(cleanedData);
     if (saveAndNew) {
       form.reset();
@@ -46,76 +48,55 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
     setSaveAndNew(false);
   };
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-  };
-
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="max-w-4xl space-y-6"
-      >
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={fadeInUp}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input type="phone" placeholder="9876543210" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="isBulkCustomer"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-2 space-y-0">
-                <FormLabel>Is Bulk Customer</FormLabel>
-                <FormControl>
-                  <Checkbox
-                    checked={!!field.value} // Ensure it's boolean
-                    onCheckedChange={(checked) => field.onChange(!!checked)} // Coerce to boolean
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </motion.div>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <AnimatedSection title="General">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input type="phone" placeholder="9876543210" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isBulkCustomer"
+              render={({ field }) => (
+                <FormItem className="flex items-center gap-2 space-y-0">
+                  <FormLabel>Is Bulk Customer</FormLabel>
+                  <FormControl>
+                    <Checkbox
+                      checked={!!field.value} // Ensure it's boolean
+                      onCheckedChange={(checked) => field.onChange(!!checked)} // Coerce to boolean
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+        </AnimatedSection>
 
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={fadeInUp}
-          className="border p-4 rounded-md space-y-6"
-        >
-          <h4 className="font-semibold text-lg">Address</h4>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <AnimatedSection title="Address">
             <FormField
               control={form.control}
               name="address.street"
@@ -195,13 +176,9 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
                 </FormItem>
               )}
             />
-          </div>
-        </motion.div>
+        </AnimatedSection>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { delay: 0.3 } }}
-        >
+        <Section>
           <Button
             type="submit"
             disabled={form.formState.isSubmitting}
@@ -218,7 +195,7 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
           >
             {form.formState.isSubmitting ? "saving..." : "Save and New"}
           </Button>
-        </motion.div>
+        </Section>
       </form>
     </Form>
   );

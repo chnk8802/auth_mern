@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import type { Customer } from "@/features/customers/types";
 import { EditCustomerForm } from "@/features/customers/components/customerEditForm";
 import { getCustomerById, updateCustomer } from "../api/customerApi";
-import { getChangedFields } from "@/lib/utils/utils";
+import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
 import { BasePageHeader } from "@/components/headers/BasePageHeader";
 import { Button } from "@/components/ui/button";

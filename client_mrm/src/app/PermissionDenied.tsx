@@ -8,7 +8,7 @@ export const PermissionDenied = () => {
     <div className="flex flex-col items-center justify-center bg-background px-4 text-center">
       <img
         src={noPermission}
-        alt="Not Found"
+        alt="Not Permission"
         className="w-64 h-64 object-contain mb-8"
       />
 

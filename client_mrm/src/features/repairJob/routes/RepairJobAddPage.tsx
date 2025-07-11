@@ -30,7 +30,7 @@ export function RepairJobAddPage() {
 
   return (
     <div>
-      <FormHeader title="Add Customer" />
+      <FormHeader title="Add Repair Job" />
       <AddRepairJobForm onSubmit={handleAdd} />
     </div>
   );

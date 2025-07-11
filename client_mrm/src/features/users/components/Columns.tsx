@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import type { User } from "../types";
 import { DataTableActions } from "@/components/listView/DataTableActions";
-import { formatDate, formatSnakeCaseLabel } from "@/lib/utils/utils";
+import { formatDate, formatSnakeCaseLabel } from "@/lib/utils";
 
 type UserColumnsProps = {
   onEdit: (user: User) => void;
