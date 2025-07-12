@@ -27,8 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MultiSelectCombobox } from "@/components/common/MultiselectCombobox";
 import { Button } from "@/components/ui/button";
 import { DateTimePicker } from "@/components/common/DateTimePicker";
-import { Section } from "@/components/layout/sectionLayouts/sections";
-
+import { Section } from "@/components/layout/sectionLayouts/Sections";
 type AddRepairJobFormProps = {
   onSubmit: (data: RepairJob) => void;
 };

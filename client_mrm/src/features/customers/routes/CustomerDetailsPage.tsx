@@ -14,19 +14,10 @@ import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Ellipsis, SquarePen, Trash2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Section } from "@/components/layout/sectionLayouts/sections";
+import { SquarePen, Trash2 } from "lucide-react";
+import { Section } from "@/components/layout/sectionLayouts/Sections";
 import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
-import { ColumnGrid } from "@/components/layout/sectionLayouts/grids";
+import { MoreDropdown } from "@/components/detailsView/MoreDropdown";
 
 export function CustomerDetailPage() {
   const isMobile = useIsMobile();
@@ -76,36 +67,6 @@ export function CustomerDetailPage() {
       </div>
     );
 
-  function More() {
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon">
-            <Ellipsis />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>More Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem onClick={() => console.log("Duplicate")}>
-              Duplicate
-            </DropdownMenuItem>
-
-            <DropdownMenuItem onClick={() => console.log("Download PDF")}>
-              Download PDF
-            </DropdownMenuItem>
-
-            <DropdownMenuItem onClick={() => console.log("Print")}>
-              Print
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
-  }
-
   return (
     <div className="px-4">
       <DetailsPageHeader
@@ -138,38 +99,42 @@ export function CustomerDetailPage() {
             </DeleteConfirmDialog>
           </>
         }
-        more={<>{<More />}</>}
+        more={
+          <>
+            {
+              <MoreDropdown
+                onDownloadPdf={() => console.log("Download PDF")}
+                onPrint={() => console.log("Print")}
+              />
+            }
+          </>
+        }
       />
-      <Section>
-        <ColumnGrid>
-          <DetailItem label="Customer Code" value={customer.customerCode} />
-          <DetailItem label="Full Name" value={customer.fullName} />
-          <DetailItem label="Phone" value={customer.phone} />
-          <DetailItem
-            label="Is Bulk Customer"
-            value={customer.isBulkCustomer ? "Yes" : "No"}
-          />
-          <DetailItem
-            label="Address"
-            value={[
-              customer.address?.street,
-              customer.address?.city,
-              formatSnakeCaseLabel(customer.address?.state),
-              formatSnakeCaseLabel(customer.address?.country),
-              customer.address?.zip,
-            ]
-              .filter(Boolean)
-              .join(", ")}
-          />
-          <DetailItem
-            label="Created at"
-            value={formatDate(customer.createdAt)}
-          />
-          <DetailItem
-            label="Last updated"
-            value={formatDate(customer.updatedAt)}
-          />
-        </ColumnGrid>
+      <Section col={2}>
+        <DetailItem label="Customer Code" value={customer.customerCode} />
+        <DetailItem label="Full Name" value={customer.fullName} />
+        <DetailItem label="Phone" value={customer.phone} />
+        <DetailItem
+          label="Is Bulk Customer"
+          value={customer.isBulkCustomer ? "Yes" : "No"}
+        />
+        <DetailItem
+          label="Address"
+          value={[
+            customer.address?.street,
+            customer.address?.city,
+            formatSnakeCaseLabel(customer.address?.state),
+            formatSnakeCaseLabel(customer.address?.country),
+            customer.address?.zip,
+          ]
+            .filter(Boolean)
+            .join(", ")}
+        />
+        <DetailItem label="Created at" value={formatDate(customer.createdAt)} />
+        <DetailItem
+          label="Last updated"
+          value={formatDate(customer.updatedAt)}
+        />
       </Section>
     </div>
   );

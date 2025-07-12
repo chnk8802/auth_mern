@@ -11,13 +11,13 @@ export function CustomerAddPage() {
 
   const handleAdd = (customerData: Omit<Customer, "_id">) => {
     const payload = { data: [customerData] };
-    console.log(payload)
+    console.log(payload);
 
     const submitAdd = async () => {
       try {
         const result = await createCustomer(payload);
         toast.success("Customer added successfully");
-          navigate(ROUTES.CUSTOMERS.DETAILS(result.data[0]._id))
+        navigate(ROUTES.CUSTOMERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
         console.error("Unable to add customer", error);
         toast.error(`Unable to add customer ${error?.response?.data?.message}`);
@@ -28,8 +28,8 @@ export function CustomerAddPage() {
   };
 
   return (
-    <div>
-      <FormHeader title="Add Customer" />
+    <div className="m-6">
+      <FormHeader title="Add Customer" backLink={ROUTES.CUSTOMERS.LIST}/>
       <AddCustomerForm onSubmit={handleAdd} />
     </div>
   );

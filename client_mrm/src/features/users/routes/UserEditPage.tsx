@@ -1,14 +1,12 @@
 import type { User } from "@/features/users/types";
 import { EditUserForm } from "@/features/users/components/UserEditForm";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getUserById, updateUser } from "../api/userApi";
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
-import { DetailToolbar } from "@/components/headers/DetailPageToolbar";
 import { FormHeader } from "@/components/headers/FormHeader";
-import { Button } from "@/components/ui/button";
 
 export function UserEditPage() {
   const navigate = useNavigate();

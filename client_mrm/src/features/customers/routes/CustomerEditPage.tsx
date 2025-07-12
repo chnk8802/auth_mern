@@ -6,9 +6,7 @@ import { EditCustomerForm } from "@/features/customers/components/customerEditFo
 import { getCustomerById, updateCustomer } from "../api/customerApi";
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
-import { BasePageHeader } from "@/components/headers/BasePageHeader";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { FormHeader } from "@/components/headers/FormHeader";
 
 export function CustomerEditPage() {
   const navigate = useNavigate();
@@ -51,8 +49,15 @@ export function CustomerEditPage() {
         toast.success("Customer details updated");
         navigate(ROUTES.CUSTOMERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
-        console.error("Update failed:", error.response?.data?.message || error.message);
-        toast.error(`Unable to update customer: ${error.response?.data?.message || "Unknown error"}`);
+        console.error(
+          "Update failed:",
+          error.response?.data?.message || error.message
+        );
+        toast.error(
+          `Unable to update customer: ${
+            error.response?.data?.message || "Unknown error"
+          }`
+        );
       }
     };
 
@@ -64,8 +69,11 @@ export function CustomerEditPage() {
     return <div className="p-2 text-center">Customer not found</div>;
 
   return (
-    <div>
-      
+    <div className="">
+      <FormHeader
+        title="Add Customer"
+        backLink={`/dashboard/customers/${customerId}`}
+      />
       <EditCustomerForm customer={customer} onSubmit={handleEdit} />
     </div>
   );

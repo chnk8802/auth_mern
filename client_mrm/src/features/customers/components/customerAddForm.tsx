@@ -19,11 +19,7 @@ import { countries } from "@/constants/countries";
 import { useState } from "react";
 import { cleanObject } from "@/lib/utils";
 import { toast } from "sonner";
-import {
-  AnimatedSection,
-  Section,
-} from "@/components/layout/sectionLayouts/sections";
-import { ColumnGrid } from "@/components/layout/sectionLayouts/grids";
+import { Section } from "@/components/layout/sectionLayouts/Sections";
 
 type AddCustomerFormProps = {
   onSubmit: (data: Customer) => void;
@@ -51,134 +47,134 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <AnimatedSection title="General">
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input type="phone" placeholder="9876543210" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isBulkCustomer"
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-2 space-y-0">
-                  <FormLabel>Is Bulk Customer</FormLabel>
-                  <FormControl>
-                    <Checkbox
-                      checked={!!field.value} // Ensure it's boolean
-                      onCheckedChange={(checked) => field.onChange(!!checked)} // Coerce to boolean
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-        </AnimatedSection>
+        <Section title="General">
+          <FormField
+            control={form.control}
+            name="fullName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="John Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone</FormLabel>
+                <FormControl>
+                  <Input type="phone" placeholder="9876543210" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isBulkCustomer"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2 space-y-0">
+                <FormLabel>Is Bulk Customer</FormLabel>
+                <FormControl>
+                  <Checkbox
+                    checked={!!field.value} // Ensure it's boolean
+                    onCheckedChange={(checked) => field.onChange(!!checked)} // Coerce to boolean
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Section>
 
-        <AnimatedSection title="Address">
-            <FormField
-              control={form.control}
-              name="address.street"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Street</FormLabel>
-                  <FormControl>
-                    <Input placeholder="123 Main St" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <Section title="Address">
+          <FormField
+            control={form.control}
+            name="address.street"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Street</FormLabel>
+                <FormControl>
+                  <Input placeholder="123 Main St" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="address.city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input placeholder="City" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="address.city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="City" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="address.state"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>State</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={indianStates}
-                      placeholder="Select state"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="address.state"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>State</FormLabel>
+                <FormControl>
+                  <Combobox
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={indianStates}
+                    placeholder="Select state"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="address.country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Country</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={countries}
-                      placeholder="Select Country"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="address.country"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Country</FormLabel>
+                <FormControl>
+                  <Combobox
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={countries}
+                    placeholder="Select Country"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="address.zip"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ZIP</FormLabel>
-                  <FormControl>
-                    <Input placeholder="123456" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-        </AnimatedSection>
+          <FormField
+            control={form.control}
+            name="address.zip"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ZIP</FormLabel>
+                <FormControl>
+                  <Input placeholder="123456" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Section>
 
-        <Section>
+        <div>
           <Button
             type="submit"
             disabled={form.formState.isSubmitting}
@@ -195,7 +191,7 @@ export function AddCustomerForm({ onSubmit }: AddCustomerFormProps) {
           >
             {form.formState.isSubmitting ? "saving..." : "Save and New"}
           </Button>
-        </Section>
+        </div>
       </form>
     </Form>
   );
