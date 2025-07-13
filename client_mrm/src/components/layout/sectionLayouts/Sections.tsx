@@ -13,8 +13,7 @@ export function Section({
   children: ReactNode;
 }) {
   return (
-    // <section className="rounded-xl border bg-muted/40 p-4 sm:p-6 mb-4">
-    <section className="rounded-xl border p-4 sm:p-6 mb-4">
+    <section className="rounded-xl border bg-muted/40 p-4 sm:p-6 mb-4">
       <h3 className="text-lg font-semibold mb-4 text-muted-foreground">
         {title}
       </h3>
@@ -25,10 +24,9 @@ export function Section({
 
 type FormSectionProps = {
   title?: string;
-  description?: string;
+  col?: number;
   children: React.ReactNode;
   disableAnimation?: boolean;
-  className?: string;
 };
 
 const fadeInUp = {
@@ -39,8 +37,8 @@ const fadeInUp = {
 export function AnimatedSection({
   title,
   children,
+  col,
   disableAnimation = false,
-  className = "",
 }: FormSectionProps) {
   const Container = disableAnimation ? "div" : motion.div;
 
@@ -57,9 +55,9 @@ export function AnimatedSection({
           animate: "show",
           variants: fadeInUp,
         })}
-        className={cn("space-y-4", className)}
+        className={cn("space-y-4")}
       >
-        {children}
+        <ColumnGrid col={col}>{children}</ColumnGrid>
       </Container>
     </section>
   );

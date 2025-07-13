@@ -26,7 +26,6 @@ export function CustomerAddPage() {
 
     submitAdd();
   };
-
   return (
     <div className="m-6">
       <FormHeader title="Add Customer" backLink={ROUTES.CUSTOMERS.LIST}/>

@@ -27,7 +27,8 @@ import { UserDetailPage } from "@/features/users/routes/UserDetailsPage";
 import { UserEditPage } from "@/features/users/routes/UserEditPage";
 // Customer
 import { CustomersPage } from "@/features/customers/routes/CustomerListPage";
-import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
+// import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
+import { CustomerAddPage } from "@/features/customers/components/form/CustomerAddPage2";
 import { CustomerDetailPage } from "@/features/customers/routes/CustomerDetailsPage";
 import { CustomerEditPage } from "@/features/customers/routes/CustomerEditPage";
 // Others
@@ -37,6 +38,8 @@ import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
 import { PermissionDenied } from "@/app/PermissionDenied";
 import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetailsPage";
 import { RepairJobAddPage } from "@/features/repairJob/routes/RepairJobAddPage";
+// Form Generator
+import {FormGeneratorPage} from "@/lib/form-generator/demo/FormGeneratorPage"
 
 export const router = createBrowserRouter([
   {
@@ -238,6 +241,13 @@ export const router = createBrowserRouter([
         element: <PaymentsPage />,
         handle: {
           breadcrumb: () => "Payments",
+        },
+      },
+      {
+        path: "form-generator",
+        element: <FormGeneratorPage />,
+        handle: {
+          breadcrumb: () => "Form Generator",
         },
       },
     ],

@@ -61,7 +61,7 @@ export function MainLayout() {
           </div>
           <div className="gap-2 p-6"><ModeToggle/></div>
         </header>
-        <div className="flex flex-1 flex-col px-2 pt-0">
+        <div className="flex flex-1 flex-col px-4 sm:px-6 pt-0">
           <Outlet />
         </div>
       </SidebarInset>

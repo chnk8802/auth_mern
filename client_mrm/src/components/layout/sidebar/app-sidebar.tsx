@@ -51,6 +51,10 @@ const data = {
       isActive: true,
       items: [
         {
+          title: "Form Generator",
+          url: "/dashboard/form-generator",
+        },
+        {
           title: "Repair Jobs",
           url: "/dashboard/repairjobs",
         },
