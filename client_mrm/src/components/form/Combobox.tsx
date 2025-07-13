@@ -20,17 +20,21 @@ import {
 } from "@/components/ui/popover";
 
 type ComboboxProps = {
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   options: { label: string; value: string }[];
   placeholder?: string;
+  disabled?: boolean;
 };
 
 export function Combobox({
+  id,
   value,
   onChange,
   options,
   placeholder = "Select",
+  disabled,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -40,9 +44,11 @@ export function Combobox({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+        id={id}
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          disabled={disabled}
           className="w-auto min-w-[200px] px-4 justify-between"
         >
           {selectedOption?.label ?? placeholder}

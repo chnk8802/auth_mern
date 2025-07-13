@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { DeleteConfirmDialog } from "@/components/form/DeleteConfirmDialog";
 
 interface DetailToolbarProps {
   title: string;

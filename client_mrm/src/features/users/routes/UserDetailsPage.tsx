@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { SquarePen, Trash2 } from "lucide-react";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { DeleteConfirmDialog } from "@/components/form/DeleteConfirmDialog";
 import { Section } from "@/components/layout/sectionLayouts/Sections";
 import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
 import { MoreDropdown } from "@/components/detailsView/MoreDropdown";

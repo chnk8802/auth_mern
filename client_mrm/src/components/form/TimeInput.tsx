@@ -12,7 +12,7 @@ type TimeInputProps = {
 
 export function TimeInput({
   id,
-  placeholder = "00:00:00",
+  placeholder,
   value,
   onChange,
   disabled,
@@ -26,7 +26,7 @@ export function TimeInput({
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
-      className="w-48 bg-background appearance-none"
+      className="bg-background appearance-none"
     />
   );
 }

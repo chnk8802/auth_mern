@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { User } from "../types";
 import { motion } from "framer-motion";
-import { Combobox } from "@/components/common/Combobox";
+import { Combobox } from "@/components/form/Combobox";
 import { roles } from "@/constants/roles";
 import { indianStates } from "@/constants/indianStates";
 import { countries } from "@/constants/countries";

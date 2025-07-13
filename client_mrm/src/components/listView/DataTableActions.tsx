@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { DeleteConfirmDialog } from "@/components/form/DeleteConfirmDialog";
 
 type DataTableActionsProps<T> = {
   data: any;

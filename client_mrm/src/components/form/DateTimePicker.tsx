@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { TimeInput } from "./TimeInput";
+import { TimeInput } from "../form/TimeInput";
 
 type DateTimePickerProps = {
   value: Date | undefined;

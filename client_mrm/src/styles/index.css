@@ -127,33 +127,48 @@ body {
   font-family: "Lato", sans-serif;
 }
 
-/* Custom global scrollbar */
-* {
+/* LIGHT MODE (default) */
+.light * {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent; /* thumb, track */
+  scrollbar-color: #d4d4d8 transparent; /* neutral-300 */
 }
 
-/* Webkit (Chrome, Safari, Edge) */
-*::-webkit-scrollbar {
+.light *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-*::-webkit-scrollbar-track {
+.light *::-webkit-scrollbar-track {
   background: transparent;
 }
 
-*::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
+.light *::-webkit-scrollbar-thumb {
+  background-color: #d4d4d8; /* neutral-300 */
   border-radius: 9999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
-*::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8; /* Tailwind slate-400 */
+.light *::-webkit-scrollbar-thumb:hover {
+  background-color: #a3a3a3; /* neutral-400 */
 }
 
+/* DARK MODE */
+.dark * {
+  scrollbar-width: thin;
+  scrollbar-color: #52525b transparent; /* neutral-600 */
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background-color: #52525b; /* neutral-600 */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #737373; /* neutral-500 */
+}
 
 /* Hide scrollbar but allow scrolling */
 .scrollbar-none {

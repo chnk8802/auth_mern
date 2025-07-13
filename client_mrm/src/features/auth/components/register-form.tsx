@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
-import { Combobox } from "@/components/common/Combobox";
+import { Combobox } from "@/components/form/Combobox";
 import { registerUser } from "../api/authApi";
 import { toast } from "sonner";
 

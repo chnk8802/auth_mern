@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Customer } from "../types";
-import { Combobox } from "@/components/common/Combobox";
+import { Combobox } from "@/components/form/Combobox";
 import { indianStates } from "@/constants/indianStates";
 import { countries } from "@/constants/countries";
 import { Section } from "@/components/layout/sectionLayouts/Sections";

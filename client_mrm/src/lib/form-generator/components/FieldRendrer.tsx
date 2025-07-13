@@ -3,12 +3,18 @@ import { type FormField } from "@/lib/form-generator/types/field-types";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Combobox } from "@/components/common/Combobox";
-import { MultiSelectCombobox } from "@/components/common/MultiselectCombobox";
+import { Combobox } from "@/components/form/Combobox";
+import { MultiSelectCombobox } from "@/components/form/MultiselectCombobox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { DateTimePicker } from "@/components/common/DateTimePicker";
-import { DateInput } from "@/components/common/DateInput";
-import { TimeInput } from "@/components/common/TimeInput";
+import { DateTimePicker } from "@/components/form/DateTimePicker";
+import { DateInput } from "@/components/form/DateInput";
+import { TimeInput } from "@/components/form/TimeInput";
+import { LookupInput } from "@/components/common/LookupInput";
+import { Checkbox } from "@/components/ui/checkbox";
+import { AddressInput } from "@/components/form/AddressInput";
+import { SignatureInput } from "@/components/form/SignatureInput";
+import { LocationInput } from "@/components/form/LocationInput";
+import { SubformInput } from "@/components/form/SubFormInput";
 
 interface FieldRendererProps {
   field: FormField;
@@ -116,7 +122,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           <TimeInput
             id={field.id}
             label={field.label}
-            placeholder={field.placeholder}
+            placeholder={field?.placeholder || "00:00:00"}
             value={value}
             onChange={onChange}
             disabled={disabled}
@@ -130,6 +136,119 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             onChange={(val) => onChange(val?.toISOString() ?? "")}
           />
         );
+
+      case "checkbox":
+        if (field.options && field.options.length > 0) {
+          return (
+            <div className="space-y-2">
+              {field.options.map((opt) => (
+                <div key={opt.value} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`${field.id}-${opt.value}`}
+                    checked={
+                      Array.isArray(value) ? value.includes(opt.value) : false
+                    }
+                    onCheckedChange={(checked) => {
+                      const updated = checked
+                        ? [...(value ?? []), opt.value]
+                        : (value ?? []).filter((v: any) => v !== opt.value);
+                      onChange(updated);
+                    }}
+                    disabled={disabled}
+                  />
+                  <label
+                    htmlFor={`${field.id}-${opt.value}`}
+                    className="text-sm"
+                  >
+                    {opt.label}
+                  </label>
+                </div>
+              ))}
+            </div>
+          );
+        }
+
+        return (
+          <Checkbox
+            checked={!!value}
+            onCheckedChange={(checked) => onChange(checked)}
+            disabled={disabled}
+          />
+        );
+
+      case "address":
+        return (
+          <AddressInput
+            field={field}
+            value={value ?? {}}
+            onChange={onChange}
+            disabled={disabled}
+          />
+        );
+
+      case "file":
+        return (
+          <Input
+            id={field.id}
+            type="file"
+            onChange={(e) =>
+              onChange(e.target.files ? Array.from(e.target.files) : null)
+            }
+            disabled={disabled}
+          />
+        );
+
+      case "signature":
+        return (
+          <SignatureInput
+            id={field.id}
+            label={field.label}
+            value={value}
+            onChange={onChange}
+            disabled={disabled}
+          />
+        );
+
+      case "map":
+        return (
+          <LocationInput
+            id={field.id}
+            label={field.label}
+            value={value}
+            address={field.address}
+            onChange={(val) => onChange(val)}
+            disabled={disabled}
+          />
+        );
+      case "subform":
+        return (
+          <SubformInput
+            id={field.id}
+            label={field.label}
+            fields={field.fields}
+            value={value ?? []}
+            onChange={onChange}
+            minRows={field.minRows}
+            maxRows={field.maxRows}
+            disabled={disabled}
+          />
+        );
+
+      // case "lookup":
+      //   const options = [
+      //     { value: "1", label: "Apple" },
+      //     { value: "2", label: "Banana" },
+      //     { value: "3", label: "Cherry" },
+      //   ];
+      //   return (
+      //     <LookupInput
+      //       value={value}
+      //       onChange={onChange}
+      //       options={options}
+      //       placeholder={field.placeholder}
+      //       disabled={disabled}
+      //     />
+      //   );
 
       default:
         return <div>Unsupported field type: {field.type}</div>;

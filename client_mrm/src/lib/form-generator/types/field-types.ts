@@ -88,7 +88,7 @@ export interface RadioField extends BaseField {
 
 export interface CheckboxField extends BaseField {
   type: "checkbox";
-  options?: { label: string; value: string | number }[]; // optional for multi-checkbox
+  options?: { label: string; value: string }[]; // optional for multi-checkbox
 }
 
 export interface EmailField extends BaseField {
@@ -126,7 +126,7 @@ export interface FileField extends BaseField {
 
 export interface SubformField extends BaseField {
   type: "subform";
-  fields: BaseField[];  
+  fields: FormField[];  
   minRows?: number;
   maxRows?: number;
 }
@@ -137,6 +137,7 @@ export interface SignatureField extends BaseField {
 
 export interface MapField extends BaseField {
   type: "map";
+  address?: string;
   showCoordinates?: boolean;
 }
 

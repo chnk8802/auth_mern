@@ -12,7 +12,7 @@ import {
 import { formatCurrency, formatDate, parseDecimal } from "@/lib/utils";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
-import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { DeleteConfirmDialog } from "@/components/form/DeleteConfirmDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SquarePen, Trash2 } from "lucide-react";
 import { PaymentStatusBadge } from "@/components/common/PaymentStatusBadge";
