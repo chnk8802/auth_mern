@@ -67,12 +67,12 @@ export interface DateTimeField extends BaseField {
 
 export interface SelectField extends BaseField {
   type: "select";
-  options: { label: string; value: string | number }[];
+  options: { label: string; value: string }[];
 }
 
 export interface MultiSelectField extends BaseField {
   type: "multiselect";
-  options: { label: string; value: string | number }[];
+  options: { label: string; value: string }[];
 }
 
 export interface LookupField extends BaseField {
@@ -83,7 +83,7 @@ export interface LookupField extends BaseField {
 
 export interface RadioField extends BaseField {
   type: "radio";
-  options: { label: string; value: string | number }[];
+  options: { label: string; value: string }[];
 }
 
 export interface CheckboxField extends BaseField {

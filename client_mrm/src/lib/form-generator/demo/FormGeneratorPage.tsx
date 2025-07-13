@@ -1,15 +1,18 @@
-import React, { useState } from "react";
-import TestForm from "./TestForm";
+import { useState } from "react";
+import { TestForm } from "@/lib/form-generator/demo/TestForm";
+import { testFields } from "@/lib/form-generator/demo/testFields";
 
-export const FormGeneratorPage: React.FC = () => {
-  const [formData, setFormData] = useState<Record<string, any>>({});
+export const FormGeneratorPage = () => {
+  const [formData, setFormData] = useState({});
 
-  return (
-    <div className="mx-auto p-4 space-y-8">
-      <div className="rounded-lg border p-4">
-        <h2 className="text-xl font-bold mb-4">🧪 Test Form</h2>
-        <TestForm/>
-      </div>
-    </div>
-  );
+  const handleChange = (fieldId: string, value: any) => {
+    const updated = {
+      ...formData,
+      [fieldId]: value,
+    };
+    console.log(updated);
+    setFormData(updated);
+  };
+
+  return <TestForm fields={testFields} formData={formData} onChange={handleChange} />;
 };

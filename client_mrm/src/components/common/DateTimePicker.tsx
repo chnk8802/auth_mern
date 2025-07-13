@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronDownIcon } from "lucide-react"
+import * as React from "react";
+import { ChevronDownIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import { TimeInput } from "./TimeInput";
 
 type DateTimePickerProps = {
   value: Date | undefined;
@@ -73,12 +73,13 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
         </PopoverContent>
       </Popover>
 
-      <Input
-        type="time"
-        step="1"
+      <TimeInput
         value={time}
-        onChange={handleTimeChange}
-        className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+        onChange={(val) =>
+          handleTimeChange({
+            target: { value: val },
+          } as React.ChangeEvent<HTMLInputElement>)
+        }
       />
     </div>
   );
