@@ -1,10 +1,11 @@
-  import { useState } from "react";
-  import { customerFields} from "@/features/customers/components/form/customerFields"
-  import { customerWorkflow } from "../../workflows/workflow";
-  import { FormBuilder } from "@/lib/form-generator/components/FormBuilder";
-  import type { AuthUser } from "@/features/auth/types";
+import { useState } from "react";
+import { customerFields } from "@/features/customers/components/form/customerFields";
+import { customerWorkflow } from "../../workflows/workflow";
+import { FormBuilder } from "@/lib/form-generator/components/FormBuilder";
+import type { AuthUser } from "@/features/auth/types";
+import { ROUTES } from "@/constants/routes";
 
- export interface CustomerFormProps {
+export interface CustomerFormProps {
   currentUser: AuthUser;
 }
 
@@ -17,6 +18,8 @@ export const CustomerForm = ({ currentUser }: CustomerFormProps) => {
 
   return (
     <FormBuilder
+      mode="create"
+      backLink={ROUTES.CUSTOMERS.LIST}
       fields={customerFields}
       formData={formData}
       onChange={handleChange}
@@ -25,4 +28,3 @@ export const CustomerForm = ({ currentUser }: CustomerFormProps) => {
     />
   );
 };
-
