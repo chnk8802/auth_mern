@@ -16,8 +16,10 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function NavMain({
   items,
@@ -33,6 +35,8 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const isMobile = useIsMobile();
+  const {toggleSidebar} = useSidebar();
   return (
     <SidebarGroup>
       {/* <SidebarGroupLabel>Modules</SidebarGroupLabel> */}
@@ -56,7 +60,7 @@ export function NavMain({
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
+                      <SidebarMenuSubButton asChild onClick={() => isMobile ?? toggleSidebar()}>
                         <Link to={subItem.url}>
                           <span>{subItem.title}</span>
                         </Link>

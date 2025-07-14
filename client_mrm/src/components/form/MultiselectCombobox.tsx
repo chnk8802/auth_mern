@@ -69,7 +69,7 @@ export function MultiSelectCombobox({
       </div>
 
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger>
+        <PopoverTrigger asChild>
           <Button
             role="combobox"
             aria-expanded={open}

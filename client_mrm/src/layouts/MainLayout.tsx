@@ -47,8 +47,14 @@ export function MainLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="flex flex-col sm:w-264">
-        <header className="flex h-14 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+      <SidebarInset className="relative flex flex-col sm:w-264">
+        <header
+          className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 
+               transition-[width,height] ease-linear
+               group-has-data-[collapsible=icon]/sidebar-wrapper:h-12
+               bg-background border-b px-4"
+        >
+          {/* <header className="flex h-14 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"> */}
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
@@ -59,9 +65,11 @@ export function MainLayout() {
               <BreadcrumbList>{breadcrumbs}</BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="gap-2 p-6"><ModeToggle/></div>
+          <div className="gap-2 p-6">
+            <ModeToggle />
+          </div>
         </header>
-        <div className="flex flex-1 flex-col px-4 sm:px-6 pt-0">
+        <div className="flex flex-1 flex-col p-2">
           <Outlet />
         </div>
       </SidebarInset>

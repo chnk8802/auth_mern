@@ -25,7 +25,7 @@ export function DateInput({ id, label, placeholder = "Select date", value, onCha
           <Button
             variant="outline"
             id={id}
-            className="w-48 justify-between font-normal"
+            className="sm:w-64 sm:min-w-64 w-full justify-between font-normal"
           >
             {value ? value.toLocaleDateString() : placeholder}
             <ChevronDownIcon />

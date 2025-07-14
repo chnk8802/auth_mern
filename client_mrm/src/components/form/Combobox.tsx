@@ -44,12 +44,12 @@ export function Combobox({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-        id={id}
+          id={id}
           variant="outline"
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className="w-auto min-w-[200px] px-4 justify-between"
+          className="sm:w-64 sm:min-w-64 w-full px-4 justify-between"
         >
           {selectedOption?.label ?? placeholder}
         </Button>

@@ -37,6 +37,26 @@ export function LocationInput({
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Set user’s current location if no value or address provided
+  useEffect(() => {
+    if (value || address) return; // Don’t override if already set
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          const userLocation = { lat: latitude, lng: longitude };
+          setPosition(userLocation);
+          onChange(userLocation);
+        },
+        (error) => {
+          console.warn("Geolocation error:", error);
+          // Optional: keep fallback to default Bangalore location
+        }
+      );
+    }
+  }, [value, address, onChange]);
+
   // Check for dark mode on mount and when theme changes
   useEffect(() => {
     const check = () =>
@@ -102,9 +122,8 @@ export function LocationInput({
       zoom={13}
       scrollWheelZoom={true}
       style={{
-        height: "400px",
+        height: "200px",
         width: "100%",
-        borderRadius: "0.5rem",
         opacity: disabled ? 0.6 : 1,
         pointerEvents: disabled ? "none" : "auto",
       }}

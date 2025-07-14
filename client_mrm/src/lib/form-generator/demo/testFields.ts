@@ -18,6 +18,7 @@ export const testFields: FormField[] = [
   {
     id: "age",
     label: "Age",
+    placeholder: "Age",
     type: "number",
     min: 0,
     max: 120,
@@ -129,11 +130,13 @@ export const testFields: FormField[] = [
         id: "company",
         label: "Company",
         type: "text",
+        placeholder: "Company",
         section: "4",
         col: 4,
       },
       {
         id: "designation",
+        placeholder: "Designation",
         label: "Designation",
         type: "text",
         section: "4",
@@ -142,6 +145,7 @@ export const testFields: FormField[] = [
       {
         id: "department",
         label: "Department",
+        placeholder: "Department",
         type: "text",
         section: "4",
         col: 4,
@@ -149,6 +153,7 @@ export const testFields: FormField[] = [
       {
         id: "location",
         label: "Location",
+        placeholder: "Location",
         type: "text",
         section: "4",
         col: 4,
@@ -177,6 +182,7 @@ export const testFields: FormField[] = [
       {
         id: "years",
         label: "Total Years",
+        placeholder: "Total Years",
         type: "number",
         min: 0,
         max: 50,
@@ -211,7 +217,6 @@ export const testFields: FormField[] = [
       },
     ],
   },
-
   {
     id: "address",
     label: "Address",
@@ -239,10 +244,9 @@ export const testFields: FormField[] = [
       },
       postalCode: { id: "postal_code", label: "Postal Code", type: "text" },
     },
-    section: "Address",
-    col: 1,
+    // section: "Address",
+    // col: 1,
   },
-
   {
     id: "signature",
     label: "Signature",
@@ -252,7 +256,6 @@ export const testFields: FormField[] = [
     id: "location",
     label: "Your Location",
     type: "map",
-    address: "taj Mahal",
     showCoordinates: true,
   },
 ];

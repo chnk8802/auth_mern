@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 
 import authRoutes from "./src/routes/authRoutes.js";
+import lookupRoutes from "./src/routes/lookupRoutes.js"
 import userRoutes from "./src/routes/userRoutes.js";
 import customerRoutes from "./src/routes/customerRoutes.js";
 import technicianRoutes from "./src/routes/technicianRoutes.js";
@@ -46,6 +47,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Define Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/lookups", lookupRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/technicians", technicianRoutes);

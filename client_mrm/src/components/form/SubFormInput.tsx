@@ -47,8 +47,7 @@ export function SubformInput({
 
   return (
     <div className="space-y-2">
-      {label && <Label htmlFor={id}>{label}</Label>}
-
+      {/* {label && <Label htmlFor={id}>{label}</Label>} */}
       <div className="space-y-4">
         {value.map((row, rowIndex) => (
           <div

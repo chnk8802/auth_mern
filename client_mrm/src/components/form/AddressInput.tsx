@@ -22,36 +22,41 @@ export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
   const { components = {} } = field;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 pt-2">
       {components.street && (
-        <div>
-          {/* <Label htmlFor={components.street.id}>{components.street.label}</Label> */}
+        // <div className="sm:flex sm:justify-between">
+          <div>
+          <Label className="pb-4 sm:pb-2" htmlFor={components.street.id}>{components.street.label}</Label>
           <Input
             id={components.street.id}
             value={value.street ?? ""}
             placeholder={components.street.placeholder || "Enter Street"}
             onChange={(e) => handleChange("street", e.target.value)}
             disabled={disabled}
+            className="sm:w-64"
           />
         </div>
       )}
 
       {components.city && (
+        // <div className="sm:flex sm:justify-between">
         <div>
-          {/* <Label htmlFor={components.city.id}>{components.city.label}</Label> */}
+          <Label className="pb-4 sm:pb-2" htmlFor={components.city.id}>{components.city.label}</Label>
           <Input
             id={components.city.id}
             value={value.city ?? ""}
             placeholder={components.city.placeholder || "Enter City"}
             onChange={(e) => handleChange("city", e.target.value)}
             disabled={disabled}
+            className="sm:w-64"
           />
         </div>
       )}
 
       {components.state && (
+        // <div className="sm:flex sm:justify-between">
         <div>
-          {/* <Label htmlFor={components.state.id}>{components.state.label}</Label> */}
+          <Label className="pb-4 sm:pb-2" htmlFor={components.state.id}>{components.state.label}</Label>
           <Combobox
             id={components.state.id}
             options={indianStates || components.state.options || "Select State"}
@@ -64,8 +69,9 @@ export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
       )}
 
       {components.country && (
+        // <div className="sm:flex sm:justify-between">
         <div>
-          {/* <Label htmlFor={components.country.id}>{components.country.label}</Label> */}
+          <Label className="pb-4 sm:pb-2" htmlFor={components.country.id}>{components.country.label}</Label>
           <Combobox
             id={components.country.id}
             options={ countries || components.country.options  || "Select Country"}
@@ -78,14 +84,16 @@ export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
       )}
 
       {components.postalCode && (
+        // <div className="sm:flex sm:justify-between">
         <div>
-          {/* <Label htmlFor={components.postalCode.id}>{components.postalCode.label}</Label> */}
+          <Label className="pb-4 sm:pb-2" htmlFor={components.postalCode.id}>{components.postalCode.label}</Label>
           <Input
             id={components.postalCode.id}
             value={value.postalCode ?? ""}
             placeholder={components.postalCode.placeholder || "Enter Postal Code"}
             onChange={(e) => handleChange("postalCode", e.target.value)}
             disabled={disabled}
+            className="sm:w-64"
           />
         </div>
       )}

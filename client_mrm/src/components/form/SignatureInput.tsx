@@ -3,7 +3,6 @@
 import { useRef, useEffect } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import clsx from "clsx";
 
 type Props = {

@@ -9,12 +9,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateTimePicker } from "@/components/form/DateTimePicker";
 import { DateInput } from "@/components/form/DateInput";
 import { TimeInput } from "@/components/form/TimeInput";
-import { LookupInput } from "@/components/common/LookupInput";
+import { LookupInput } from "@/components/form/LookupInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AddressInput } from "@/components/form/AddressInput";
 import { SignatureInput } from "@/components/form/SignatureInput";
 import { LocationInput } from "@/components/form/LocationInput";
 import { SubformInput } from "@/components/form/SubFormInput";
+import clsx from "clsx";
 
 interface FieldRendererProps {
   field: FormField;
@@ -234,30 +235,24 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           />
         );
 
-      // case "lookup":
-      //   const options = [
-      //     { value: "1", label: "Apple" },
-      //     { value: "2", label: "Banana" },
-      //     { value: "3", label: "Cherry" },
-      //   ];
-      //   return (
-      //     <LookupInput
-      //       value={value}
-      //       onChange={onChange}
-      //       options={options}
-      //       placeholder={field.placeholder}
-      //       disabled={disabled}
-      //     />
-      //   );
+      case "lookup":
+        return (
+          <LookupInput field={field} value={value || ""} onChange={onChange} />
+        );
 
       default:
-        return <div>Unsupported field type: {field.type}</div>;
+        return <div>Unsupported field type: {(field as any).type}</div>;
     }
   };
 
+  const cssClass = clsx("space-y-1", {
+    "sm:w-64": field.type !== "subform",
+  });
   return (
-    <div className="space-y-1">
-      <Label htmlFor={field.id}>{field.label}</Label>
+    <div className={cssClass}>
+      <Label className="font-semibold pb-1" htmlFor={field.id}>
+        {field.label}
+      </Label>
       {renderInput()}
       {field.helpText && (
         <p className="text-xs text-muted-foreground">{field.helpText}</p>
