@@ -40,6 +40,9 @@ export const STATES = [
 ];
 export const COUNTRIES = ["india"];
 
+// Customer
+export const CUSTOMER_TYPES = ["individual", "business", "bulk"];
+ 
 // Repair Job
 export const REPAIR_STATUS = ["pending", "in-progress", "incomplete", "complete", "picked"];
 export const REPAIR_TYPE = ["Hardware", "Software", "Both"];

@@ -14,15 +14,17 @@ import { FormHeader } from "@/components/headers/FormHeader";
 import { LiveFormData } from "@/components/debugging/LiveFormData";
 
 interface FormBuilderProps {
+  title?: string;
+  backLink: string;
   mode: "create" | "edit";
   fields: FormField[];
   formData: Record<string, any>;
   workflow?: WorkflowFn;
   context?: Record<string, any>;
   onChange: (fieldId: string, value: any) => void;
-  onSubmit?: () => void;
-  onReset?: () => void;
-  backLink: string;
+  onSubmit: () => void;
+  onReset: () => void;
+  isSubmitting?: boolean;
 }
 
 export const FormBuilder: React.FC<FormBuilderProps> = ({
@@ -34,21 +36,15 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   onChange,
   onSubmit,
   onReset,
+  isSubmitting,
+  title,
   backLink,
 }) => {
   const fieldStates = runWorkflow(fields, formData, workflow, context);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [showLiveData, setShowLiveData] = React.useState(true);
 
-  const handleSubmit = () => {
-    setIsSubmitting(true);
-    onSubmit?.();
-    setTimeout(() => setIsSubmitting(false), 300); // Simulate delay
-  };
+  
 
-  const handleReset = () => {
-    onReset?.();
-  };
   const grouped = fields.reduce<Record<string, FormField[]>>((acc, field) => {
     const section = field.section || "";
     if (!acc[section]) acc[section] = [];
@@ -98,18 +94,18 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
       <form>
         <div className="pb-4">
           <FormHeader
-            title="Form Generator"
+            title={title || ""}
             backLink={backLink}
             actions={
               <FormActionButtons
                 mode={mode}
-                isSubmitting={isSubmitting}
-                onSave={handleSubmit}
+                isSubmitting={isSubmitting || false}
+                onSave={onSubmit}
                 onSaveAndNew={() => {
-                  handleSubmit();
-                  handleReset();
+                  onSubmit();
+                  onReset();
                 }}
-                onReset={handleReset}
+                onReset={onReset}
                 showLiveData={showLiveData}
                 onToggleLiveData={() => setShowLiveData((prev) => !prev)}
               />

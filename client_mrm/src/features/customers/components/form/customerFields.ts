@@ -1,3 +1,4 @@
+import { CustomerTypes } from "@/constants/customerTypes";
 import { type FormField } from "@/lib/form-generator/types/field-types";
 
 export const customerFields: FormField[] = [
@@ -5,10 +6,8 @@ export const customerFields: FormField[] = [
     id: "customerType",
     label: "Customer Type",
     type: "select",
-    options: [
-      { label: "Individual", value: "individual" },
-      { label: "Business", value: "business" },
-    ],
+    options: CustomerTypes,
+    defaultValue : "individual",
     required: true,
     placeholder: "Select customer type",
     section: "General",

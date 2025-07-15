@@ -52,8 +52,9 @@ export function SubformInput({
         {value.map((row, rowIndex) => (
           <div
             key={rowIndex}
-            className="border rounded-md p-4 bg-muted/10 relative overflow-x-auto"
+            className="flex items-end gap-2 border rounded-md p-4 bg-muted/10 relative overflow-x-auto scrollbar-thin"
           >
+            
             <div className="flex gap-4 min-w-fit">
               {fields.map((field) => (
                 <div key={field.id} className="min-w-[200px]">
@@ -66,19 +67,18 @@ export function SubformInput({
                 </div>
               ))}
             </div>
-
             {!disabled && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute top-2 right-2"
-                onClick={() => removeRow(rowIndex)}
-                disabled={value.length <= minRows}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            )}
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => removeRow(rowIndex)}
+                  disabled={value.length <= minRows}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
+              
           </div>
         ))}
       </div>

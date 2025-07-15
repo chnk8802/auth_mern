@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
-import { COUNTRIES, STATES } from "../constants/enums.js";
+import { COUNTRIES, CUSTOMER_TYPES, STATES } from "../constants/enums.js";
 
 const customerSchema = mongoose.Schema(
   {
@@ -9,6 +9,12 @@ const customerSchema = mongoose.Schema(
       trim: true,
       unique: true,
       immutable: true,
+    },
+    customerType: {
+      type: String,
+      enum: [...CUSTOMER_TYPES],
+      default: "individual",
+      required: true,
     },
     fullName: {
       type: String,

@@ -28,7 +28,7 @@ export function CustomerAddPage() {
   };
   return (
     <div className="m-6">
-      <FormHeader title="Add Customer" backLink={ROUTES.CUSTOMERS.LIST}/>
+      <FormHeader title="Add Customer" backLink={ROUTES.CUSTOMERS.LIST} actions={<></>}/>
       <AddCustomerForm onSubmit={handleAdd} />
     </div>
   );
