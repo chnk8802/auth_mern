@@ -25,7 +25,7 @@ interface FormBuilderProps {
 
   onChange: (fieldId: string, value: any) => void;
   onSubmit: () => void;
-  onReset: () => void;
+  onReset?: () => void;
   isSubmitting?: boolean;
 }
 
@@ -105,7 +105,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                 onSave={onSubmit}
                 onSaveAndNew={() => {
                   onSubmit();
-                  onReset();
+                  onReset?.();
                 }}
                 onReset={onReset}
                 showLiveData={showLiveData}

@@ -17,7 +17,7 @@ export function ColumnGenerator<T>({
   onEdit,
   onDelete,
   copyField,
-}: ColumnGeneratorParams<T>): ColumnDef<T>[] {
+}: ColumnGeneratorParams<T>): ColumnDef<T>[] | undefined {
   return [
     {
       id: "select",
@@ -56,6 +56,8 @@ export function ColumnGenerator<T>({
       enableHiding: false,
       enablePinning: true,
     },
-    ...fields.map((field) => renderColumn<T>(field)),
+    ...fields
+      .map((field) => renderColumn<T>(field))
+      .filter((col): col is ColumnDef<T> => !!col),
   ];
 }

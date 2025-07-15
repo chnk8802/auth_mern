@@ -1,7 +1,7 @@
 "use client";
 
 import { DetailsRenderer } from "@/lib/form-generator/components/DetailView/DetailRender";
-import { customerFields } from "./customerFields";
+import { fields } from "./customerFields";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,14 +11,11 @@ import {
   deleteCustomer,
   getCustomerById,
 } from "@/features/customers/api/customerApi";
-import { formatDate, formatSnakeCaseLabel } from "@/lib/utils";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { Button } from "@/components/ui/button";
 import { DeleteConfirmDialog } from "@/components/form/DeleteConfirmDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SquarePen, Trash2 } from "lucide-react";
-import { Section } from "@/components/layout/sectionLayouts/Sections";
-import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
 import { MoreDropdown } from "@/components/detailsView/MoreDropdown";
 
 export function CustomerDetailPage2() {
@@ -112,7 +109,7 @@ export function CustomerDetailPage2() {
           </>
         }
       />
-      <DetailsRenderer fields={customerFields} data={customer} />
+      <DetailsRenderer fields={fields} data={customer} />
     </div>
   );
 }

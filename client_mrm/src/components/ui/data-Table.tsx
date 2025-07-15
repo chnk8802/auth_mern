@@ -83,8 +83,8 @@ export function DataTable<TData extends { _id: string }, TValue>({
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
-      createdAt: false,
-      updatedAt: false,
+      // createdAt: false,
+      // updatedAt: false,
     });
   const [rowSelection, setRowSelection] = React.useState({});
   const [globalFilter, setGlobalFilter] = React.useState<string>("");

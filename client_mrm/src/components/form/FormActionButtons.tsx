@@ -8,7 +8,7 @@ type FormActionButtonsProps = {
   isSubmitting: boolean;
   onSave: () => void;
   onSaveAndNew?: () => void;
-  onReset: () => void;
+  onReset?: () => void;
   showLiveData: boolean;
   onToggleLiveData: () => void;
 };

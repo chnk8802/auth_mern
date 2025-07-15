@@ -274,7 +274,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
     }
   };
 
-  if (!field.showInForm) return null;
+  if (field.showInForm === false) return null;
   if (formMode === "create" && field.hiddenInCreate) return null;
   if (formMode === "edit" && field.hiddenInEdit) return null;
 

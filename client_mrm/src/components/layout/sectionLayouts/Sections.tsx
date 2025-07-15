@@ -13,7 +13,7 @@ export function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border bg-muted/40 p-4 sm:p-6 mb-4">
+    <section className="rounded-xl border bg-muted/10 p-4 sm:p-6 mb-4">
       <h3 className="text-lg font-semibold mb-4 text-muted-foreground">
         {title}
       </h3>
@@ -43,7 +43,7 @@ export function AnimatedSection({
   const Container = disableAnimation ? "div" : motion.div;
 
   return (
-    <section className={cn("rounded-xl border bg-muted/40 p-4 sm:p-6 mb-4")}>
+    <section className={cn("rounded-xl border bg-muted/10 p-4 sm:p-6 mb-4")}>
       {title && (
         <h3 className="text-lg font-semibold mb-4 text-muted-foreground">
           {title}

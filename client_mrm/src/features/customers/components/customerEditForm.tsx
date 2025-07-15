@@ -82,22 +82,6 @@ export function EditCustomerForm({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="isBulkCustomer"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-2 space-y-0">
-                <FormLabel>Is Bulk Customer</FormLabel>
-                <FormControl>
-                  <Checkbox
-                    checked={!!field.value} // Ensure it's boolean
-                    onCheckedChange={(checked) => field.onChange(!!checked)} // Coerce to boolean
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </Section>
 
         <Section title="Address" col={2}>

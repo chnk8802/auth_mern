@@ -26,7 +26,8 @@ export const customerFields: ModuleField[] = [
     label: "Phone",
     type: "phone",
     required: true,
-    placeholder: "example@domain.com",
+    placeholder: "9876543210",
+    format: "international",
     section: "General",
   },
   {
@@ -57,6 +58,22 @@ export const customerFields: ModuleField[] = [
       postalCode: { id: "postal_code", label: "Postal Code", type: "text" },
     },
     section: "General",
+  },
+  {
+    id: "createdAt",
+    label: "Created At",
+    type: "datetime",
+    section: "General",
+    showInForm: false,
+    showInTable: false
+  },
+  {
+    id: "updatedAt",
+    label: "Updated At",
+    type: "datetime",
+    section: "General",
+    showInForm:false,
+    showInTable: false
   },
 ];
 
