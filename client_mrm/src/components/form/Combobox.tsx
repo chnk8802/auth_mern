@@ -26,6 +26,7 @@ type ComboboxProps = {
   options: { label: string; value: string }[];
   placeholder?: string;
   disabled?: boolean;
+  required?: boolean;
 };
 
 export function Combobox({
@@ -35,6 +36,7 @@ export function Combobox({
   options,
   placeholder = "Select",
   disabled,
+  required,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -52,6 +54,20 @@ export function Combobox({
           className="sm:w-64 sm:min-w-64 w-full px-4 justify-between"
         >
           {selectedOption?.label ?? placeholder}
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={value}
+            onChange={() => {}}
+            required={required}
+            style={{
+              position: "absolute",
+              opacity: 0,
+              height: 0,
+              pointerEvents: "none",
+            }}
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">

@@ -19,8 +19,9 @@ type LocationInputProps = {
   label?: string;
   value?: Location;
   address?: string;
-  disabled?: boolean;
   onChange: (val: Location) => void;
+  disabled?: boolean;
+  required?: boolean;
 };
 
 export function LocationInput({
@@ -29,7 +30,8 @@ export function LocationInput({
   value,
   onChange,
   address,
-  disabled = true,
+  disabled,
+  required,
 }: LocationInputProps) {
   const [position, setPosition] = useState<Location>(
     value || { lat: 12.9716, lng: 77.5946 }
@@ -117,32 +119,46 @@ export function LocationInput({
   };
 
   return (
-    <MapContainer
-      center={[position.lat, position.lng]}
-      zoom={13}
-      scrollWheelZoom={true}
-      style={{
-        height: "200px",
-        width: "100%",
-        opacity: disabled ? 0.6 : 1,
-        pointerEvents: disabled ? "none" : "auto",
-      }}
-    >
-      <TileLayer
-        url={
-          isDarkMode
-            ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-            : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    <>
+      {/* Hidden input for validation */}
+      <input
+        type="text"
+        id={id}
+        name={id}
+        value={
+          position.lat && position.lng ? `${position.lat},${position.lng}` : ""
         }
-        attribution={
-          isDarkMode
-            ? '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a>'
-            : '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-        }
+        readOnly
+        required={required}
+        hidden
       />
+      <MapContainer
+        center={[position.lat, position.lng]}
+        zoom={13}
+        scrollWheelZoom={true}
+        style={{
+          height: "200px",
+          width: "100%",
+          opacity: disabled ? 0.6 : 1,
+          pointerEvents: disabled ? "none" : "auto",
+        }}
+      >
+        <TileLayer
+          url={
+            isDarkMode
+              ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+              : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          }
+          attribution={
+            isDarkMode
+              ? '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a>'
+              : '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+          }
+        />
 
-      <MapUpdater center={position} />
-      <LocationMarker />
-    </MapContainer>
+        <MapUpdater center={position} />
+        <LocationMarker />
+      </MapContainer>
+    </>
   );
 }

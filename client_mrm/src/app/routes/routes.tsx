@@ -30,6 +30,7 @@ import { CustomersPage } from "@/features/customers/routes/CustomerListPage";
 // import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
 import { CustomerAddPage } from "@/features/customers/components/form/CustomerAddPage2";
 import { CustomerDetailPage } from "@/features/customers/routes/CustomerDetailsPage";
+import { CustomerDetailPage2 } from "@/features/customers/components/form/CustomerDetailsPage2";
 import { CustomerEditPage } from "@/features/customers/routes/CustomerEditPage";
 // Others
 import { RepairJobListPage } from "@/features/repairJob/routes/RepairJobListPage";
@@ -39,7 +40,8 @@ import { PermissionDenied } from "@/app/PermissionDenied";
 import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetailsPage";
 import { RepairJobAddPage } from "@/features/repairJob/routes/RepairJobAddPage";
 // Form Generator
-import {FormGeneratorPage} from "@/lib/form-generator/demo/FormGeneratorPage"
+import { FormGeneratorPage } from "@/lib/form-generator/demo/FormGeneratorPage";
+import { CustomersListPage2 } from "@/features/customers/components/form/CustomerListPage2";
 
 export const router = createBrowserRouter([
   {
@@ -199,14 +201,14 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <CustomersPage />,
+            element: <CustomersListPage2 />,
             handle: {
               breadcrumb: "Customers List",
             },
           },
           {
             path: ":customerId",
-            element: <CustomerDetailPage />,
+            element: <CustomerDetailPage2 />,
             handle: {
               breadcrumb: ({ params }: { params: { customerId: string } }) =>
                 `${params.customerId}`,

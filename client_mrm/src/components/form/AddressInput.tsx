@@ -12,9 +12,10 @@ type Props = {
   value: Record<string, any>;
   onChange: (val: Record<string, any>) => void;
   disabled?: boolean;
+  required?: boolean;
 };
 
-export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
+export function AddressInput({ field, value = {}, onChange, disabled, required}: Props) {
   const handleChange = (key: string, val: any) => {
     onChange({ ...value, [key]: val });
   };
@@ -33,6 +34,7 @@ export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
             placeholder={components.street.placeholder || "Enter Street"}
             onChange={(e) => handleChange("street", e.target.value)}
             disabled={disabled}
+            required={required}
             className="sm:w-64"
           />
         </div>
@@ -48,6 +50,7 @@ export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
             placeholder={components.city.placeholder || "Enter City"}
             onChange={(e) => handleChange("city", e.target.value)}
             disabled={disabled}
+            required
             className="sm:w-64"
           />
         </div>
@@ -64,6 +67,7 @@ export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
             onChange={(val) => handleChange("state", val)}
             placeholder={components.state.placeholder || "Select state"}
             disabled={disabled}
+            required={required}
           />
         </div>
       )}
@@ -79,6 +83,7 @@ export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
             onChange={(val) => handleChange("country", val)}
             placeholder={components.country.placeholder || "Select country"}
             disabled={disabled}
+            required={required}
           />
         </div>
       )}
@@ -93,6 +98,7 @@ export function AddressInput({ field, value = {}, onChange, disabled }: Props) {
             placeholder={components.postalCode.placeholder || "Enter Postal Code"}
             onChange={(e) => handleChange("postalCode", e.target.value)}
             disabled={disabled}
+            required={required}
             className="sm:w-64"
           />
         </div>

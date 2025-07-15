@@ -43,7 +43,6 @@ export const getCustomerColumns = ({
     id: "actions",
     cell: ({ row }) => {
       const data = row.original;
-
       return (
         <DataTableActions
           data={data}
@@ -75,6 +74,23 @@ export const getCustomerColumns = ({
     ),
   },
   {
+    accessorKey: "customerType",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Customer Type
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <div>{formatSnakeCaseLabel(row.getValue("customerType"))}</div>;
+    },
+  },
+  {
     accessorKey: "fullName",
     header: ({ column }) => {
       return (
@@ -88,7 +104,8 @@ export const getCustomerColumns = ({
       );
     },
     cell: ({ row }) => <div>{row.getValue("fullName")}</div>,
-  },{
+  },
+  {
     accessorKey: "phone",
     header: ({ column }) => {
       return (
@@ -103,24 +120,7 @@ export const getCustomerColumns = ({
     },
     cell: ({ row }) => <div>{row.getValue("phone")}</div>,
   },
-  {
-    accessorKey: "isBulkCustomer",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Is Bulk Customer
-          <ArrowUpDown />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-        const isBulkCustomer = row.getValue("isBulkCustomer") as boolean;
-        return <div>{isBulkCustomer ? "Yes" : "No"}</div>;
-    },
-  },
+
   {
     accessorKey: "address",
     header: ({ column }) => {
@@ -143,7 +143,8 @@ export const getCustomerColumns = ({
       const zip = address?.zip || "";
       return (
         <div>
-          {street} {city} {formatSnakeCaseLabel(state)} {formatSnakeCaseLabel(country)} {zip}
+          {street} {city} {formatSnakeCaseLabel(state)}{" "}
+          {formatSnakeCaseLabel(country)} {zip}
         </div>
       );
     },
@@ -184,5 +185,5 @@ export const getCustomerColumns = ({
       const updatedAt = formatDate(row.getValue("updatedAt"));
       return <div>{updatedAt}</div>;
     },
-  }
+  },
 ];

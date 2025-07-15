@@ -1,7 +1,7 @@
 import React from "react";
 import { customerFields } from "@/features/customers/components/form/customerFields";
 import { customerWorkflow } from "../../workflows/workflow";
-import { FormBuilder } from "@/lib/form-generator/components/FormBuilder";
+import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
 import type { AuthUser } from "@/features/auth/types";
 import { ROUTES } from "@/constants/routes";
 

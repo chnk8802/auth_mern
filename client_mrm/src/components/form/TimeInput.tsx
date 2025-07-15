@@ -8,6 +8,7 @@ type TimeInputProps = {
   value: string | undefined;
   onChange: (value: string) => void;
   disabled?: boolean;
+  required?: boolean;
 };
 
 export function TimeInput({
@@ -16,6 +17,7 @@ export function TimeInput({
   value,
   onChange,
   disabled,
+  required
 }: TimeInputProps) {
   return (
     <Input
@@ -26,6 +28,7 @@ export function TimeInput({
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
+      required={required}
       className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
     />
   );

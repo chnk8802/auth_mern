@@ -1,5 +1,7 @@
 "use client";
 
+import { DetailsRenderer } from "@/lib/form-generator/components/DetailView/DetailRender";
+import { customerFields } from "./customerFields";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -19,7 +21,7 @@ import { Section } from "@/components/layout/sectionLayouts/Sections";
 import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
 import { MoreDropdown } from "@/components/detailsView/MoreDropdown";
 
-export function CustomerDetailPage() {
+export function CustomerDetailPage2() {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { customerId } = useParams();
@@ -110,32 +112,7 @@ export function CustomerDetailPage() {
           </>
         }
       />
-      <Section col={2}>
-        <DetailItem label="Customer Code" value={customer.customerCode} />
-        <DetailItem
-          label="Customer Type"
-          value={formatSnakeCaseLabel(customer.customerType)}
-        />
-        <DetailItem label="Full Name" value={customer.fullName} />
-        <DetailItem label="Phone" value={customer.phone} />
-        <DetailItem
-          label="Address"
-          value={[
-            customer.address?.street,
-            customer.address?.city,
-            formatSnakeCaseLabel(customer.address?.state),
-            formatSnakeCaseLabel(customer.address?.country),
-            customer.address?.zip,
-          ]
-            .filter(Boolean)
-            .join(", ")}
-        />
-        <DetailItem label="Created at" value={formatDate(customer.createdAt)} />
-        <DetailItem
-          label="Last updated"
-          value={formatDate(customer.updatedAt)}
-        />
-      </Section>
+      <DetailsRenderer fields={customerFields} data={customer} />
     </div>
   );
 }

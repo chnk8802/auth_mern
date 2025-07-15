@@ -1,10 +1,10 @@
 import React from "react";
-import { type FormField } from "@/lib/form-generator/types/field-types";
+import { type ModuleField } from "@/lib/form-generator/types/field-types";
 import {
   type WorkflowFn,
   runWorkflow,
 } from "@/lib/form-generator/core/runWorkflow";
-import { FieldRenderer } from "@/lib/form-generator/components/FieldRendrer";
+import { FieldRenderer } from "@/lib/form-generator/components/FormView/FieldRendrer";
 import {
   AnimatedSection,
   Section,
@@ -17,10 +17,12 @@ interface FormBuilderProps {
   title?: string;
   backLink: string;
   mode: "create" | "edit";
-  fields: FormField[];
+
+  fields: ModuleField[];
   formData: Record<string, any>;
   workflow?: WorkflowFn;
   context?: Record<string, any>;
+
   onChange: (fieldId: string, value: any) => void;
   onSubmit: () => void;
   onReset: () => void;
@@ -29,23 +31,23 @@ interface FormBuilderProps {
 
 export const FormBuilder: React.FC<FormBuilderProps> = ({
   mode,
+  title,
+  backLink,
+
   fields,
   formData,
   workflow,
   context,
+
   onChange,
   onSubmit,
   onReset,
   isSubmitting,
-  title,
-  backLink,
 }) => {
   const fieldStates = runWorkflow(fields, formData, workflow, context);
   const [showLiveData, setShowLiveData] = React.useState(true);
 
-  
-
-  const grouped = fields.reduce<Record<string, FormField[]>>((acc, field) => {
+  const grouped = fields.reduce<Record<string, ModuleField[]>>((acc, field) => {
     const section = field.section || "";
     if (!acc[section]) acc[section] = [];
     acc[section].push(field);
@@ -126,6 +128,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
                 return (
                   <FieldRenderer
+                    formMode={mode}
                     key={field.id}
                     field={field}
                     value={formData[field.id]}

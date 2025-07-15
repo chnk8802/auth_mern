@@ -1,4 +1,4 @@
-import { type FormField } from "@/lib/form-generator/types/field-types";
+import { type ModuleField } from "@/lib/form-generator/types/field-types";
 import { FormLogicController, type FieldState } from "./FormLogicController";
 
 // The type for the workflow function you pass in per module
@@ -9,7 +9,7 @@ export type WorkflowFn = (
 ) => void;
 
 export function runWorkflow(
-  fields: FormField[],
+  fields: ModuleField[],
   formData: Record<string, any>,
   workflowFn?: WorkflowFn,
   context?: Record<string, any>

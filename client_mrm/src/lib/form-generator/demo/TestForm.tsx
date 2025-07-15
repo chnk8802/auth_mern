@@ -1,11 +1,9 @@
-import { FormBuilder } from "@/lib/form-generator/components/FormBuilder";
-import { type FormField } from "@/lib/form-generator/types/field-types";
-import { Label } from "@/components/ui/label";
+import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
+import { type ModuleField } from "@/lib/form-generator/types/field-types";
 import { ROUTES } from "@/constants/routes";
-import { LiveFormData } from "@/components/debugging/LiveFormData";
 
 type TestFormProps = {
-  fields: FormField[];
+  fields: ModuleField[];
   formData: Record<string, any>;
   onChange: (fieldId: string, value: any) => void;
 };

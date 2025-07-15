@@ -18,9 +18,10 @@ type Props = {
   value: string;
   onChange: (val: string | number) => void;
   disabled?: boolean;
+  required?: boolean;
 };
 
-export function LookupInput({ field, value, onChange, disabled }: Props) {
+export function LookupInput({ field, value, onChange, disabled, required }: Props) {
   const [options, setOptions] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
@@ -61,6 +62,20 @@ export function LookupInput({ field, value, onChange, disabled }: Props) {
 
   return (
     <div className="space-y-1">
+      <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={value}
+            onChange={() => {}}
+            required={required}
+            style={{
+              position: "absolute",
+              opacity: 0,
+              height: 0,
+              pointerEvents: "none",
+            }}
+          />
       {/* <Label htmlFor={field.id}>{field.label}</Label> */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>

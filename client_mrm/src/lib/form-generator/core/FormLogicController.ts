@@ -1,4 +1,4 @@
-import type { FormField } from "@/lib/form-generator/types/field-types";
+import type { ModuleField } from "@/lib/form-generator/types/field-types";
 
 // What each field can have manipulated
 export interface FieldState {
@@ -7,11 +7,11 @@ export interface FieldState {
 }
 
 export class FormLogicController {
-  private fields: FormField[];
+  private fields: ModuleField[];
   private stateMap: Record<string, FieldState> = {};
 
   // Initialize state map with default values
-  constructor(fields: FormField[]) {
+  constructor(fields: ModuleField[]) {
     this.fields = fields;
     for (const field of fields) {
       this.stateMap[field.id] = {

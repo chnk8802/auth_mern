@@ -1,21 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
-import { FieldRenderer } from "@/lib/form-generator/components/FieldRendrer";
-import { type FormField } from "@/lib/form-generator/types/field-types";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { FieldRenderer } from "@/lib/form-generator/components/FormView/FieldRendrer";
+import { type ModuleField } from "@/lib/form-generator/types/field-types";
 
 type Props = {
   id?: string;
   label?: string;
-  fields: FormField[];
+  fields: ModuleField[];
   value: any[];
   onChange: (val: any[]) => void;
   minRows?: number;
   maxRows?: number;
   disabled?: boolean;
+  required?: boolean;
 };
 
 export function SubformInput({
@@ -27,6 +26,7 @@ export function SubformInput({
   minRows = 0,
   maxRows = Infinity,
   disabled,
+  required
 }: Props) {
   const handleChange = (index: number, fieldId: string, fieldValue: any) => {
     const updated = [...value];
@@ -48,6 +48,17 @@ export function SubformInput({
   return (
     <div className="space-y-2">
       {/* {label && <Label htmlFor={id}>{label}</Label>} */}
+      {/* Hidden input for HTML validation */}
+      {required && (
+        <input
+          type="text"
+          name={id}
+          value={value.length > 0 ? "valid" : ""}
+          required
+          hidden
+          readOnly
+        />
+      )}
       <div className="space-y-4">
         {value.map((row, rowIndex) => (
           <div

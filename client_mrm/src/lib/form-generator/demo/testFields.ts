@@ -1,6 +1,7 @@
-import { type FormField } from "@/lib/form-generator/types/field-types";
+import { normalizeFields } from "../utils/normalizeFields";
+import { type ModuleField } from "@/lib/form-generator/types/field-types";
 
-export const testFields: FormField[] = [
+export const testFields: ModuleField[] = [
   {
     id: "first_name",
     label: "First Name",
@@ -259,3 +260,5 @@ export const testFields: FormField[] = [
     showCoordinates: true,
   },
 ];
+
+export const fields = normalizeFields(testFields);

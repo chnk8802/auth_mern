@@ -1,7 +1,8 @@
 import { CustomerTypes } from "@/constants/customerTypes";
-import { type FormField } from "@/lib/form-generator/types/field-types";
+import { type ModuleField } from "@/lib/form-generator/types/field-types";
+import { normalizeFields } from "@/lib/form-generator/utils/normalizeFields";
 
-export const customerFields: FormField[] = [
+export const customerFields: ModuleField[] = [
   {
     id: "customerType",
     label: "Customer Type",
@@ -58,3 +59,6 @@ export const customerFields: FormField[] = [
     section: "General",
   },
 ];
+
+
+export const fields = normalizeFields(customerFields);

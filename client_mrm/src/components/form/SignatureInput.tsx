@@ -11,6 +11,7 @@ type Props = {
   value?: string; // base64 string
   onChange: (val: string) => void;
   disabled?: boolean;
+  required?: boolean
 };
 
 export function SignatureInput({

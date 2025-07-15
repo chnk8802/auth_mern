@@ -21,6 +21,8 @@ type MultiSelectComboboxProps = {
   onChange: (value: string[]) => void;
   options: Option[];
   placeholder?: string;
+  disabled?: boolean;
+  required?: boolean;
 };
 
 export function MultiSelectCombobox({
@@ -28,6 +30,8 @@ export function MultiSelectCombobox({
   onChange,
   options,
   placeholder = "Select",
+  disabled,
+  required,
 }: MultiSelectComboboxProps) {
   const [open, setOpen] = useState(false);
 
@@ -50,6 +54,21 @@ export function MultiSelectCombobox({
         selectedOptions.length > 0 && "break-words py-1"
       )}
     >
+      <input
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        required={required}
+        value={value.length > 0 ? value.join(",") : ""}
+        onChange={() => {}}
+        style={{
+          position: "absolute",
+          opacity: 0,
+          height: 0,
+          pointerEvents: "none",
+        }}
+      />
+
       <div className="flex flex-wrap gap-1 flex-1">
         {selectedOptions.length > 0 ? (
           selectedOptions.map(({ label, value: val }) => (
@@ -77,6 +96,7 @@ export function MultiSelectCombobox({
             variant="secondary"
             size="sm"
             className="border-none"
+            disabled={disabled}
           >
             <Plus />
           </Button>

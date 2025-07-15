@@ -1,3 +1,42 @@
+/**
+ * Field Configuration Schema
+ * --------------------------
+ * This file defines a unified, type-safe configuration schema for building dynamic forms, 
+ * tables, and detail views across modules in the application.
+ * 
+ *  Purpose:
+ * - Centralize field definitions for Create, Edit, List, and Detail views.
+ * - Serve as the schema input for dynamic UI generators (form builder, column builder, etc).
+ * - Enable conditional rendering, view-specific visibility, validation, and layout metadata.
+ * 
+ *   Base Design:
+ * - `BaseField`: Shared properties used across all field types.
+ * - `FieldType`: Discriminator union used for rendering logic.
+ * - Extended interfaces (e.g., `TextField`, `SelectField`, `FileField`) define specific props.
+ * 
+ *  View Filtering Example:
+ * ```ts
+ * const createFields = fields.filter(f => f.showInForm !== false && !f.hiddenInCreate);
+ * const editFields   = fields.filter(f => f.showInForm !== false && !f.hiddenInEdit);
+ * const columns      = fields.filter(f => f.showInTable);
+ * const details      = fields.filter(f => f.showInDetails !== false);
+ * ```
+ * 
+ *  Common View Control Flags:
+ * - `showInForm` (default: true)   → used in Create/Edit forms
+ * - `showInTable` (default: false) → used in List/Table view
+ * - `showInDetails` (default: true)→ used in Detail view
+ * - `editable`, `readOnly`, `visible`, `hiddenInCreate`, `hiddenInEdit` → fine-grained controls
+ * 
+ *  Usage:
+ * - Import `ModuleField` to define fields for a module.
+ * - Feed the array of fields to form/column/detail generators.
+ * - Extend field types as needed (e.g., for custom widgets).
+ * 
+ * Author: Naveen
+ * Date: 15/07/2025
+ */
+
 export type FieldType =
   | "text"
   | "textarea"
@@ -22,15 +61,24 @@ export interface BaseField {
   id: string;
   label: string;
   type: FieldType;
-  required?: boolean;
-  readOnly?: boolean;
-  visible?: boolean;
   defaultValue?: any;
   placeholder?: string;
   helpText?: string;
+
+  required?: boolean;
+  readOnly?: boolean;
+  visible?: boolean;
+  // Layout
   section?: string; // section title
   col?: number;    // optional field-level column span
   sectionType?: "animated" | "basic";
+  // These control where this field appears
+  showInForm?: boolean;      // default: true
+  showInTable?: boolean;     // default: false
+  showInDetails?: boolean;   // default: true
+  editable?: boolean;        // true/false in edit form
+  hiddenInCreate?: boolean;
+  hiddenInEdit?: boolean;
 }
 
 export interface TextField extends BaseField {
@@ -126,7 +174,7 @@ export interface FileField extends BaseField {
 
 export interface SubformField extends BaseField {
   type: "subform";
-  fields: FormField[];  
+  fields: ModuleField[];  
   minRows?: number;
   maxRows?: number;
 }
@@ -141,7 +189,7 @@ export interface MapField extends BaseField {
   showCoordinates?: boolean;
 }
 
-export type FormField =
+export type ModuleField =
   | TextField
   | TextareaField
   | NumberField

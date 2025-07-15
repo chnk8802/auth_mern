@@ -13,11 +13,23 @@ import {
 import { TimeInput } from "../form/TimeInput";
 
 type DateTimePickerProps = {
+  id?: string;
+  label?: string;
+  placeholder?: string;
   value: Date | undefined;
   onChange: (date: Date | undefined) => void;
+  disabled?: boolean;
+  required?: boolean;
 };
 
-export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
+export function DateTimePicker({
+  id,
+  label,
+  value,
+  onChange,
+  disabled,
+  required,
+}: DateTimePickerProps) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(value);
   const [time, setTime] = React.useState<string>("00:00:00");
@@ -46,17 +58,33 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
     combined.setHours(hours);
     combined.setMinutes(minutes);
     combined.setSeconds(seconds || 0);
-
     onChange(combined);
   };
 
   return (
     <div className="flex gap-4">
+      <input
+        type="text"
+        required={required}
+        value={value ? value.toISOString() : ""}
+        onChange={() => {}}
+        name={id} // if used in form
+        style={{
+          position: "absolute",
+          opacity: 0,
+          height: 0,
+          pointerEvents: "none",
+        }}
+        tabIndex={-1}
+        autoComplete="off"
+      />
+
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             id="date-picker"
+            disabled={disabled}
             className="w-32 justify-between font-normal"
           >
             {date ? date.toLocaleDateString() : "Select date"}
@@ -75,6 +103,7 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
 
       <TimeInput
         value={time}
+        required={required}
         onChange={(val) =>
           handleTimeChange({
             target: { value: val },

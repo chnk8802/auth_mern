@@ -1,33 +1,18 @@
 "use client";
 
 import { Database } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Label } from "../ui/label";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula, coldarkCold } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useIsDarkMode } from "@/hooks/useDarkMode";
 
 type LiveFormDataProps = {
   data: Record<string, any>;
 };
 
 export const LiveFormData: React.FC<LiveFormDataProps> = ({ data }) => {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const checkDarkMode = () => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    };
-
-    checkDarkMode(); // Initial check
-
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const isDark = useIsDarkMode()
 
   return (
     <div className="rounded-lg border p-4 bg-muted/30">

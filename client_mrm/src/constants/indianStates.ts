@@ -42,3 +42,6 @@ export const indianStates: StateOption[] = [
   { label: "Lakshadweep", value: "lakshadweep" },
   { label: "Puducherry", value: "puducherry" },
 ];
+export const indianStateMap = Object.fromEntries(
+  indianStates.map((state) => [state.value, state.label])
+);
