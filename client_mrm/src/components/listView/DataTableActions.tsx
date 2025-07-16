@@ -56,7 +56,7 @@ export function DataTableActions<T>({
             }}
           >
             <Button
-              className="p-0 text-destructive hover:text-destructive hover:bg-transparent"
+              className="flex justify-start w-full p-0 text-destructive hover:text-destructive hover:bg-transparent"
               variant="ghost"
               onClick={(e) => e.stopPropagation()}
             >

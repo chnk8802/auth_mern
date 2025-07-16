@@ -17,9 +17,9 @@ import { DeleteConfirmDialog } from "@/components/form/DeleteConfirmDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SquarePen, Trash2 } from "lucide-react";
 import { MoreDropdown } from "@/components/detailsView/MoreDropdown";
+import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 
 export function CustomerDetailPage2() {
-  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { customerId } = useParams();
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -56,6 +56,10 @@ export function CustomerDetailPage2() {
       toast.error("Failed to delete customer");
     }
   };
+  const handleEdit = async () => {
+     if (!customer?._id) return;
+     navigate(ROUTES.CUSTOMERS.EDIT(customer._id));
+  }
 
   if (loading) return <div className="p-6 text-center">Loading...</div>;
   if (!customer)
@@ -68,48 +72,14 @@ export function CustomerDetailPage2() {
 
   return (
     <div className="px-4">
-      <DetailsPageHeader
+      <DetailsBuilder
         title="Customer Details"
-        onBack={() => navigate(ROUTES.CUSTOMERS.LIST)}
-        actions={
-          <>
-            <Button
-              size={isMobile ? "icon" : "default"}
-              onClick={() => navigate(ROUTES.CUSTOMERS.EDIT(customer._id))}
-            >
-              {isMobile ? (
-                <SquarePen />
-              ) : (
-                <>
-                  <SquarePen /> Edit
-                </>
-              )}
-            </Button>
-            <DeleteConfirmDialog onConfirm={() => handleDelete()}>
-              <Button size={isMobile ? "icon" : "default"}>
-                {isMobile ? (
-                  <Trash2 />
-                ) : (
-                  <>
-                    <Trash2 /> Delete
-                  </>
-                )}
-              </Button>
-            </DeleteConfirmDialog>
-          </>
-        }
-        more={
-          <>
-            {
-              <MoreDropdown
-                onDownloadPdf={() => console.log("Download PDF")}
-                onPrint={() => console.log("Print")}
-              />
-            }
-          </>
-        }
+        backLink={ROUTES.CUSTOMERS.LIST}
+        fields={fields}
+        data={customer}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
       />
-      <DetailsRenderer fields={fields} data={customer} />
     </div>
   );
 }

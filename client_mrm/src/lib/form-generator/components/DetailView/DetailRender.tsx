@@ -1,17 +1,15 @@
 "use client";
 
 import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
-import { Section } from "@/components/layout/sectionLayouts/Sections";
 import { formatDate, formatSnakeCaseLabel } from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 
 type Props = {
   fields: ModuleField[];
   data: Record<string, any>;
-  columns?: number;
 };
 
-export function DetailsRenderer({ fields, data, columns = 2 }: Props) {
+export function DetailsRenderer({ fields, data, }: Props) {
   const visibleFields = fields.filter((field) => field.showInDetails !== false);
 
   const renderValue = (field: ModuleField, value: any) => {
@@ -58,7 +56,7 @@ export function DetailsRenderer({ fields, data, columns = 2 }: Props) {
   };
 
   return (
-    <Section col={columns}>
+    <>
       {visibleFields.map((field) => (
         <DetailItem
           key={field.id}
@@ -66,6 +64,6 @@ export function DetailsRenderer({ fields, data, columns = 2 }: Props) {
           value={renderValue(field, data?.[field.id])}
         />
       ))}
-    </Section>
+    </>
   );
 }

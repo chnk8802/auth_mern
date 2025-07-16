@@ -1,4 +1,4 @@
-import type { WorkflowFn } from "@/lib/form-generator/core/runWorkflow";
+import type { WorkflowFn } from "@/lib/form-generator/core/WorkflowBuilder";
 
 export const customerWorkflow: WorkflowFn = (logic, formData, context) => {
   const { currentUser } = context || {};

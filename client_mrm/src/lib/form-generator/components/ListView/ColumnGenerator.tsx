@@ -17,7 +17,7 @@ export function ColumnGenerator<T>({
   onEdit,
   onDelete,
   copyField,
-}: ColumnGeneratorParams<T>): ColumnDef<T>[] | undefined {
+}: ColumnGeneratorParams<T>): ColumnDef<T>[] {
   return [
     {
       id: "select",

@@ -31,6 +31,7 @@ import { CustomersPage } from "@/features/customers/routes/CustomerListPage";
 import { CustomerAddPage } from "@/features/customers/components/form/CustomerAddPage2";
 import { CustomerDetailPage } from "@/features/customers/routes/CustomerDetailsPage";
 import { CustomerDetailPage2 } from "@/features/customers/components/form/CustomerDetailsPage2";
+import { CustomerEditPage2 } from "@/features/customers/components/form/CustomerEditPage2";
 import { CustomerEditPage } from "@/features/customers/routes/CustomerEditPage";
 // Others
 import { RepairJobListPage } from "@/features/repairJob/routes/RepairJobListPage";
@@ -216,7 +217,7 @@ export const router = createBrowserRouter([
           },
           {
             path: ":customerId/edit",
-            element: <CustomerEditPage />,
+            element: <CustomerEditPage2 />,
             handle: {
               breadcrumb: ({ params }: { params: { customerId: string } }) =>
                 `Edit ${params.customerId}`,

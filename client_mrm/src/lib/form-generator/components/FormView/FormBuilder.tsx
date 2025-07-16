@@ -2,8 +2,8 @@ import React from "react";
 import { type ModuleField } from "@/lib/form-generator/types/field-types";
 import {
   type WorkflowFn,
-  runWorkflow,
-} from "@/lib/form-generator/core/runWorkflow";
+  workflow,
+} from "@/lib/form-generator/core/WorkflowBuilder";
 import { FieldRenderer } from "@/lib/form-generator/components/FormView/FieldRendrer";
 import {
   AnimatedSection,
@@ -20,7 +20,7 @@ interface FormBuilderProps {
 
   fields: ModuleField[];
   formData: Record<string, any>;
-  workflow?: WorkflowFn;
+  workflowFn?: WorkflowFn;
   context?: Record<string, any>;
 
   onChange: (fieldId: string, value: any) => void;
@@ -36,7 +36,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   fields,
   formData,
-  workflow,
+  workflowFn,
   context,
 
   onChange,
@@ -44,7 +44,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   onReset,
   isSubmitting,
 }) => {
-  const fieldStates = runWorkflow(fields, formData, workflow, context);
+  const fieldStates = workflow(fields, formData, workflowFn, context);
   const [showLiveData, setShowLiveData] = React.useState(true);
 
   const grouped = fields.reduce<Record<string, ModuleField[]>>((acc, field) => {
@@ -53,7 +53,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
     acc[section].push(field);
     return acc;
   }, {});
-
+console.log("Builder",formData)
   // Validate section consistency
   for (const [sectionName, sectionFields] of Object.entries(grouped)) {
     const sectionTypesMap = new Map<string, string[]>();

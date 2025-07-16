@@ -73,6 +73,7 @@ export function CustomerEditPage() {
       <FormHeader
         title="Add Customer"
         backLink={`/dashboard/customers/${customerId}`}
+        actions={<></>}
       />
       <EditCustomerForm customer={customer} onSubmit={handleEdit} />
     </div>

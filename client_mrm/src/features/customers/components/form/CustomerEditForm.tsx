@@ -2,16 +2,18 @@ import React from "react";
 import { fields } from "@/features/customers/components/form/customerFields";
 import { customerWorkflow } from "@/features/customers/workflows/workflow";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import type { AuthUser } from "@/features/auth/types";
 import { ROUTES } from "@/constants/routes";
+import type { Customer } from "../../types";
 
 export interface CustomerFormProps {
-  currentUser: AuthUser;
+  context?: any;
+  customer: Customer;
   onSubmit: (data: any) => void;
 }
 
 export const CustomerEditForm = ({
-  currentUser,
+  context,
+  customer,
   onSubmit,
 }: CustomerFormProps) => {
   const [formData, setFormData] = React.useState<Record<string, any>>({});
@@ -32,13 +34,14 @@ export const CustomerEditForm = ({
       title="Customer"
       backLink={ROUTES.CUSTOMERS.DETAILS(customer._id)}
       mode="edit"
+      
       fields={fields}
       formData={formData}
       onChange={handleChange}
       onSubmit={handleSubmit}
       isSubmitting={isSubmitting}
       workflow={customerWorkflow}
-      context={{ currentUser }}
+      context={context}
     />
   );
 };

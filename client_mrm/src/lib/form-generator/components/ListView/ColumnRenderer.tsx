@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { indianStateMap } from "@/constants/indianStates";
 import type { ColumnDef } from "@tanstack/react-table";
 import { countryMap } from "@/constants/countries";
-import { columns } from "@/features/technician/routes/TechniciansPage";
 
 export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined{
   if (field.showInTable === false) return undefined;

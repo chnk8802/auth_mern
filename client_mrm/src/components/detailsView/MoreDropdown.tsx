@@ -9,13 +9,37 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Ellipsis } from "lucide-react";
+import type { ReactNode } from "react";
+import { DeleteConfirmDialog } from "../form/DeleteConfirmDialog";
+import { cn } from "@/lib/utils";
+import React from "react";
 
 type MoreDropdownProps = {
   onDownloadPdf: () => void;
   onPrint: () => void;
+  onDelete: () => void;
+  actions?: ReactNode | ReactNode[];
 };
 
-export function MoreDropdown({ onDownloadPdf, onPrint }: MoreDropdownProps) {
+export function MoreDropdown({
+  onDownloadPdf,
+  onPrint,
+  onDelete,
+  actions,
+}: MoreDropdownProps) {
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const renderActions = () => {
+    if (!actions) return null;
+
+    if (Array.isArray(actions)) {
+      return actions.map((action, index) => (
+        <DropdownMenuItem key={index}>{action}</DropdownMenuItem>
+      ));
+    }
+
+    return <DropdownMenuItem>{actions}</DropdownMenuItem>;
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -32,6 +56,22 @@ export function MoreDropdown({ onDownloadPdf, onPrint }: MoreDropdownProps) {
           </DropdownMenuItem>
 
           <DropdownMenuItem onClick={() => onPrint()}>Print</DropdownMenuItem>
+          <DropdownMenuItem className="py-0" variant="destructive">
+            <DeleteConfirmDialog onConfirm={onDelete}>
+              <Button
+              variant={"ghost"}
+              className="flex justify-start w-full p-0 text-destructive hover:text-destructive hover:bg-transparent"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                Delete
+              </Button>
+            </DeleteConfirmDialog>
+          </DropdownMenuItem>
+
+          {actions && <DropdownMenuSeparator />}
+          {renderActions()}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

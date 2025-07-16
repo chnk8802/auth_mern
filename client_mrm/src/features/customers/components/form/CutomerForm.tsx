@@ -2,15 +2,14 @@ import React from "react";
 import { fields } from "@/features/customers/components/form/customerFields";
 import { customerWorkflow } from "../../workflows/workflow";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import type { AuthUser } from "@/features/auth/types";
 import { ROUTES } from "@/constants/routes";
 
 export interface CustomerFormProps {
-  currentUser: AuthUser;
+  context?: any;
   onSubmit: (data: any) => void;
 }
 
-export const CustomerForm = ({ currentUser, onSubmit }: CustomerFormProps) => {
+export const CustomerForm = ({ context, onSubmit }: CustomerFormProps) => {
   const [formData, setFormData] = React.useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   
@@ -40,7 +39,7 @@ export const CustomerForm = ({ currentUser, onSubmit }: CustomerFormProps) => {
       onReset={handleReset}
       isSubmitting={isSubmitting}
       workflow={customerWorkflow}
-      context={{ currentUser }}
+      context={context}
     />
   );
 };

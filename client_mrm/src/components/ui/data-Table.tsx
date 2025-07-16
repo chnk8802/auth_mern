@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import pluralize from "pluralize"
+import pluralize from "pluralize";
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -23,7 +23,7 @@ import {
   Import,
   MoveLeftIcon,
   MoveRightIcon,
-  Plus,
+  CirclePlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -195,8 +195,22 @@ export function DataTable<TData extends { _id: string }, TValue>({
       <ListPageHeader
         title={pluralize(moduleName || "")}
         actions={
-          <Button onClick={() => navigate(`/dashboard/${pluralize(moduleName?.replace(/\s+/g, "").toLowerCase() || "")}/new`)}>
-            {isMobile ? <Plus /> : `Add ${moduleName}`}
+          <Button
+            onClick={() =>
+              navigate(
+                `/dashboard/${pluralize(
+                  moduleName?.replace(/\s+/g, "").toLowerCase() || ""
+                )}/new`
+              )
+            }
+          >
+            {isMobile ? (
+              <CirclePlus />
+            ) : (
+              <>
+                <CirclePlus /> Add
+              </>
+            )}
           </Button>
         }
         filters={
@@ -320,7 +334,6 @@ export function DataTable<TData extends { _id: string }, TValue>({
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
-
           </DropdownMenu>
           <Button
             variant="outline"

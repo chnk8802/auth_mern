@@ -1,24 +1,10 @@
 import { toast } from "sonner";
 import { createCustomer } from "../../api/customerApi";
 import { CustomerForm } from "./CutomerForm";
-import type { AuthUser } from "@/features/auth/types";
 import type { Customer } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
-
-const mockUser: AuthUser = {
-    _id: "u123456789",
-    fullName: "Naveen Kumar",
-    email: "naveen@example.com",
-    address: {
-      street: "123 MG Road",
-      city: "Bangalore",
-      state: "Karnataka",
-      country: "India",
-      postalCode: "560001",
-    },
-    role: "admin",
-  };
+import { useAppSelector } from "@/hooks/redux";
 
 export function CustomerAddPage() {
   const navigate = useNavigate();
@@ -41,7 +27,7 @@ export function CustomerAddPage() {
   };
   return (
     <>      
-      <CustomerForm currentUser={mockUser} onSubmit={handleSave} />
+      <CustomerForm context={{}} onSubmit={handleSave} />
     </>
   );
 }

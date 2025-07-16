@@ -1,48 +1,49 @@
 import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, SquarePen } from "lucide-react";
 import type React from "react";
 import { useNavigate } from "react-router-dom";
+import { Label } from "../ui/label";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type DetailsPageHeaderProps = {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
-  onBack?: () => void;
+  backLink?: string;
   actions?: React.ReactNode;
   more?: React.ReactNode;
+  onEdit?: () => void;
 };
 
 export function DetailsPageHeader({
   title,
-  onBack,
-  actions,
+  backLink,
+  onEdit,
   more,
 }: DetailsPageHeaderProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex items-end justify-end gap-2 py-4">
-      <div className="flex-1">
-        {isMobile && (
+    <div className="flex items-center justify-between gap-4 pt-4">
+      <div className="flex gap-2">
+        {backLink && (
           <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={onBack || (() => navigate(-1))}
+            variant="outline"
+            size="sm"
+            onClick={() => navigate(backLink)}
           >
             <ChevronLeft />
           </Button>
         )}
-        {title && !isMobile && (
-        <div className="flex-1 flex-wrap justify-start text-2xl font-semibold text-foreground">
-          {title}
-        </div>
-        
-      )}
+        <Label className="text-xl font-bold pl-2 pb-2">{title}</Label>
       </div>
-      
-      <div className="flex flex-wrap gap-2 items-center justify-between">
-        {actions && <>{actions}</>}
+      <div className="flex gap-2">
+        <>
+          <Button onClick={onEdit}>
+            <SquarePen className="sm:mr-2 h-4 w-4" />
+            {!isMobile && "Edit"}
+          </Button>
+        </>
         {more && <>{more}</>}
       </div>
     </div>
