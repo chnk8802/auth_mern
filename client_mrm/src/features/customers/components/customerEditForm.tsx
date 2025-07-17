@@ -1,176 +1,52 @@
-"use client";
+import React from "react";
+import { customerFields } from "@/features/customers/config/customerFields";
+import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
+import { ROUTES } from "@/constants/routes";
+import type { Customer } from "@/features/customers/types";
+import { useForm, useWatch } from "react-hook-form";
+import { useCustomerFieldStates } from "@/features/customers/hooks/useCustomerFieldState";
 
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import type { Customer } from "../types";
-import { Combobox } from "@/components/form/Combobox";
-import { indianStates } from "@/constants/indianStates";
-import { countries } from "@/constants/countries";
-import { Section } from "@/components/layout/sectionLayouts/Sections";
-
-type EditCustomerFormProps = {
+export interface CustomerFormProps {
   customer: Customer;
-  onSubmit: (data: Customer) => void;
-};
+  onSubmit: (data: any) => void;
+}
 
-export function EditCustomerForm({
-  customer,
-  onSubmit,
-}: EditCustomerFormProps) {
+export const CustomerEditForm = ({ customer, onSubmit }: CustomerFormProps) => {
   const form = useForm<Customer>({
-    defaultValues: {
-      ...customer,
-    },
+    defaultValues: customer,
   });
+  const formValues = useWatch({
+    control: form.control,
+  });
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const fieldStates = useCustomerFieldStates(formValues);
+
+
+
+  const handleChange = (fieldId: string, value: any) => {
+    form.setValue(fieldId as keyof Customer, value, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
+
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+    onSubmit(form.getValues());
+    setTimeout(() => setIsSubmitting(false), 300);
+  };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="m-6">
-        <Section title="Genral Details">
-          <FormField
-            control={form.control}
-            name="customerCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Customer Code</FormLabel>
-                <FormControl>
-                  <Input
-                    className="bg-muted"
-                    readOnly
-                    placeholder="CUS00X"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input type="phone" placeholder="9876543210" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </Section>
-
-        <Section title="Address" col={2}>
-          <FormField
-            control={form.control}
-            name="address.street"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Street</FormLabel>
-                <FormControl>
-                  <Input placeholder="123 Main St" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="address.city"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>City</FormLabel>
-                <FormControl>
-                  <Input placeholder="City" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="address.state"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>State</FormLabel>
-                <FormControl>
-                  <Combobox
-                    value={field.value}
-                    onChange={field.onChange}
-                    options={indianStates}
-                    placeholder="Select state"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="address.country"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Country</FormLabel>
-                <FormControl>
-                  <Combobox
-                    value={field.value}
-                    onChange={field.onChange}
-                    options={countries}
-                    placeholder="Select country"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="address.zip"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ZIP</FormLabel>
-                <FormControl>
-                  <Input placeholder="123456" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </Section>
-
-        <div>
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? "Updating..." : "Update"}
-          </Button>
-        </div>
-      </form>
-    </Form>
+    <FormBuilder
+      title="Customer"
+      backLink={ROUTES.CUSTOMERS.DETAILS(customer._id)}
+      mode="edit"
+      fieldStateMap={fieldStates}
+      fields={customerFields}
+      formData={formValues}
+      onChange={handleChange}
+      onSubmit={handleSubmit}
+      isSubmitting={isSubmitting}
+    />
   );
-}
+};

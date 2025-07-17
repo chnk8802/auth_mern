@@ -78,6 +78,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: [...USER_ROLES],
     },
+    
     resetPasswordToken: {
       type: String,
       trim: true,

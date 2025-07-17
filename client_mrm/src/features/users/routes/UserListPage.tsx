@@ -2,10 +2,11 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/ui/data-Table";
-import { getUserColumns } from "@/features/users/components/Columns";
 import { deleteUser, getUsers } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
 import { useNavigate } from "react-router-dom";
+import { userFields } from "../config/userFields";
+import { ColumnGenerator } from "@/lib/form-generator/components/ListView/ColumnGenerator";
 
 export function UsersListPage() {
   const navigate = useNavigate();
@@ -16,9 +17,9 @@ export function UsersListPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await getUsers({page, limit}); // Fetching all users with a large limit
+      const res = await getUsers({ page, limit }); // Fetching all users with a large limit
       setUsers(res.data);
-      setTotal(res.meta.pagination.total)
+      setTotal(res.meta.pagination.total);
     } catch (error) {
       toast.error("Failed to fetch users");
     }
@@ -38,16 +39,20 @@ export function UsersListPage() {
     }
   };
 
+  const columns = ColumnGenerator<User>({
+    fields: userFields,
+    onEdit: handleRowEdit,
+    onDelete: handleRowDelete,
+    copyField: "userCode",
+  });
+
   useEffect(() => {
     fetchUsers();
   }, []);
 
   return (
     <DataTable
-      columns={getUserColumns({
-        onEdit: handleRowEdit,
-        onDelete: handleRowDelete,
-      })}
+      columns={columns}
       data={users}
       moduleName={"User"}
       page={page}

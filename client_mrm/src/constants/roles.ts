@@ -4,7 +4,7 @@ export type Roles = {
 };
 
 export const roles: Roles[] = [
-  { label: "Admin", value: "admin" },
+  { label: "Admin" , value: "admin" },
   { label: "Manager", value: "manager" },
   { label: "Technician", value: "technician" },
 ];

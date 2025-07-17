@@ -3,9 +3,9 @@ export type CountryOption = {
   value: string;
 };
 
-export const countries: CountryOption[] = [
+export const COUNTRY: CountryOption[] = [
   { label: "India", value: "india" },
 ];
-export const countryMap = Object.fromEntries(
-  countries.map((country) => [country.value, country.label])
+export const COUNTRY_MAP = Object.fromEntries(
+  COUNTRY.map((country) => [country.value, country.label])
 );

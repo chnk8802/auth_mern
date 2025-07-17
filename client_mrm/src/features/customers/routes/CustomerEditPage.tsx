@@ -5,7 +5,7 @@ import type { Customer } from "@/features/customers/types";
 import { getCustomerById, updateCustomer } from "@/features/customers/api/customerApi";
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
-import { CustomerEditForm } from "@/features/customers/components/form/CustomerEditForm";
+import { CustomerEditForm } from "@/features/customers/components/CustomerEditForm";
 
 export function CustomerEditPage() {
   const navigate = useNavigate();

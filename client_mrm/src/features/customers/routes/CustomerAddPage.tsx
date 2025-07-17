@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { createCustomer } from "../api/customerApi";
-import { CustomerAddForm } from "../components/form/CustomerAddForm";
-import type { Customer } from "../types";
+import { CustomerAddForm } from "@/features/customers/components/CustomerAddForm";
+import type { Customer } from "@/features/customers/types";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 

@@ -3,7 +3,7 @@ label: string,
 value: string
 }
 
-export const CustomerTypes: CustomerTypesOption[] = [
+export const CUSTOMER_TYPES: CustomerTypesOption[] = [
     {label: "Individual", value: "individual"},
     {label: "Business", value: "business"},
     {label: "Bulk", value: "bulk"},

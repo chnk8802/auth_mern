@@ -4,7 +4,7 @@ export type StateOption = {
   value: string;
 };
 
-export const indianStates: StateOption[] = [
+export const INDIAN_STATES: StateOption[] = [
   { label: "Andhra Pradesh", value: "andhra_pradesh" },
   { label: "Arunachal Pradesh", value: "arunachal_pradesh" },
   { label: "Assam", value: "assam" },
@@ -43,5 +43,5 @@ export const indianStates: StateOption[] = [
   { label: "Puducherry", value: "puducherry" },
 ];
 export const indianStateMap = Object.fromEntries(
-  indianStates.map((state) => [state.value, state.label])
+  INDIAN_STATES.map((state) => [state.value, state.label])
 );

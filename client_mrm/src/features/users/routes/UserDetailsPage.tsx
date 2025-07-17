@@ -17,6 +17,8 @@ import { DeleteConfirmDialog } from "@/components/form/DeleteConfirmDialog";
 import { Section } from "@/components/layout/sectionLayouts/Sections";
 import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
 import { MoreDropdown } from "@/components/detailsView/MoreDropdown";
+import { userFields } from "../config/userFields";
+import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 
 export function UserDetailPage() {
   const navigate = useNavigate();
@@ -37,6 +39,10 @@ export function UserDetailPage() {
       console.error("Delete failed", err);
       toast.error("Failed to delete user");
     }
+  };
+  const handleEdit = async () => {
+    if (!user?._id) return;
+    navigate(ROUTES.USERS.EDIT(user._id));
   };
 
   useEffect(() => {
@@ -68,66 +74,14 @@ export function UserDetailPage() {
 
   return (
     <div className="px-4">
-      <DetailsPageHeader
-        title="Users Details"
-        onBack={() => navigate(ROUTES.USERS.LIST)}
-        actions={
-          <>
-            <Button
-              size={isMobile ? "icon" : "default"}
-              onClick={() => navigate(ROUTES.USERS.EDIT(user._id))}
-            >
-              {isMobile ? (
-                <SquarePen />
-              ) : (
-                <>
-                  <SquarePen /> Edit
-                </>
-              )}
-            </Button>
-            <DeleteConfirmDialog onConfirm={() => handleDelete()}>
-              <Button size={isMobile ? "icon" : "default"}>
-                {isMobile ? (
-                  <Trash2 />
-                ) : (
-                  <>
-                    <Trash2 /> Delete
-                  </>
-                )}
-              </Button>
-            </DeleteConfirmDialog>
-          </>
-        }
-        more={
-          <MoreDropdown
-            onDownloadPdf={() => console.log("Download PDF")}
-            onPrint={() => console.log("Print")}
-          />
-        }
+      <DetailsBuilder
+        title="User Details"
+        backLink={ROUTES.USERS.LIST}
+        fields={userFields}
+        data={user}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
       />
-      <Section>
-        <DetailItem label="User Code" value={user.userCode} />
-        <DetailItem
-          label="Name"
-          value={user.fullName || user.email.split("@")[0]}
-        />
-        <DetailItem label="Email" value={user.email} />
-        <DetailItem label="Role" value={formatSnakeCaseLabel(user.role)} />
-        <DetailItem
-          label="Address"
-          value={[
-            user.address?.street,
-            user.address?.city,
-            formatSnakeCaseLabel(user.address?.state),
-            formatSnakeCaseLabel(user.address?.country),
-            user.address?.zip,
-          ]
-            .filter(Boolean)
-            .join(", ")}
-        />
-        <DetailItem label="Created at" value={formatDate(user.createdAt)} />
-        <DetailItem label="Last updated" value={formatDate(user.updatedAt)} />
-      </Section>
     </div>
   );
 }

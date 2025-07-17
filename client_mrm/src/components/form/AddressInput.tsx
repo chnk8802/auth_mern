@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type AddressField } from "@/lib/form-generator/types/field-types";
 import { Combobox } from "./Combobox";
-import { indianStates } from "@/constants/indianStates";
-import { countries } from "@/constants/countries";
+import { INDIAN_STATES } from "@/constants/indianStates";
+import { COUNTRY } from "@/constants/countries";
 
 type Props = {
   field: AddressField;
@@ -62,7 +62,7 @@ export function AddressInput({ field, value = {}, onChange, disabled, required}:
           <Label className="pb-4 sm:pb-2" htmlFor={components.state.id}>{components.state.label}</Label>
           <Combobox
             id={components.state.id}
-            options={indianStates || components.state.options || "Select State"}
+            options={INDIAN_STATES || components.state.options || "Select State"}
             value={value.state ?? ""}
             onChange={(val) => handleChange("state", val)}
             placeholder={components.state.placeholder || "Select state"}
@@ -78,7 +78,7 @@ export function AddressInput({ field, value = {}, onChange, disabled, required}:
           <Label className="pb-4 sm:pb-2" htmlFor={components.country.id}>{components.country.label}</Label>
           <Combobox
             id={components.country.id}
-            options={ countries || components.country.options  || "Select Country"}
+            options={ COUNTRY || components.country.options  || "Select Country"}
             value={value.country ?? ""}
             onChange={(val) => handleChange("country", val)}
             placeholder={components.country.placeholder || "Select country"}

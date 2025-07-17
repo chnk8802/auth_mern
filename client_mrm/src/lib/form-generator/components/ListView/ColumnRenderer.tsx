@@ -4,7 +4,7 @@ import type { ModuleField } from "@/lib/form-generator/types/field-types";
 import { Button } from "@/components/ui/button";
 import { indianStateMap } from "@/constants/indianStates";
 import type { ColumnDef } from "@tanstack/react-table";
-import { countryMap } from "@/constants/countries";
+import { COUNTRY_MAP } from "@/constants/countries";
 
 export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined{
   if (field.showInTable === false) return undefined;
@@ -59,7 +59,7 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined{
                 address?.street,
                 address?.city,
                 indianStateMap[address?.state as string] || address?.state,
-                countryMap[address?.country as string] || address?.country,
+                COUNTRY_MAP[address?.country as string] || address?.country,
                 address?.zip,
               ]
                 .filter(Boolean)

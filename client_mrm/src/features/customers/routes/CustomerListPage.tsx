@@ -61,6 +61,7 @@ export function CustomersListPage() {
   useEffect(() => {
     fetchCustomers();
   }, [page, limit]);
+  
   return (
     <>
       <DataTable

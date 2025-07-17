@@ -15,8 +15,8 @@ import type { User } from "../types";
 import { motion } from "framer-motion";
 import { Combobox } from "@/components/form/Combobox";
 import { roles } from "@/constants/roles";
-import { indianStates } from "@/constants/indianStates";
-import { countries } from "@/constants/countries";
+import { INDIAN_STATES } from "@/constants/indianStates";
+import { COUNTRY } from "@/constants/countries";
 
 type EditUserFormProps = {
   user: User;
@@ -159,7 +159,7 @@ export function EditUserForm({ user, onSubmit }: EditUserFormProps) {
                     <Combobox
                       value={field.value}
                       onChange={field.onChange}
-                      options={indianStates}
+                      options={INDIAN_STATES}
                       placeholder="Select state"
                     />
                   </FormControl>
@@ -178,7 +178,7 @@ export function EditUserForm({ user, onSubmit }: EditUserFormProps) {
                     <Combobox
                       value={field.value}
                       onChange={field.onChange}
-                      options={countries}
+                      options={COUNTRY}
                       placeholder="Select country"
                     />
                   </FormControl>

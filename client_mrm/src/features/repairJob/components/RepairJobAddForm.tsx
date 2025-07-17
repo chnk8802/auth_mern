@@ -3,15 +3,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { cleanObject } from "@/lib/utils";
-
 import type { RepairJob } from "@/features/repairJob/types";
-
 import { RepairJobStatus } from "@/constants/repairJobStatus";
 import { RepairType } from "@/constants/repairType";
-import { indianStates } from "@/constants/indianStates";
-import { PaymentStatus } from "@/constants/paymentStatus";
+import { INDIAN_STATES } from "@/constants/indianStates";
+import { PAYMENT_STATUSES } from "@/constants/paymentStatus";
 
 import {
   Form,
@@ -98,9 +95,16 @@ export function AddRepairJobForm({ onSubmit }: AddRepairJobFormProps) {
             name="deviceModel"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Model     <span className="text-red-500">*</span></FormLabel>
+                <FormLabel>
+                  Model <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Enter Model" {...field} required />
+                  <Input
+                    type="text"
+                    placeholder="Enter Model"
+                    {...field}
+                    required
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -187,7 +191,7 @@ export function AddRepairJobForm({ onSubmit }: AddRepairJobFormProps) {
               </FormItem>
             )}
           />
-<FormField
+          <FormField
             control={form.control}
             name="repairCost"
             render={({ field }) => (
@@ -236,7 +240,6 @@ export function AddRepairJobForm({ onSubmit }: AddRepairJobFormProps) {
               </FormItem>
             )}
           />
-          
         </Section>
         <Section>
           <FormField
@@ -249,7 +252,7 @@ export function AddRepairJobForm({ onSubmit }: AddRepairJobFormProps) {
                   <MultiSelectCombobox
                     value={field.value ?? []}
                     onChange={field.onChange}
-                    options={indianStates}
+                    options={INDIAN_STATES}
                     placeholder="Select"
                   />
                 </FormControl>
@@ -326,7 +329,7 @@ export function AddRepairJobForm({ onSubmit }: AddRepairJobFormProps) {
                 <FormControl>
                   <Combobox
                     value={field.value ?? ""}
-                    options={PaymentStatus}
+                    options={PAYMENT_STATUSES}
                     onChange={field.onChange}
                   />
                 </FormControl>

@@ -12,7 +12,7 @@ export function normalizeField<T extends ModuleField>(field: T): T {
     hiddenInEdit: field.hiddenInEdit ?? false,
 
     showInForm: field.showInForm ?? true,
-    showInTable: field.showInTable ?? false,
+    showInTable: field.showInTable ?? true,
     showInDetails: field.showInDetails ?? true,
   };
 

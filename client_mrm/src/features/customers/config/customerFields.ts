@@ -1,4 +1,4 @@
-import { CustomerTypes } from "@/constants/customerTypes";
+import { CUSTOMER_TYPES } from "@/constants/customerTypes";
 import { type ModuleField } from "@/lib/form-generator/types/field-types";
 import { normalizeFields } from "@/lib/form-generator/utils/normalizeFields";
 
@@ -7,7 +7,7 @@ export const customerFields: ModuleField[] = [
     id: "customerType",
     label: "Customer Type",
     type: "select",
-    options: CustomerTypes,
+    options: CUSTOMER_TYPES,
     defaultValue : "individual",
     required: true,
     placeholder: "Select customer type",
@@ -76,6 +76,5 @@ export const customerFields: ModuleField[] = [
     showInTable: false
   },
 ];
-
 
 export const fields = normalizeFields(customerFields);
