@@ -16,11 +16,11 @@ export function FormHeader({ title, backLink, actions }: FormPageHeaderProps) {
     <div className="flex items-center justify-between gap-4 pt-4">
       <div className="flex gap-2">
         {backLink && (
-          <Button variant="outline" size="sm" onClick={() => navigate(backLink)}>
+          <Button variant="outline" size="icon" onClick={() => navigate(backLink)}>
             <ChevronLeft />
           </Button>
         )}
-        <Label className="text-xl font-bold pl-2 pb-2">{title}</Label>
+        <Label className="text-xl font-bold pl-2">{title}</Label>
       </div>
       {actions && actions}
     </div>

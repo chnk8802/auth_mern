@@ -29,7 +29,6 @@ export function FormActionButtons({
           type="button"
           onClick={onToggleLiveData}
           variant="outline"
-          size="sm"
         >
           {showLiveData ? (
             <>

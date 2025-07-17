@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import type { Customer } from "@/features/customers/types";
-import { getCustomerById, updateCustomer } from "@/features/customers/api/customerApi";
+import { EditCustomerForm } from "@/features/customers/components/customerEditForm";
+import { getCustomerById, updateCustomer } from "../../api/customerApi";
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
-import { CustomerEditForm } from "./CustomerEditForm";
+import { FormHeader } from "@/components/headers/FormHeader";
 
-export function CustomerEditPage2() {
+export function CustomerEditPage() {
   const navigate = useNavigate();
   const { customerId } = useParams();
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -68,8 +69,13 @@ export function CustomerEditPage2() {
     return <div className="p-2 text-center">Customer not found</div>;
 
   return (
-    <>
-      <CustomerEditForm customer={customer} onSubmit={handleEdit} context={{}}/>
-    </>
+    <div className="">
+      <FormHeader
+        title="Add Customer"
+        backLink={`/dashboard/customers/${customerId}`}
+        actions={<></>}
+      />
+      <EditCustomerForm customer={customer} onSubmit={handleEdit} />
+    </div>
   );
 }

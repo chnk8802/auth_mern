@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import type { Customer } from "../types";
 import { Combobox } from "@/components/form/Combobox";
 import { indianStates } from "@/constants/indianStates";

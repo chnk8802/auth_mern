@@ -1,31 +1,38 @@
 import React from "react";
-import { fields } from "@/features/customers/components/form/customerFields";
-import { customerWorkflow } from "@/features/customers/workflows/workflow";
+import { customerFields } from "@/features/customers/config/customerFields";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
 import { ROUTES } from "@/constants/routes";
-import type { Customer } from "../../types";
+import type { Customer } from "@/features/customers/types";
+import { useForm, useWatch } from "react-hook-form";
+import { useCustomerFieldStates } from "../../hooks/useCustomerFieldState";
 
 export interface CustomerFormProps {
-  context?: any;
   customer: Customer;
   onSubmit: (data: any) => void;
 }
 
-export const CustomerEditForm = ({
-  context,
-  customer,
-  onSubmit,
-}: CustomerFormProps) => {
-  const [formData, setFormData] = React.useState<Record<string, any>>({});
+export const CustomerEditForm = ({ customer, onSubmit }: CustomerFormProps) => {
+  const form = useForm<Customer>({
+    defaultValues: customer,
+  });
+  const formValues = useWatch({
+    control: form.control,
+  });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  
+  const fieldStates = useCustomerFieldStates(formValues);
+
+
+
   const handleChange = (fieldId: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [fieldId]: value }));
+    form.setValue(fieldId as keyof Customer, value, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   const handleSubmit = () => {
     setIsSubmitting(true);
-    onSubmit?.(formData);
+    onSubmit(form.getValues());
     setTimeout(() => setIsSubmitting(false), 300);
   };
 
@@ -34,14 +41,12 @@ export const CustomerEditForm = ({
       title="Customer"
       backLink={ROUTES.CUSTOMERS.DETAILS(customer._id)}
       mode="edit"
-      
-      fields={fields}
-      formData={formData}
+      fieldStateMap={fieldStates}
+      fields={customerFields}
+      formData={formValues}
       onChange={handleChange}
       onSubmit={handleSubmit}
       isSubmitting={isSubmitting}
-      workflow={customerWorkflow}
-      context={context}
     />
   );
 };

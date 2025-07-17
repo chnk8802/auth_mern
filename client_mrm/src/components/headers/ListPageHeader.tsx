@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ROUTES } from "@/constants/routes";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Label } from "../ui/label";
 
 type ListPageHeaderProps = {
   title: string;
-  subtitle?: string;
+  backLink?: string;
   actions?: React.ReactNode;
   filters?: React.ReactNode;
   more?: React.ReactNode;
@@ -14,29 +13,25 @@ type ListPageHeaderProps = {
 
 export function ListPageHeader({
   title,
+  backLink,
   actions,
   filters,
   more,
 }: ListPageHeaderProps) {
-  const isMobile = useIsMobile();
   const navigate = useNavigate();
   return (
-    <div className="flex items-end justify-end p-4">
-      <div className="flex-1">
-        {isMobile && (
+    <div className="flex items-center justify-between gap-4 pt-4">
+      <div className="flex gap-2 items-center">
+        {backLink && (
           <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={() => navigate(ROUTES.DASHBOARD)}
+            variant="outline"
+            size="icon"
+            onClick={() => navigate(backLink)}
           >
             <ChevronLeft />
           </Button>
         )}
-        {title && !isMobile && (
-        <div className="flex-1 flex-wrap text-2xl font-semibold text-foreground">
-          {title}
-        </div>
-      )}
+        <Label className="text-xl font-bold pl-2">{title}</Label>
       </div>
       <div className="flex flex-wrap gap-2 items-center justify-between">
         {filters && <>{filters}</>}

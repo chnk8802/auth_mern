@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import type { Customer } from "@/features/customers/types";
-import { EditCustomerForm } from "@/features/customers/components/customerEditForm";
-import { getCustomerById, updateCustomer } from "../api/customerApi";
+import { getCustomerById, updateCustomer } from "@/features/customers/api/customerApi";
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
-import { FormHeader } from "@/components/headers/FormHeader";
+import { CustomerEditForm } from "@/features/customers/components/form/CustomerEditForm";
 
 export function CustomerEditPage() {
   const navigate = useNavigate();
@@ -69,13 +68,8 @@ export function CustomerEditPage() {
     return <div className="p-2 text-center">Customer not found</div>;
 
   return (
-    <div className="">
-      <FormHeader
-        title="Add Customer"
-        backLink={`/dashboard/customers/${customerId}`}
-        actions={<></>}
-      />
-      <EditCustomerForm customer={customer} onSubmit={handleEdit} />
-    </div>
+    <>
+      <CustomerEditForm customer={customer} onSubmit={handleEdit}/>
+    </>
   );
 }

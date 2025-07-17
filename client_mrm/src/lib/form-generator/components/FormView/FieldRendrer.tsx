@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import { type ModuleField } from "@/lib/form-generator/types/field-types";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -15,7 +16,6 @@ import { AddressInput } from "@/components/form/AddressInput";
 import { SignatureInput } from "@/components/form/SignatureInput";
 import { LocationInput } from "@/components/form/LocationInput";
 import { SubformInput } from "@/components/form/SubFormInput";
-import clsx from "clsx";
 
 interface FieldRendererProps {
   formMode?: "create" | "edit";
@@ -23,6 +23,7 @@ interface FieldRendererProps {
   value: any;
   onChange: (value: any) => void;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 export const FieldRenderer: React.FC<FieldRendererProps> = ({
@@ -31,6 +32,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   value,
   onChange,
   disabled,
+  readOnly,
 }) => {
   const renderInput = () => {
     switch (field.type) {
@@ -44,8 +46,9 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             placeholder={field.placeholder}
             value={value ?? ""}
             onChange={(e) => onChange(e.target.value)}
-            disabled={field.readOnly || disabled}
+            readOnly={field.readOnly || readOnly}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -57,8 +60,8 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             placeholder={field.placeholder}
             value={value ?? ""}
             onChange={(e) => onChange(Number(e.target.value))}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -69,8 +72,8 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             placeholder={field.placeholder}
             value={value ?? ""}
             onChange={(e) => onChange(e.target.value)}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -79,41 +82,42 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           <Combobox
             value={value}
             onChange={onChange}
-            options={field.options || []}
+            options={field.options}
             placeholder={field.placeholder}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
       case "multiselect":
         return (
           <MultiSelectCombobox
-            value={value || []}
+            value={value ?? []}
             onChange={onChange}
-            options={field.options || []}
-            placeholder={field.placeholder || "Select one or more"}
-            disabled={field.readOnly || disabled}
+            options={field.options}
+            placeholder={field.placeholder}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
+
       case "radio":
         return (
           <RadioGroup
             value={value}
             onValueChange={onChange}
             className="flex flex-col gap-2"
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           >
             {field.options.map((opt) => (
-              <label
+              <Label
                 key={opt.value}
                 className="flex items-center gap-2 cursor-pointer"
               >
                 <RadioGroupItem value={opt.value} />
                 <span>{opt.label}</span>
-              </label>
+              </Label>
             ))}
           </RadioGroup>
         );
@@ -126,8 +130,8 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             placeholder={field.placeholder}
             value={value ? new Date(value) : undefined}
             onChange={(val) => onChange(val?.toISOString().split("T")[0] ?? "")}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -136,11 +140,11 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           <TimeInput
             id={field.id}
             label={field.label}
-            placeholder={field?.placeholder || "00:00:00"}
+            placeholder={field.placeholder}
             value={value}
             onChange={onChange}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -149,16 +153,16 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           <DateTimePicker
             value={value ? new Date(value) : undefined}
             onChange={(val) => onChange(val?.toISOString() ?? "")}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
       case "checkbox":
-        if (field.options && field.options.length > 0) {
+        if (field.options!.length > 0) {
           return (
             <div className="space-y-2">
-              {field.options.map((opt) => (
+              {field.options!.map((opt) => (
                 <div key={opt.value} className="flex items-center space-x-2">
                   <Checkbox
                     id={`${field.id}-${opt.value}`}
@@ -171,8 +175,8 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
                         : (value ?? []).filter((v: any) => v !== opt.value);
                       onChange(updated);
                     }}
-                    disabled={field.readOnly || disabled}
                     required={field.required}
+                    disabled={field.readOnly || disabled}
                   />
                   <Label
                     htmlFor={`${field.id}-${opt.value}`}
@@ -189,9 +193,9 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
         return (
           <Checkbox
             checked={!!value}
-            onCheckedChange={(checked) => onChange(checked)}
-            disabled={field.readOnly || disabled}
+            onCheckedChange={onChange}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -201,23 +205,39 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             field={field}
             value={value ?? {}}
             onChange={onChange}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
       case "file":
-        return (
-          <Input
-            id={field.id}
-            type="file"
-            onChange={(e) =>
-              onChange(e.target.files ? Array.from(e.target.files) : null)
-            }
-            disabled={field.readOnly || disabled}
-            required={field.required}
-          />
-        );
+  return (
+    <div className="space-y-2">
+      <label htmlFor={field.id} className="block font-medium text-sm">
+        {field.label} {field.required && "*"}
+      </label>
+      <input
+        id={field.id}
+        type="file"
+        onChange={(e) =>
+          onChange(e.target.files ? Array.from(e.target.files) : [])
+        }
+        required={field.required}
+        disabled={field.readOnly || disabled}
+        multiple={field.multiple}
+        accept={(field.accept ?? []).join(",")}
+        className="block w-full border border-gray-300 rounded px-3 py-2 text-sm"
+      />
+      {Array.isArray(value) && value.length > 0 && (
+        <ul className="text-sm text-gray-600">
+          {value.map((file: File, i: number) => (
+            <li key={i}>{file.name}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+
 
       case "signature":
         return (
@@ -226,8 +246,8 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             label={field.label}
             value={value}
             onChange={onChange}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -236,13 +256,14 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           <LocationInput
             id={field.id}
             label={field.label}
-            value={value}
             address={field.address}
-            onChange={(val) => onChange(val)}
-            disabled={field.readOnly || disabled}
+            value={value}
+            onChange={onChange}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
+
       case "subform":
         return (
           <SubformInput
@@ -253,8 +274,8 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             onChange={onChange}
             minRows={field.minRows}
             maxRows={field.maxRows}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -262,10 +283,10 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
         return (
           <LookupInput
             field={field}
-            value={value || ""}
+            value={value ?? ""}
             onChange={onChange}
-            disabled={field.readOnly || disabled}
             required={field.required}
+            disabled={field.readOnly || disabled}
           />
         );
 
@@ -274,13 +295,14 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
     }
   };
 
-  if (field.showInForm === false) return null;
+  if (!field.showInForm) return null;
   if (formMode === "create" && field.hiddenInCreate) return null;
   if (formMode === "edit" && field.hiddenInEdit) return null;
 
   const cssClass = clsx("space-y-1", {
     "sm:w-64": field.type !== "subform",
   });
+
   return (
     <div className={cssClass}>
       <Label htmlFor={field.id} className="font-semibold pb-1">

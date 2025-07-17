@@ -26,13 +26,10 @@ import { UsersListPage } from "@/features/users/routes/UserListPage";
 import { UserDetailPage } from "@/features/users/routes/UserDetailsPage";
 import { UserEditPage } from "@/features/users/routes/UserEditPage";
 // Customer
-import { CustomersPage } from "@/features/customers/routes/CustomerListPage";
-// import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
-import { CustomerAddPage } from "@/features/customers/components/form/CustomerAddPage2";
+import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
 import { CustomerDetailPage } from "@/features/customers/routes/CustomerDetailsPage";
-import { CustomerDetailPage2 } from "@/features/customers/components/form/CustomerDetailsPage2";
-import { CustomerEditPage2 } from "@/features/customers/components/form/CustomerEditPage2";
 import { CustomerEditPage } from "@/features/customers/routes/CustomerEditPage";
+import { CustomersListPage } from "@/features/customers/routes/CustomerListPage";
 // Others
 import { RepairJobListPage } from "@/features/repairJob/routes/RepairJobListPage";
 import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
@@ -42,7 +39,6 @@ import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetail
 import { RepairJobAddPage } from "@/features/repairJob/routes/RepairJobAddPage";
 // Form Generator
 import { FormGeneratorPage } from "@/lib/form-generator/demo/FormGeneratorPage";
-import { CustomersListPage2 } from "@/features/customers/components/form/CustomerListPage2";
 
 export const router = createBrowserRouter([
   {
@@ -202,14 +198,14 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <CustomersListPage2 />,
+            element: <CustomersListPage />,
             handle: {
               breadcrumb: "Customers List",
             },
           },
           {
             path: ":customerId",
-            element: <CustomerDetailPage2 />,
+            element: <CustomerDetailPage />,
             handle: {
               breadcrumb: ({ params }: { params: { customerId: string } }) =>
                 `${params.customerId}`,
@@ -217,7 +213,7 @@ export const router = createBrowserRouter([
           },
           {
             path: ":customerId/edit",
-            element: <CustomerEditPage2 />,
+            element: <CustomerEditPage />,
             handle: {
               breadcrumb: ({ params }: { params: { customerId: string } }) =>
                 `Edit ${params.customerId}`,

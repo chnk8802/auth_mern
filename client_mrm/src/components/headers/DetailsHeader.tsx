@@ -29,13 +29,13 @@ export function DetailsPageHeader({
         {backLink && (
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={() => navigate(backLink)}
           >
             <ChevronLeft />
           </Button>
         )}
-        <Label className="text-xl font-bold pl-2 pb-2">{title}</Label>
+        <Label className="text-xl font-bold pl-2">{title}</Label>
       </div>
       <div className="flex gap-2">
         <>

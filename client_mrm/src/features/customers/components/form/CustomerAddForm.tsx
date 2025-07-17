@@ -1,18 +1,17 @@
 import React from "react";
-import { fields } from "@/features/customers/components/form/customerFields";
-import { customerWorkflow } from "../../workflows/workflow";
+import { customerFields } from "@/features/customers/config/customerFields";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
 import { ROUTES } from "@/constants/routes";
+import { useCustomerFieldStates } from "../../hooks/useCustomerFieldState";
 
 export interface CustomerFormProps {
-  context?: any;
   onSubmit: (data: any) => void;
 }
 
-export const CustomerForm = ({ context, onSubmit }: CustomerFormProps) => {
+export const CustomerAddForm = ({ onSubmit }: CustomerFormProps) => {
   const [formData, setFormData] = React.useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  
+  const fieldStates = useCustomerFieldStates(formData);
 
   const handleChange = (fieldId: string, value: any) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
@@ -32,14 +31,13 @@ export const CustomerForm = ({ context, onSubmit }: CustomerFormProps) => {
       title="Customer"
       backLink={ROUTES.CUSTOMERS.LIST}
       mode="create"
-      fields={fields}
+      fieldStateMap={fieldStates}
+      fields={customerFields}
       formData={formData}
       onChange={handleChange}
       onSubmit={handleSubmit}
       onReset={handleReset}
       isSubmitting={isSubmitting}
-      workflow={customerWorkflow}
-      context={context}
     />
   );
 };

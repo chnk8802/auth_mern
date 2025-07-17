@@ -1,17 +1,14 @@
-import type { Customer } from "@/features/customers/types";
-import { AddCustomerForm } from "@/features/customers/components/customerAddForm";
-import { useNavigate } from "react-router-dom";
-import { createCustomer } from "../api/customerApi";
 import { toast } from "sonner";
+import { createCustomer } from "../api/customerApi";
+import { CustomerAddForm } from "../components/form/CustomerAddForm";
+import type { Customer } from "../types";
+import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
-import { FormHeader } from "@/components/headers/FormHeader";
 
 export function CustomerAddPage() {
   const navigate = useNavigate();
-
-  const handleAdd = (customerData: Omit<Customer, "_id">) => {
+   const handleSave = (customerData: Omit<Customer, "_id">) => {
     const payload = { data: [customerData] };
-    console.log(payload);
 
     const submitAdd = async () => {
       try {
@@ -27,9 +24,8 @@ export function CustomerAddPage() {
     submitAdd();
   };
   return (
-    <div className="m-6">
-      <FormHeader title="Add Customer" backLink={ROUTES.CUSTOMERS.LIST} actions={<></>}/>
-      <AddCustomerForm onSubmit={handleAdd} />
-    </div>
+    <>      
+      <CustomerAddForm onSubmit={handleSave} />
+    </>
   );
 }

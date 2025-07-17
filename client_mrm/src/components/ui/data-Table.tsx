@@ -52,6 +52,7 @@ import { useSidebar } from "./sidebar";
 import { cn } from "@/lib/utils";
 import { ListPageHeader } from "../headers/ListPageHeader";
 import { SearchDrawer } from "../listView/SearchDrawer";
+import { ROUTES } from "@/constants/routes";
 
 interface DataTableProps<TData extends { _id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -194,6 +195,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
     <div className="">
       <ListPageHeader
         title={pluralize(moduleName || "")}
+        backLink={ROUTES.DASHBOARD}
         actions={
           <Button
             onClick={() =>
@@ -228,7 +230,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
         }
       />
 
-      <div className="border rounded-md m-2 max-h-[calc(100vh-210px)] overflow-auto">
+      <div className="border rounded-md mt-2 max-h-[calc(100vh-210px)] overflow-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
