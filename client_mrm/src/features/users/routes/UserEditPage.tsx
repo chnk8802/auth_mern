@@ -71,12 +71,8 @@ export function UserEditPage() {
   if (!user) return <div className="p-2 text-center">User not found</div>;
 
   return (
-    <div className="p-2">
-      <FormHeader
-        title="Edit User"
-        backLink={ROUTES.USERS.LIST}
-      />
+    <>
       <EditUserForm user={user} onSubmit={handleEdit} />
-    </div>
+    </>
   );
 }

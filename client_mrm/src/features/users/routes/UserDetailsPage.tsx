@@ -65,7 +65,7 @@ export function UserDetailPage() {
     );
 
   return (
-    <div className="px-4">
+    <>
       <DetailsBuilder
         title="User Details"
         backLink={ROUTES.USERS.LIST}
@@ -74,6 +74,6 @@ export function UserDetailPage() {
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
-    </div>
+    </>
   );
 }
