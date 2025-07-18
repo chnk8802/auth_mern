@@ -17,13 +17,13 @@ export function useCustomerFieldStates(formData: Record<string, any>) {
     }
 
     // Lock fullName if it's already filled
-    if (formData.fullName) {
-      state.fullName = {
-        readOnly: true,
-        reason: "Full name cannot be changed once set",
-        overridden: true,
-      };
-    }
+    // if (formData.fullName) {
+    //   state.fullName = {
+    //     readOnly: true,
+    //     reason: "Full name cannot be changed once set",
+    //     overridden: true,
+    //   };
+    // }
 
     // Hide address for individual customers
     if (customerType === "individual") {

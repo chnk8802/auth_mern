@@ -92,7 +92,7 @@ export function normalizeField<T extends ModuleField>(field: T): T {
       return {
         ...field,
         ...common,
-        components: [field.components?.street ?? {}, field.components?.city ?? {}, field.components?.state ?? {}, field.components?.country ?? {}, field.components?.postalCode ?? {}]
+        components: field.components ?? {}
       };
 
     case "file":

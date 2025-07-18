@@ -11,11 +11,19 @@ type Props = {
   field: AddressField;
   value: Record<string, any>;
   onChange: (val: Record<string, any>) => void;
+  visible?: boolean;
   disabled?: boolean;
   required?: boolean;
 };
 
-export function AddressInput({ field, value = {}, onChange, disabled, required}: Props) {
+export function AddressInput({
+  field,
+  value = {},
+  onChange,
+  visible,
+  disabled,
+  required,
+}: Props) {
   const handleChange = (key: string, val: any) => {
     onChange({ ...value, [key]: val });
   };
@@ -24,10 +32,12 @@ export function AddressInput({ field, value = {}, onChange, disabled, required}:
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 pt-2">
-      {components.street && (
+      {components.street && components.street?.visible !== false && (
         // <div className="sm:flex sm:justify-between">
-          <div>
-          <Label className="pb-4 sm:pb-2" htmlFor={components.street.id}>{components.street.label}</Label>
+        <div>
+          <Label className="pb-4 sm:pb-2" htmlFor={components.street.id}>
+            {components.street.label}
+          </Label>
           <Input
             id={components.street.id}
             value={value.street ?? ""}
@@ -40,10 +50,12 @@ export function AddressInput({ field, value = {}, onChange, disabled, required}:
         </div>
       )}
 
-      {components.city && (
+      {components.city && components.city?.visible !== false && (
         // <div className="sm:flex sm:justify-between">
         <div>
-          <Label className="pb-4 sm:pb-2" htmlFor={components.city.id}>{components.city.label}</Label>
+          <Label className="pb-4 sm:pb-2" htmlFor={components.city.id}>
+            {components.city.label}
+          </Label>
           <Input
             id={components.city.id}
             value={value.city ?? ""}
@@ -56,13 +68,17 @@ export function AddressInput({ field, value = {}, onChange, disabled, required}:
         </div>
       )}
 
-      {components.state && (
+      {components.state && components.state?.visible !== false && (
         // <div className="sm:flex sm:justify-between">
         <div>
-          <Label className="pb-4 sm:pb-2" htmlFor={components.state.id}>{components.state.label}</Label>
+          <Label className="pb-4 sm:pb-2" htmlFor={components.state.id}>
+            {components.state.label}
+          </Label>
           <Combobox
             id={components.state.id}
-            options={INDIAN_STATES || components.state.options || "Select State"}
+            options={
+              INDIAN_STATES || components.state.options || "Select State"
+            }
             value={value.state ?? ""}
             onChange={(val) => handleChange("state", val)}
             placeholder={components.state.placeholder || "Select state"}
@@ -72,13 +88,15 @@ export function AddressInput({ field, value = {}, onChange, disabled, required}:
         </div>
       )}
 
-      {components.country && (
+      {components.country && components.country?.visible !== false && (
         // <div className="sm:flex sm:justify-between">
         <div>
-          <Label className="pb-4 sm:pb-2" htmlFor={components.country.id}>{components.country.label}</Label>
+          <Label className="pb-4 sm:pb-2" htmlFor={components.country.id}>
+            {components.country.label}
+          </Label>
           <Combobox
             id={components.country.id}
-            options={ COUNTRY || components.country.options  || "Select Country"}
+            options={COUNTRY || components.country.options || "Select Country"}
             value={value.country ?? ""}
             onChange={(val) => handleChange("country", val)}
             placeholder={components.country.placeholder || "Select country"}
@@ -88,14 +106,18 @@ export function AddressInput({ field, value = {}, onChange, disabled, required}:
         </div>
       )}
 
-      {components.postalCode && (
+      {components.postalCode && components.postalCode?.visible !== false && (
         // <div className="sm:flex sm:justify-between">
         <div>
-          <Label className="pb-4 sm:pb-2" htmlFor={components.postalCode.id}>{components.postalCode.label}</Label>
+          <Label className="pb-4 sm:pb-2" htmlFor={components.postalCode.id}>
+            {components.postalCode.label}
+          </Label>
           <Input
             id={components.postalCode.id}
             value={value.postalCode ?? ""}
-            placeholder={components.postalCode.placeholder || "Enter Postal Code"}
+            placeholder={
+              components.postalCode.placeholder || "Enter Postal Code"
+            }
             onChange={(e) => handleChange("postalCode", e.target.value)}
             disabled={disabled}
             required={required}

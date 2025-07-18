@@ -8,15 +8,7 @@ import type { User } from "@/features/users/types";
 import { DetailToolbar } from "@/components/headers/DetailPageToolbar";
 import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
-import { formatDate, formatSnakeCaseLabel } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { SquarePen, Trash2 } from "lucide-react";
-import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { DeleteConfirmDialog } from "@/components/form/DeleteConfirmDialog";
-import { Section } from "@/components/layout/sectionLayouts/Sections";
-import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
-import { MoreDropdown } from "@/components/detailsView/MoreDropdown";
 import { userFields } from "../config/userFields";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 

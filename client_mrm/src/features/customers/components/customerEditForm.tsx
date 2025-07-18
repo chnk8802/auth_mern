@@ -21,8 +21,6 @@ export const CustomerEditForm = ({ customer, onSubmit }: CustomerFormProps) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const fieldStates = useCustomerFieldStates(formValues);
 
-
-
   const handleChange = (fieldId: string, value: any) => {
     form.setValue(fieldId as keyof Customer, value, {
       shouldValidate: true,

@@ -22,6 +22,7 @@ interface FieldRendererProps {
   field: ModuleField;
   value: any;
   onChange: (value: any) => void;
+  visible?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
 }
@@ -31,6 +32,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   field,
   value,
   onChange,
+  visible,
   disabled,
   readOnly,
 }) => {
@@ -298,6 +300,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   if (!field.showInForm) return null;
   if (formMode === "create" && field.hiddenInCreate) return null;
   if (formMode === "edit" && field.hiddenInEdit) return null;
+  if (visible) return null;
 
   const cssClass = clsx("space-y-1", {
     "sm:w-64": field.type !== "subform",

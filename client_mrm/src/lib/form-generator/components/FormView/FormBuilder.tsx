@@ -34,7 +34,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   fields,
   formData,
-  fieldStateMap = {},
+  fieldStateMap,
 
   onChange,
   onSubmit,
@@ -118,6 +118,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                     field={field}
                     value={formData[field.id]}
                     onChange={(val) => onChange(field.id, val)}
+                    visible={state?.visible}
                     disabled={state?.disabled}
                     readOnly={state?.readOnly}
                   />
