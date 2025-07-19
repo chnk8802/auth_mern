@@ -53,13 +53,15 @@ export const fields: ModuleField[] = [{
     id: "createdAt",
     label: "Created At",
     type: "datetime",
-    showInTable: true
+    showInTable: true,
+    showInDetails: false
 },
 {
     id: "updatedAt",
     label: "Updated At",
     type: "datetime",
-    showInTable: true
+    showInTable: true,
+    showInDetails: false
 }]
 
 export const userFields = normalizeFields(fields)

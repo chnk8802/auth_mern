@@ -49,12 +49,11 @@ export function MainLayout() {
       <AppSidebar />
       <SidebarInset className="relative flex flex-col sm:w-264">
         <header
-          className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 
+          className="sticky top-0 z-30 flex h-16 sm:h-12 shrink-0 items-center justify-between gap-2 
                transition-[width,height] ease-linear
                group-has-data-[collapsible=icon]/sidebar-wrapper:h-12
                bg-background border-b px-4"
         >
-          {/* <header className="flex h-14 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"> */}
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
