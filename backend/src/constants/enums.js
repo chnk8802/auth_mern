@@ -46,7 +46,7 @@ export const CUSTOMER_TYPES = ["individual", "business", "bulk"];
 // Repair Job
 export const REPAIR_STATUS = ["pending", "in-progress", "incomplete", "complete", "picked"];
 export const REPAIR_TYPE = ["Hardware", "Software", "Both"];
-export const DEVICE_COMPONENTS = ["Sim Tray", "Screen", "Front Camera", "Back Camera"];
+export const DEVICE_COMPONENTS = ["Sim Tray", "Screen", "Front Camera", "Back Camera", "Battery"];
 export const PAYMENT_STATUS = ["paid", "unpaid", "partial"];
 
 // Payment

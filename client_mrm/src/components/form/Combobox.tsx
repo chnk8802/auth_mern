@@ -27,6 +27,7 @@ type ComboboxProps = {
   placeholder?: string;
   disabled?: boolean;
   required?: boolean;
+  defaultValue?: boolean;
 };
 
 export function Combobox({
@@ -37,6 +38,7 @@ export function Combobox({
   placeholder = "Select",
   disabled,
   required,
+  defaultValue
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
 

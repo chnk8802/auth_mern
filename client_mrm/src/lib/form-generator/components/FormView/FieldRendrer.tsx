@@ -22,6 +22,7 @@ interface FieldRendererProps {
   field: ModuleField;
   value: any;
   onChange: (value: any) => void;
+  defaultValue?: any;
   visible?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -32,6 +33,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   field,
   value,
   onChange,
+  defaultValue,
   visible,
   disabled,
   readOnly,
@@ -46,7 +48,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             id={field.id}
             type={field.type === "email" ? "email" : "text"}
             placeholder={field.placeholder}
-            value={value ?? ""}
+            value={value ?? defaultValue ?? ""}
             onChange={(e) => onChange(e.target.value)}
             readOnly={field.readOnly || readOnly}
             required={field.required}
@@ -60,7 +62,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             id={field.id}
             type="number"
             placeholder={field.placeholder}
-            value={value ?? ""}
+            value={value ?? defaultValue ?? ""}
             onChange={(e) => onChange(Number(e.target.value))}
             required={field.required}
             disabled={field.readOnly || disabled}
@@ -72,7 +74,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           <Textarea
             id={field.id}
             placeholder={field.placeholder}
-            value={value ?? ""}
+            value={value ?? defaultValue ?? ""}
             onChange={(e) => onChange(e.target.value)}
             required={field.required}
             disabled={field.readOnly || disabled}
@@ -86,6 +88,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             onChange={onChange}
             options={field.options}
             placeholder={field.placeholder}
+            defaultValue={defaultValue ?? ""}
             required={field.required}
             disabled={field.readOnly || disabled}
           />

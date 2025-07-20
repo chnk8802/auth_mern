@@ -1,10 +1,9 @@
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import type { RepairJob } from "@/features/repairJob/types";
 import { AddRepairJobForm } from "@/features/repairJob/components/RepairJobAddForm";
-import { useNavigate } from "react-router-dom";
 import { createRepairJob } from "@/features/repairJob/api/repairJobApi";
-import { toast } from "sonner";
 import { ROUTES } from "@/constants/routes";
-import { FormHeader } from "@/components/headers/FormHeader";
 
 export function RepairJobAddPage() {
   const navigate = useNavigate();
@@ -29,9 +28,8 @@ export function RepairJobAddPage() {
   };
 
   return (
-    <div>
-      <FormHeader title="Add Repair Job" />
+    <>
       <AddRepairJobForm onSubmit={handleAdd} />
-    </div>
+    </>
   );
 }

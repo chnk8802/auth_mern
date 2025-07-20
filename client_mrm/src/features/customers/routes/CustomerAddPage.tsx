@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { createCustomer } from "../api/customerApi";
-import { CustomerAddForm } from "@/features/customers/components/CustomerAddForm";
+import { CustomerAddForm } from "@/features/customers/components/customerAddForm";
 import type { Customer } from "@/features/customers/types";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";

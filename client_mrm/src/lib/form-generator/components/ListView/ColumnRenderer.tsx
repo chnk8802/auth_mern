@@ -1,12 +1,12 @@
 import { ArrowUpDown } from "lucide-react";
-import { formatDate, formatSnakeCaseLabel } from "@/lib/utils";
+import { formatDate, formatSnakeCaseLabel, parseDecimal } from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 import { Button } from "@/components/ui/button";
 import { indianStateMap } from "@/constants/indianStates";
 import type { ColumnDef } from "@tanstack/react-table";
 import { COUNTRY_MAP } from "@/constants/countries";
 
-export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined{
+export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
   if (field.showInTable === false) return undefined;
   return {
     accessorKey: field.id,
@@ -67,12 +67,25 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined{
             </div>
           );
 
-        case "lookup":
+        case "lookup": {
+          if (!value || typeof value !== "object") return <div>—</div>;
+
+          const display =
+            (value as any).displayName ??
+            (value as any).fullName ??
+            (value as any).name ??
+            (value as any).label ??
+            (value as any)._id ??
+            "—";
+
+          return <div>{display}</div>;
+        }
+        case "number":
+          return (<>{parseDecimal(value)}</>);
         case "text":
         case "phone":
         case "email":
         case "textarea":
-        case "number":
         default:
           return <div>{(value as string) ?? "—"}</div>;
       }

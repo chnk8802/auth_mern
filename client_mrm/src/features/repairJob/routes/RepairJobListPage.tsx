@@ -2,13 +2,14 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/ui/data-Table";
-import { getRepaiJobColumns } from "@/features/repairJob/components/columns";
 import {
   getRepairJobs,
   deleteRepairJob,
 } from "@/features/repairJob/api/repairJobApi";
 import type { RepairJob } from "@/features/repairJob/types";
 import { useNavigate } from "react-router-dom";
+import { ColumnGenerator } from "@/lib/form-generator/components/ListView/ColumnGenerator";
+import { repairJobFields } from "../config/repiarJobFields";
 
 export function RepairJobListPage() {
   const navigate = useNavigate();
@@ -50,24 +51,26 @@ export function RepairJobListPage() {
     }
   };
 
+  const columns = ColumnGenerator<RepairJob>({
+    fields: repairJobFields,
+    onEdit: handleRowEdit,
+    onDelete: handleRowDelete,
+    copyField: "repairJobCode",
+  });
+
   useEffect(() => {
     fetchRepairJobs();
   }, [page, limit]);
   return (
-    <>
-      <DataTable
-        columns={getRepaiJobColumns({
-          onEdit: handleRowEdit,
-          onDelete: handleRowDelete,
-        })}
-        data={repairJobs}
-        moduleName={"Repair Job"}
-        page={page}
-        setPage={setPage}
-        limit={limit}
-        setLimit={setLimit}
-        total={total}
-      />
-    </>
+    <DataTable
+      columns={columns}
+      data={repairJobs}
+      moduleName={"Repair Job"}
+      page={page}
+      setPage={setPage}
+      limit={limit}
+      setLimit={setLimit}
+      total={total}
+    />
   );
 }

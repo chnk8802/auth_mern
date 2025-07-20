@@ -59,22 +59,23 @@ export const customerFields: ModuleField[] = [
     },
     section: "General",
   },
-  {
+{
+    section: "Audit Trail",
     id: "createdAt",
     label: "Created At",
     type: "datetime",
-    section: "General",
-    showInForm: false,
-    showInTable: false
-  },
-  {
+    showInTable: true,
+    showInDetails: true
+},
+{
+    section: "Audit Trail",
     id: "updatedAt",
     label: "Updated At",
     type: "datetime",
-    section: "General",
-    showInForm:false,
-    showInTable: false
-  },
+    showInTable: true,
+    showInDetails: true
+}
 ];
 
 export const fields = normalizeFields(customerFields);
+

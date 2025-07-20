@@ -43,33 +43,54 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 }) => {
   const [showLiveData, setShowLiveData] = React.useState(false);
 
-  const normalizedFields = React.useMemo(() => normalizeFields(fields), [fields]);
+  const normalizedFields = React.useMemo(
+    () => normalizeFields(fields),
+    [fields]
+  );
 
   const groupedSections = React.useMemo(() => {
-    const grouped = normalizedFields.reduce<Record<string, ModuleField[]>>((acc, field) => {
-      const section = field.section || "";
-      if (!acc[section]) acc[section] = [];
-      acc[section].push(field);
-      return acc;
-    }, {});
+    const grouped = normalizedFields.reduce<Record<string, ModuleField[]>>(
+      (acc, field) => {
+        const section = field.section || "";
+        if (!acc[section]) acc[section] = [];
+        acc[section].push(field);
+        return acc;
+      },
+      {}
+    );
 
-    // Validate section consistency
     for (const [sectionName, sectionFields] of Object.entries(grouped)) {
-      const sectionTypes = new Set(sectionFields.map(f => f.sectionType));
-      const columnCounts = new Set(sectionFields.map(f => f.col));
+      const sectionTypes = new Set(sectionFields.map((f) => f.sectionType));
+      const columnCounts = new Set(sectionFields.map((f) => f.col));
 
       if (sectionTypes.size > 1) {
         const typesWithFields = Array.from(sectionTypes)
-          .map(type => `${type}: [${sectionFields.filter(f => f.sectionType === type).map(f => f.id).join(", ")}]`)
+          .map(
+            (type) =>
+              `${type}: [${sectionFields
+                .filter((f) => f.sectionType === type)
+                .map((f) => f.id)
+                .join(", ")}]`
+          )
           .join(" | ");
-        throw new Error(`Inconsistent 'sectionType' in section "${sectionName}".\n\n${typesWithFields}`);
+        throw new Error(
+          `Inconsistent 'sectionType' in section "${sectionName}".\n\n${typesWithFields}`
+        );
       }
 
       if (columnCounts.size > 1) {
         const colsWithFields = Array.from(columnCounts)
-          .map(col => `col=${col}: [${sectionFields.filter(f => f.col === col).map(f => f.id).join(", ")}]`)
+          .map(
+            (col) =>
+              `col=${col}: [${sectionFields
+                .filter((f) => f.col === col)
+                .map((f) => f.id)
+                .join(", ")}]`
+          )
           .join(" | ");
-        throw new Error(`Inconsistent 'col' value in section "${sectionName}".\n\n${colsWithFields}`);
+        throw new Error(
+          `Inconsistent 'col' value in section "${sectionName}".\n\n${colsWithFields}`
+        );
       }
     }
 
@@ -94,39 +115,46 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                 }}
                 onReset={onReset}
                 showLiveData={showLiveData}
-                onToggleLiveData={() => setShowLiveData(prev => !prev)}
+                onToggleLiveData={() => setShowLiveData((prev) => !prev)}
               />
             }
           />
         </div>
 
-        {Object.entries(groupedSections).map(([sectionTitle, sectionFields]) => {
-          const sectionType = sectionFields[0].sectionType!;
-          const col = sectionFields[0].col!;
-          const Wrapper = sectionType === "basic" ? Section : AnimatedSection;
+        {Object.entries(groupedSections).map(
+          ([sectionTitle, sectionFields]) => {
 
-          return (
-            <Wrapper key={sectionTitle} title={sectionTitle} col={col}>
-              {sectionFields.map((field) => {
-                const state = fieldStateMap?.[field.id];
-                if (state?.visible === false) return null;
+            const visibleFields = sectionFields.filter(
+              (f) => f.showInForm !== false
+            );
+            if (visibleFields.length === 0) return null;
 
-                return (
-                  <FieldRenderer
-                    key={field.id}
-                    formMode={mode}
-                    field={field}
-                    value={formData[field.id]}
-                    onChange={(val) => onChange(field.id, val)}
-                    visible={state?.visible}
-                    disabled={state?.disabled}
-                    readOnly={state?.readOnly}
-                  />
-                );
-              })}
-            </Wrapper>
-          );
-        })}
+            const sectionType = sectionFields[0].sectionType!;
+            const col = sectionFields[0].col!;
+            const Wrapper = sectionType === "basic" ? Section : AnimatedSection;
+            return (
+              <Wrapper key={sectionTitle} title={sectionTitle} col={col}>
+                {visibleFields.map((field) => {
+                  const state = fieldStateMap?.[field.id];
+                  if (state?.visible === false) return null;
+
+                  return (
+                    <FieldRenderer
+                      key={field.id}
+                      formMode={mode}
+                      field={field}
+                      value={formData[field.id]}
+                      onChange={(val) => onChange(field.id, val)}
+                      visible={state?.visible}
+                      disabled={state?.disabled}
+                      readOnly={state?.readOnly}
+                    />
+                  );
+                })}
+              </Wrapper>
+            );
+          }
+        )}
       </form>
 
       {showLiveData && <LiveFormData data={formData} />}
