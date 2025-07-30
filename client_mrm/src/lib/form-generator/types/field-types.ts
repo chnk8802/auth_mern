@@ -116,7 +116,6 @@ export interface BaseField {
   showInDetails?: boolean;
 }
 
-
 /**
  * Single-line text input
  */
@@ -207,7 +206,6 @@ export interface CurrencyField extends BaseField {
   allowNegative?: boolean;
 }
 
-
 /**
  * Date input field (YYYY-MM-DD)
  */
@@ -265,7 +263,6 @@ export interface LookupField extends BaseField {
    */
   displayField: string;
 }
-
 
 /**
  * Radio button group field
@@ -424,3 +421,31 @@ export type ModuleField =
   | SubformField
   | SignatureField
   | MapField;
+
+export interface FieldSection {
+  /**
+   * Section title or label
+   */
+  section: string;
+
+  /**
+   * Section layout type (e.g., animated tabs or plain grouping)
+   */
+  sectionType: "animated" | "basic";
+
+  /**
+   * Number of columns in this section (e.g., 1, 2, 3)
+   */
+  col: number;
+
+  /**
+   * List of fields in this section
+   */
+  fields: ModuleField[];
+}
+
+/**
+ * Complete FieldConfig type for a form
+ * It's just an array of sections
+ */
+export type FieldConfig = FieldSection[];
