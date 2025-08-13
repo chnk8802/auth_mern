@@ -40,7 +40,7 @@ export const CustomerEditForm = ({ customer, onSubmit }: CustomerFormProps) => {
       backLink={ROUTES.CUSTOMERS.DETAILS(customer._id)}
       mode="edit"
       fieldStateMap={fieldStates}
-      fields={customerFields}
+      fieldsConfig={customerFields}
       formData={formValues}
       onChange={handleChange}
       onSubmit={handleSubmit}

@@ -10,7 +10,7 @@ interface Props {
 export function ProtectedRoute({ children }: Props) {
   const { user} = useAppSelector((state) => state.auth)
   if (!user) {
-    return <Navigate to={ROUTES.LOGIN} replace />
+    return <Navigate to={ROUTES.GUEST_PATHS.LOGIN} replace />
   }
 
   return children

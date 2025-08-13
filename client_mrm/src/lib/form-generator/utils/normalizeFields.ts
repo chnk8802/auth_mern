@@ -4,7 +4,7 @@ import { normalizeField } from "./normalizeField";
 /**
  * Normalize a flat list of ModuleFields
  */
-export function normalizeFields<T extends ModuleField>(fields: T[]): T[] {
+export function normalizeFields<T extends ModuleField>(fields: T[] = []): T[] {
   return fields.map(normalizeField);
 }
 
@@ -14,6 +14,6 @@ export function normalizeFields<T extends ModuleField>(fields: T[]): T[] {
 export function normalizeFieldConfig(config: FieldConfig): FieldConfig {
   return config.map((section) => ({
     ...section,
-    fields: section.fields.map(normalizeField),
+    fields: normalizeFields(section.fields),
   }));
 }

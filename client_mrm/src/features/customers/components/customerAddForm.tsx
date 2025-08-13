@@ -32,7 +32,7 @@ export const CustomerAddForm = ({ onSubmit }: CustomerFormProps) => {
       backLink={ROUTES.CUSTOMERS.LIST}
       mode="create"
       fieldStateMap={fieldStates}
-      fields={customerFields}
+      fieldsConfig={customerFields}
       formData={formData}
       onChange={handleChange}
       onSubmit={handleSubmit}

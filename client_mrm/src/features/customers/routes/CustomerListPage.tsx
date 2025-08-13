@@ -9,7 +9,7 @@ import {
 import type { Customer } from "@/features/customers/types";
 import { useNavigate } from "react-router-dom";
 import { ColumnGenerator } from "@/lib/form-generator/components/ListView/ColumnGenerator";
-import { customerFields } from "@/features/customers/config/customerFields";
+import { customerFields } from "../config/customerFields";
 
 export function CustomersListPage() {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export function CustomersListPage() {
   };
 
   const columns = ColumnGenerator<Customer>({
-    fields: customerFields,
+    fieldConfig: customerFields,
     onEdit: handleRowEdit,
     onDelete: handleRowDelete,
     copyField: "customerCode",

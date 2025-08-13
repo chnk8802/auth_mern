@@ -15,9 +15,24 @@ export const registerUser = async (payload: {email: string; password: string; ro
 };
 
 // Get current user
-export const fetchCurrentUser = async (): Promise<ApiResponse<AuthUser[]>> => {
-  const res = await api.get("/auth/me");
-  return res.data;
+export const fetchCurrentUser = async (): Promise<ApiResponse<AuthUser>> => {
+  try {
+    const res = await api.get<ApiResponse<AuthUser>>("/auth/me");
+    return res.data;
+  } catch (error) {
+    console.error("Failed to fetch current user:", error);
+
+    return {
+      data: null as unknown as AuthUser,
+      message: error instanceof Error ? error.message : "Unknown error",
+      meta: {
+        code: 500,
+        status: "error",
+        pagination: {} as any, // or null if optional
+        timestamp: new Date().toISOString(),
+      },
+    };
+  }
 };
 
 // Logout (optional)

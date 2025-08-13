@@ -16,7 +16,7 @@ interface FormBuilderProps {
   backLink: string;
   mode: "create" | "edit";
 
-  fields: FieldConfig; // 👈 Changed from ModuleField[] to FieldConfig
+  fieldsConfig: FieldConfig;
   formData: Record<string, any>;
   fieldStateMap?: Record<string, FieldState>;
 
@@ -30,7 +30,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   title,
   backLink,
   mode,
-  fields,
+  fieldsConfig,
   formData,
   fieldStateMap,
   onChange,
@@ -39,8 +39,8 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   isSubmitting,
 }) => {
   const [showLiveData, setShowLiveData] = React.useState(false);
-// Normalize fields once when they change
-  const normalizedFields = React.useMemo(() => normalizeFieldConfig(fields), [fields]);
+  if (!fieldsConfig) return <div>Loading form...</div>;
+  const normalizedFields = React.useMemo(() => normalizeFieldConfig(fieldsConfig), [fieldsConfig]);
 
   return (
     <>

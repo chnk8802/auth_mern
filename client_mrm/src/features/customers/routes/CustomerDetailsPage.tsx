@@ -69,7 +69,7 @@ export function CustomerDetailPage() {
       <DetailsBuilder
         title="Customer Details"
         backLink={ROUTES.CUSTOMERS.LIST}
-        fields={customerFields}
+        fieldConfig={customerFields}
         data={customer}
         onDelete={handleDelete}
         onEdit={handleEdit}

@@ -7,12 +7,12 @@ import {
   AnimatedSection,
 } from "@/components/layout/sectionLayouts/Sections";
 import { DetailsRenderer } from "@/lib/form-generator/components/DetailView/DetailRender";
-import type { ModuleField } from "@/lib/form-generator/types/field-types";
+import type { FieldConfig } from "@/lib/form-generator/types/field-types";
 
 type Props = {
   title: string;
   backLink: string;
-  fields: ModuleField[];
+  fieldConfig: FieldConfig;
   data: Record<string, any>;
   onDelete?: () => void;
   onEdit?: () => void;
@@ -21,19 +21,11 @@ type Props = {
 export function DetailsBuilder({
   title,
   backLink,
-  fields,
+  fieldConfig,
   data,
   onDelete,
   onEdit,
 }: Props) {
-  const grouped = fields
-    .filter((f) => f.showInDetails !== false)
-    .reduce<Record<string, ModuleField[]>>((acc, field) => {
-      const section = field.section || "";
-      if (!acc[section]) acc[section] = [];
-      acc[section].push(field);
-      return acc;
-    }, {});
 
   return (
     <>
@@ -55,15 +47,15 @@ export function DetailsBuilder({
           }
         />
       </div>
-      {Object.entries(grouped).map(([sectionTitle, sectionFields]) => {
-        const col = sectionFields[0].col || 2;
-        const sectionType = sectionFields[0].sectionType || "animated";
+      {fieldConfig.map((section) => {
+        const col = section.col;
+        const sectionType = section.sectionType || "animated";
 
         const Wrapper = sectionType === "basic" ? Section : AnimatedSection;
 
         return (
-          <Wrapper key={sectionTitle} title={sectionTitle} col={col}>
-            <DetailsRenderer fields={sectionFields} data={data} />
+          <Wrapper key={section.section} title={section.section} col={col}>
+            <DetailsRenderer fields={section.fields} data={data} />
           </Wrapper>
         );
       })}

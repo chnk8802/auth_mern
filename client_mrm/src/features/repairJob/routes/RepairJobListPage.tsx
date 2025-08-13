@@ -52,7 +52,7 @@ export function RepairJobListPage() {
   };
 
   const columns = ColumnGenerator<RepairJob>({
-    fields: repairJobFields,
+    fieldConfig: repairJobFields,
     onEdit: handleRowEdit,
     onDelete: handleRowDelete,
     copyField: "repairJobCode",

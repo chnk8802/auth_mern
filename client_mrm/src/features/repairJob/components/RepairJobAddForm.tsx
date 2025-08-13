@@ -33,7 +33,7 @@ export function AddRepairJobForm({ onSubmit }: AddRepairJobFormProps) {
       backLink={ROUTES.REPAIR_JOBS.LIST}
       mode="create"
       // fieldStateMap={fieldStates}
-      fields={repairJobFields}
+      fieldsConfig={repairJobFields}
       formData={formData}
       onChange={handleChange}
       onSubmit={handleSubmit}
