@@ -1,10 +1,10 @@
 import express from "express";
 import auth from "../middlewares/authMiddleware.js";
 import permit from "../middlewares/permissionMiddleware.js";
-import lookupController from "../controllers/lookupController.js";
+import { lookup } from "../controllers/lookupController.js";
 
 const router = express.Router();
 
-router.get("/dsa/:module/:id", auth, permit(["admin", "manager", "technician"]), lookupController.getLookupData);
+router.get("/", auth, permit(["admin", "manager", "technician"]), lookup);
 
 export default router;

@@ -1,6 +1,6 @@
 import { type FieldConfig } from "@/lib/form-generator/types/field-types"
 
-export const fields: FieldConfig = [
+export const testFields: FieldConfig = [
   {
     section: "Personal Information",
     sectionType: "basic",
@@ -25,7 +25,7 @@ export const fields: FieldConfig = [
         label: "Age",
         type: "number",
         placeholder: "Age",
-        min: 0,
+        // min: ,
         max: 120,
         step: 1,
         suffix: "years",
@@ -44,6 +44,13 @@ export const fields: FieldConfig = [
         id: "event_timestamp",
         label: "Event Timestamp",
         type: "datetime",
+      },
+      {
+        id: "annual_income",
+        label: "Annual Income",
+        type: "currency",
+        currencyCode: "USD",
+        placeholder: "Enter income",
       },
     ],
   },
@@ -262,6 +269,14 @@ export const fields: FieldConfig = [
               { label: "60 days", value: "60" },
               { label: "90 days", value: "90" },
             ],
+            col: 4,
+          },
+          {
+            id: "salary",
+            label: "Salary",
+            type: "currency",
+            currencyCode: "INR",
+            placeholder: "Enter salary",
             col: 4,
           },
         ],

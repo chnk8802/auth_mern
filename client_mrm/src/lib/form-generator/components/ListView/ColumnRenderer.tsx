@@ -1,5 +1,5 @@
 import { ArrowUpDown } from "lucide-react";
-import { formatDate, formatSnakeCaseLabel, parseDecimal } from "@/lib/utils";
+import { formatCurrency, formatDate, formatSnakeCaseLabel, parseDecimal } from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 import { Button } from "@/components/ui/button";
 import { indianStateMap } from "@/constants/indianStates";
@@ -22,6 +22,8 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
     cell: ({ row }) => {
       const value = row.getValue(field.id);
       switch (field.type) {
+        case "currency":
+          return <>{formatCurrency(parseDecimal(value))}</>;
         case "date":
         case "datetime":
           return <div>{value ? formatDate(value as string) : "—"}</div>;

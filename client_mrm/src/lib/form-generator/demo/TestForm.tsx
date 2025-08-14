@@ -15,19 +15,19 @@ FieldRenderer
 
 
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import { type ModuleField } from "@/lib/form-generator/types/field-types";
+import { type FieldConfig} from "@/lib/form-generator/types/field-types";
 import { ROUTES } from "@/constants/routes";
 import React from "react";
 // import { testStateMap } from "./testWorkflow";
 
 type TestFormProps = {
-  fields: ModuleField[];
+  fieldsConfig: FieldConfig;
   formData: Record<string, any>;
   onChange: (fieldId: string, value: any) => void;
 };
 
 export const TestForm: React.FC<TestFormProps> = ({
-  fields,
+  fieldsConfig,
   formData,
   onChange
 }) => {
@@ -36,7 +36,7 @@ export const TestForm: React.FC<TestFormProps> = ({
     <>
       <FormBuilder
         mode={mode}
-        fields={fields}
+        fieldsConfig={fieldsConfig}
         formData={formData}
         backLink={ROUTES.DASHBOARD}
         // fieldStateMap={testStateMap}

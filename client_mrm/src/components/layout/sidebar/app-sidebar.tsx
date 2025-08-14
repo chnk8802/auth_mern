@@ -51,43 +51,48 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "Form Generator",
-          url: "/dashboard/form-generator",
-        },
-        {
           title: "Repair Jobs",
-          url: "/dashboard/repairjobs",
+          url: ROUTES.REPAIR_JOBS.LIST,
         },
         {
           title: "Customers",
-          url: "/dashboard/customers",
+          url: ROUTES.CUSTOMERS.LIST,
         },
         {
-          title: "Technicians",
-          url: "/dashboard/technicians",
+          title: "Users",
+          url: ROUTES.USERS.LIST,
         },
+        // {
+        //   title: "Spare Parts",
+        //   url: ROUTES.SPARE_PARTS.LIST,
+        // },
+        // {
+        //   title: "Vendors",
+        //   url: ROUTES.VENDORS.LIST,
+        // },
         {
           title: "Payments",
-          url: "/dashboard/payments",
+          url: ROUTES.PAYMENTS.LIST,
         },
       ],
     },
     {
-      title: "Reports",
+      title: "FLD Generator",
       url: "#",
       icon: Bot,
+      isActive: true,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Form",
+          url: "/dashboard/form-generator",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "List",
+          url: "/dashboard/list-generator",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Details",
+          url: "/dashboard/details-generator",
         },
       ],
     },

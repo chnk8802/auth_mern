@@ -262,6 +262,11 @@ export interface LookupField extends BaseField {
    * Field from the referenced module to display
    */
   displayField: string;
+
+  /**
+   * Optional criteria for filtering lookup options
+   */
+  criteria?: Record<string, any>;
 }
 
 /**
@@ -348,6 +353,10 @@ export interface FileField extends BaseField {
    */
   accept?: string[];
   /**
+   * File type (e.g., "image", "pdf")
+   */
+  fileType?: "image" | "pdf";
+  /**
    * Whether multiple files can be uploaded
    */
   multiple?: boolean;
@@ -399,28 +408,54 @@ export interface MapField extends BaseField {
 }
 
 /**
- * Union type representing any kind of supported field
+ * Represents any kind of supported field in the form generator.
+ * 
+ * - **Basic Fields**: Commonly used inputs for standard forms.
+ * - **Advanced Fields**: Specialized or composite inputs with extra functionality.
  */
 export type ModuleField =
+  // ===== BASIC FIELDS =====
+  /** Single-line text input */
   | TextField
+  /** Multi-line text area */
   | TextareaField
+  /** Numeric input */
   | NumberField
+  /** Currency input (formatted number) */
   | CurrencyField
-  | DateField
-  | TimeField
-  | DateTimeField
-  | SelectField
-  | MultiSelectField
-  | LookupField
-  | RadioField
-  | CheckboxField
-  | EmailField
-  | PhoneField
-  | AddressField
+  /** File upload input */
   | FileField
+  /** Email address input */
+  | EmailField
+  /** Phone number input */
+  | PhoneField
+  /** Radio button selection (single choice) */
+  | RadioField
+  /** Checkbox selection (boolean or multi-choice) */
+  | CheckboxField
+  /** Dropdown selection (single choice) */
+  | SelectField
+  /** Multi-select dropdown (multiple choices) */
+  | MultiSelectField
+  /** Date picker */
+  | DateField
+  /** Time picker */
+  | TimeField
+  /** Combined date & time picker */
+  | DateTimeField
+
+  // ===== ADVANCED FIELDS =====
+  /** Lookup field (search & select from external source) */
+  | LookupField
+  /** Structured address input */
+  | AddressField
+  /** Nested form inside a form */
   | SubformField
+  /** Signature capture (drawn or uploaded) */
   | SignatureField
+  /** Map location picker */
   | MapField;
+
 
 export interface FieldSection {
   /**

@@ -1,7 +1,7 @@
 "use client";
 
 import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
-import { formatDate, formatSnakeCaseLabel } from "@/lib/utils";
+import { formatCurrency, formatDate, formatSnakeCaseLabel, parseDecimal } from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 
 type Props = {
@@ -9,25 +9,30 @@ type Props = {
   data: Record<string, any>;
 };
 
-export function DetailsRenderer({ fields, data, }: Props) {
+export function DetailsRenderer({ fields, data }: Props) {
   const visibleFields = fields.filter((field) => field.showInDetails !== false);
 
   const renderValue = (field: ModuleField, value: any) => {
     if (value == null) return "-";
 
     switch (field.type) {
+      case "text":
+      case "textarea":
+        return String(value) || "-";
+      case "currency":
+        return formatCurrency(parseDecimal(value));
       case "date":
       case "datetime":
         return formatDate(value);
       case "checkbox":
         return Array.isArray(value)
           ? value.join(", ")
-          : value
+          : value 
           ? "Yes"
           : "No";
       case "radio":
       case "select":
-        return formatSnakeCaseLabel(value);
+        return formatSnakeCaseLabel(value) || "-";
       case "multiselect":
         return Array.isArray(value) ? value.map(formatSnakeCaseLabel).join(", ") : "-";
       case "address":
@@ -50,6 +55,14 @@ export function DetailsRenderer({ fields, data, }: Props) {
               </a>
             ))
           : value?.name || value?.url || "-";
+          case "subform":
+            return Array.isArray(value)
+              ? value.map((item, i) => (
+                  <div key={i}>
+                    {item?.name || item?.id || "-"}
+                  </div>
+                ))
+              : "-";
       default:
         return String(value);
     }

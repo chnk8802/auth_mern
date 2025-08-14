@@ -1,0 +1,161 @@
+[
+        {
+                "first_name": "John",
+                "bio": "Full-stack developer with 5 years of experience in React and Node.js.",
+                "age": 29,
+                "dob": "1996-04-15",
+                "appointment_time": "14:30",
+                "event_timestamp": "2025-08-10T14:30:00Z",
+                "gender": "male",
+                "hobbies": [
+                        "reading",
+                        "gaming"
+                ],
+                "preferred_contact": "email",
+                "subscribe_newsletter": true,
+                "interests": [
+                        "tech",
+                        "finance"
+                ],
+                "email": "john.doe@example.com",
+                "phone": {
+                        "countryCode": "IN",
+                        "number": "+91 9876543210"
+                },
+                "address": {
+                        "street": "123 MG Road",
+                        "city": "Chennai",
+                        "state": "tn",
+                        "country": "in",
+                        "postalCode": "600001"
+                },
+                "assigned_to": {
+                        "id": "u123",
+                        "fullName": "Jane Smith"
+                },
+                "resume": [
+                        {
+                                "name": "resume.pdf",
+                                "url": "https://example.com/files/resume.pdf"
+                        }
+                ],
+                "work_experience": [
+                        {
+                                "company": "TechCorp",
+                                "designation": "Software Engineer",
+                                "department": "Engineering",
+                                "location": "Bangalore",
+                                "start_date": "2020-01-01",
+                                "end_date": "2023-05-01",
+                                "currently_working": false,
+                                "years": 3,
+                                "skills_used": [
+                                        "react",
+                                        "node"
+                                ],
+                                "notice_period": "30"
+                        },
+                        {
+                                "company": "InnovateX",
+                                "designation": "Senior Developer",
+                                "department": "Product Development",
+                                "location": "Remote",
+                                "start_date": "2023-06-01",
+                                "end_date": null,
+                                "currently_working": true,
+                                "years": 2,
+                                "skills_used": [
+                                        "react",
+                                        "node",
+                                        "docker"
+                                ],
+                                "notice_period": "60"
+                        }
+                ],
+                "signature": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+                "location": {
+                        "latitude": 13.0827,
+                        "longitude": 80.2707
+                }
+        },
+        {
+                "first_name": "Aarav",
+                "bio": "Entrepreneur and mentor passionate about AI startups.",
+                "age": 34,
+                "dob": "1991-02-28",
+                "appointment_time": "09:15",
+                "event_timestamp": "2025-08-12T09:15:00Z",
+                "gender": "other",
+                "hobbies": [
+                        "cycling",
+                        "photography"
+                ],
+                "preferred_contact": "phone",
+                "subscribe_newsletter": false,
+                "interests": [
+                        "healthcare",
+                        "education"
+                ],
+                "email": "aarav.kapoor@example.in",
+                "phone": {
+                        "countryCode": "US",
+                        "number": "+1 415-555-1234"
+                },
+                "address": {
+                        "street": "742 Evergreen Terrace",
+                        "city": "Springfield",
+                        "state": "il",
+                        "country": "us",
+                        "postalCode": "62704"
+                },
+                "assigned_to": {
+                        "id": "u456",
+                        "fullName": "Rahul Mehta"
+                },
+                "resume": [
+                        {
+                                "name": "portfolio.zip",
+                                "url": "https://example.com/files/portfolio.zip"
+                        }
+                ],
+                "work_experience": [
+                        {
+                                "company": "GreenTech Solutions",
+                                "designation": "Project Manager",
+                                "department": "Operations",
+                                "location": "Mumbai",
+                                "start_date": "2018-07-10",
+                                "end_date": "2021-12-20",
+                                "currently_working": false,
+                                "years": 3.5,
+                                "skills_used": [
+                                        "management",
+                                        "agile",
+                                        "crm"
+                                ],
+                                "notice_period": "45"
+                        },
+                        {
+                                "company": "SolarNext Pvt Ltd",
+                                "designation": "Head of Product",
+                                "department": "Product",
+                                "location": "Pune",
+                                "start_date": "2022-01-05",
+                                "end_date": null,
+                                "currently_working": true,
+                                "years": 3,
+                                "skills_used": [
+                                        "product design",
+                                        "sales",
+                                        "uiux"
+                                ],
+                                "notice_period": "90"
+                        }
+                ],
+                "signature": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+                "location": {
+                        "latitude": 19.076,
+                        "longitude": 72.8777
+                }
+        }
+]
