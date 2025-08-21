@@ -39,8 +39,9 @@ import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetail
 import { RepairJobAddPage } from "@/features/repairJob/routes/RepairJobAddPage";
 // Form Generator
 import { FormGeneratorPage } from "@/lib/form-generator/demo/FormGeneratorPage";
-import { ListGeneratorPage } from "@/lib/form-generator/demo/ListGeneratorPage";
+import { TestListPage } from "@/lib/form-generator/demo/ListGeneratorPage";
 import { DetailsGeneratorPage } from "@/lib/form-generator/demo/DetailsGeneratorPage";
+import { RepairJobEditPage } from "@/features/repairJob/routes/RepairJobEditPage";
 
 export const router = createBrowserRouter([
   {
@@ -139,7 +140,7 @@ export const router = createBrowserRouter([
           },
           {
             path: ":repairJobId/edit",
-            element: <RepairJobDetailPage />,
+            element: <RepairJobEditPage />,
             handle: {
               breadcrumb: ({ params }: { params: { repairJobId: string } }) =>
                 `Edit ${params.repairJobId}`,
@@ -253,7 +254,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "list-generator",
-        element: <ListGeneratorPage />,
+        element: <TestListPage />,
         handle: {
           breadcrumb: () => "List Generator",
         },

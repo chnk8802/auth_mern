@@ -40,7 +40,7 @@ export function UsersListPage() {
   };
 
   const columns = ColumnGenerator<User>({
-    fields: userFields,
+    fieldConfig: userFields,
     onEdit: handleRowEdit,
     onDelete: handleRowDelete,
     copyField: "userCode",

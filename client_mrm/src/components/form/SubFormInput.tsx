@@ -26,7 +26,7 @@ export function SubformInput({
   minRows = 0,
   maxRows = Infinity,
   disabled,
-  required
+  required,
 }: Props) {
   const handleChange = (index: number, fieldId: string, fieldValue: any) => {
     const updated = [...value];
@@ -65,7 +65,6 @@ export function SubformInput({
             key={rowIndex}
             className="flex items-end gap-2 border rounded-md p-4 bg-muted/10 relative overflow-x-auto scrollbar-thin"
           >
-            
             <div className="flex gap-4 min-w-fit">
               {fields.map((field) => (
                 <div key={field.id} className="min-w-[200px]">
@@ -80,28 +79,21 @@ export function SubformInput({
             </div>
             {!disabled && (
                 <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => removeRow(rowIndex)}
-                  disabled={value.length <= minRows}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              )}
-              
+                type="button"
+                variant="destructive"
+                size="icon"
+                onClick={() => removeRow(rowIndex)}
+                disabled={value.length <= minRows}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
           </div>
         ))}
       </div>
 
       {!disabled && value.length < maxRows && (
-        <Button
-          type="button"
-          onClick={addRow}
-          variant="outline"
-          size="sm"
-          className="mt-2"
-        >
+        <Button type="button" onClick={addRow} variant="outline" className="">
           <Plus className="w-4 h-4 mr-2" />
           Add Row
         </Button>

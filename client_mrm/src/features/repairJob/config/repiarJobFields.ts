@@ -114,11 +114,13 @@ export const repairJobFields: FieldConfig = [
             placeholder: "Cost",
             label: "Cost",
             type: "currency",
-          },{
-            id: "cost2",
-            placeholder: "Cost2",
-            label: "Cost2",
-            type: "currency",
+          },
+          {
+            id: "supplier",
+            label: "Supplier",
+            type: "lookup",
+            module: "supplier",
+            displayField: "name",
           },
         ],
       },

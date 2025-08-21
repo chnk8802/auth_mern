@@ -8,13 +8,11 @@ import type { User } from "@/features/users/types";
 import { DetailToolbar } from "@/components/headers/DetailPageToolbar";
 import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { userFields } from "../config/userFields";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 
 export function UserDetailPage() {
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const { userId } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,7 +67,7 @@ export function UserDetailPage() {
       <DetailsBuilder
         title="User Details"
         backLink={ROUTES.USERS.LIST}
-        fields={userFields}
+        fieldConfig={userFields}
         data={user}
         onDelete={handleDelete}
         onEdit={handleEdit}

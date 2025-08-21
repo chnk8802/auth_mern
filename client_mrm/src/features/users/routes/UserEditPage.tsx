@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { getUserById, updateUser } from "../api/userApi";
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
-import { FormHeader } from "@/components/headers/FormHeader";
 
 export function UserEditPage() {
   const navigate = useNavigate();

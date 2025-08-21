@@ -43,7 +43,7 @@ export function EditUserForm({ user, onSubmit }: EditUserFormProps) {
       title="Edit User"
       backLink={ROUTES.USERS.DETAILS(user._id)}
       mode="edit"
-      fields={userFields}
+      fieldsConfig={userFields}
       formData={formValues}
       fieldStateMap={fieldStates}
       onChange={handleChange}
