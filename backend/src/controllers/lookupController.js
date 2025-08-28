@@ -119,17 +119,17 @@ export const lookup = async (req, res, next) => {
     }
 
     // 6) Pagination & sorting
-    const { page, limit, skip, sort: sortObj } = getPaginationOptions({
+    const { page, limit, skip } = getPaginationOptions({
       page: req.query.page,
       limit: req.query.limit,
-      sort: req.query.sort || sort || fields[0], // default to first displayField asc
     });
 
     // 7) Projection
     const projection = makeProjection(fields);
 
     // 8) Build query
-    let query = Model.find(filter).select(projection).sort(sortObj).skip(skip).limit(limit);
+    // let query = Model.find(filter).select(projection).sort(sortObj).skip(skip).limit(limit);
+    let query = Model.find(filter).select(projection).skip(skip).limit(limit);
 
     // 9) Populate (optional)
     const populateArr = normalizePopulate(populate);
@@ -149,7 +149,7 @@ export const lookup = async (req, res, next) => {
 
     // 11) Format
     const data = docs.map((doc) => ({
-      id: doc._id,
+      value: doc._id,
       label: buildLabel(doc, fields),
       // Optional: include raw for advanced UIs; comment in/out as you prefer
       // raw: doc,
@@ -161,7 +161,7 @@ export const lookup = async (req, res, next) => {
         limit,
         total,
         totalPages: Math.ceil(total / (limit || 1)),
-        sort: sortObj,
+        // sort: sortObj,
       },
     });
   } catch (err) {

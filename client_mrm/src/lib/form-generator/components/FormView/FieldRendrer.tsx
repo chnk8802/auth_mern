@@ -27,6 +27,9 @@ interface FieldRendererProps {
   visible?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
+  module?: string;
+  displayField?: string;
+  criteria?: string;
 }
 
 export const FieldRenderer: React.FC<FieldRendererProps> = ({
@@ -38,6 +41,9 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   visible,
   disabled,
   readOnly,
+  module,
+  displayField,
+  criteria
 }) => {
 
   const renderInput = () => {
@@ -212,6 +218,9 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
           onChange={onChange}
           required={field.required}
           disabled={field.readOnly || disabled}
+          module={field.module}
+          displayField={field.displayField}
+          // criteria={field.criteria} 
         />
       );
 

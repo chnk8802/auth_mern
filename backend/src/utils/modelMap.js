@@ -6,6 +6,8 @@ import SparePart from "../models/sparePartModel.js";
 import Supplier from "../models/supplierModel.js"
 
 export const modelsMap = {
+  users: User,
+  user: User,
   User,
   Customer,
   RepairJob,

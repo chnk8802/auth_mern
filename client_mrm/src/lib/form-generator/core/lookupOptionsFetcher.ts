@@ -1,24 +1,27 @@
-// Example: central fetcher for your form generator
-export async function fetchLookupOptions(
-  moduleName: string,
-  displayFields: string[],
-  criteria: Record<string, any> = {},
-  search = "",
-  extra?: { populate?: any; page?: number; limit?: number; sort?: string }
-) {
-  const params = new URLSearchParams({
-    module: moduleName,
-    displayFields: displayFields.join(","),
-    criteria: JSON.stringify(criteria),
-  });
-  if (search) params.set("search", search);
-  if (extra?.populate) params.set("populate", JSON.stringify(extra.populate));
-  if (extra?.page) params.set("page", String(extra.page));
-  if (extra?.limit) params.set("limit", String(extra.limit));
-  if (extra?.sort) params.set("sort", extra.sort);
+import api from "@/lib/axios";
 
-  const res = await fetch(`/api/lookup?${params.toString()}`);
-  const json = await res.json();
-  if (!json?.success) throw new Error(json?.message || "Lookup failed");
-  return json;
+interface FetchLookupOptionsParams {
+  module: string;
+  displayField?: string;
+  criteria?: string;
+  search?: string;
+}
+
+export async function fetchLookupOptions({
+  module,
+  displayField,
+  criteria,
+  search,
+}: FetchLookupOptionsParams) {
+  try {
+    const res = await api.get("/lookup", {
+      params: { module, displayField, criteria, search },
+    });
+
+    // Expecting API to return: Array<{ value: string; label: string }>
+    return res.data;
+  } catch (err) {
+    console.error("Lookup fetch error:", err);
+    return [];
+  }
 }

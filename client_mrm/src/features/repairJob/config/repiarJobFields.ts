@@ -24,7 +24,7 @@ export const repairJobFields: FieldConfig = [
         label: "Customer",
         type: "lookup",
         module: "customers",
-        displayField: "name",
+        displayField: "customerCode,fullName",
         placeholder: "Select Customer",
       },
       {
@@ -58,7 +58,7 @@ export const repairJobFields: FieldConfig = [
         label: "Technician",
         type: "lookup",
         module: "users",
-        displayField: "fullName",
+        displayField: "userCode,fullName",
         placeholder: "Select Technician",
       },
       {

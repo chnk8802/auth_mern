@@ -1,6 +1,13 @@
-# Developer Documentation
+# MERN Auth Project
+
+This is a MERN stack project with authentication and other features.
 
 ## Project Structure
+
+The project is divided into two main parts:
+
+-   `backend`: The Node.js, Express, and MongoDB backend.
+-   `client_mrm`: The React frontend.
 
 ```
 auth_mern/
@@ -19,16 +26,16 @@ auth_mern/
 │       ├── routes/
 │       └── utils/
 │
-└── frontend/
+└── client_mrm/
     ├── src/
     │   ├── app/
     │   ├── assets/
     │   ├── components/
     │   ├── hooks/
-    │   ├── pages/
+    │   ├── features/
     │   └── services/
     ├── package.json
-    └── vite.config.js
+    └── vite.config.ts
 ```
 
 ---
@@ -36,8 +43,8 @@ auth_mern/
 ## Backend
 
 - **Framework:** Node.js, Express.js, MongoDB (Mongoose)
-- **Entry Points:**  
-  - [`backend/app.js`](backend/app.js): Express app setup, middleware, and routes  
+- **Entry Points:**
+  - [`backend/app.js`](backend/app.js): Express app setup, middleware, and routes
   - [`backend/server.js`](backend/server.js): Starts the HTTP server
 
 ### Key Folders
@@ -58,7 +65,7 @@ Copy `.env.example` to `.env` and fill in your secrets.
 ```sh
 cd backend
 npm install
-npm run dev
+npm start
 ```
 
 ---
@@ -66,19 +73,19 @@ npm run dev
 ## Frontend
 
 - **Framework:** React (with Vite), Redux Toolkit, Material UI
+- **Folder:** `client_mrm`
 
 ### Key Folders
 
 - **src/app/**: Redux store and slices
 - **src/components/**: Reusable UI components
-- **src/pages/**: Page-level React components (routes)
-- **src/services/**: API service wrappers (axios)
+- **src/features/**: Feature-based modules (e.g., auth, customers).
 - **src/hooks/**: Custom React hooks
 
 ### Running the Frontend
 
 ```sh
-cd frontend
+cd client_mrm
 npm install
 npm run dev
 ```
@@ -111,8 +118,8 @@ All protected routes require a Bearer token in the `Authorization` header.
 - Add new models in `backend/src/models/`
 - Add business logic in `backend/src/controllers/`
 - Register new routes in `backend/src/routes/`
-- Add frontend pages in `frontend/src/pages/`
-- Add API calls in `frontend/src/services/`
+- Add frontend feature modules in `client_mrm/src/features/`
+- Add API calls in `client_mrm/src/lib/axios.ts`
 
 ---
 
@@ -126,7 +133,7 @@ All protected routes require a Bearer token in the `Authorization` header.
 
 ## Useful Scripts
 
-- **Backend:** `npm run dev` (nodemon)
+- **Backend:** `npm start`
 - **Frontend:** `npm run dev` (Vite)
 
 ---

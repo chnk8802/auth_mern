@@ -47,7 +47,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Define Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/lookups", lookupRoutes);
+app.use("/api/lookup", lookupRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/technicians", technicianRoutes);
