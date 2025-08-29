@@ -203,6 +203,8 @@ export const testFields: FieldConfig = [
         id: "work_experience",
         label: "Work Experience",
         type: "subform",
+        module: "sparePart",
+        displayFields: [],
         minRows: 1,
         maxRows: 5,
         fields: [

@@ -11,7 +11,6 @@ import { indianStateMap } from "@/constants/indianStates";
 import type { ColumnDef } from "@tanstack/react-table";
 import { COUNTRY_MAP } from "@/constants/countries";
 import { Link } from "react-router-dom";
-import { spawn } from "child_process";
 
 export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
   if (field.showInTable === false) return undefined;
@@ -78,9 +77,9 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
 
         case "lookup": {
           if (!value) return <div>—</div>;
-          // Force TS to treat it as a record
+
           const obj = value as Record<string, any>;
-          const id = value._id as string;
+          const id = obj._id as string;
           const keys = field.displayField.split(",").map((k) => k.trim());
           const display = keys
             .map((key) => obj[key])
@@ -91,7 +90,7 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
             <>
               {display ? (
                 <Link
-                  className="hover:underline"
+                  className="hover:underline hover:text-blue-600"
                   to={`/dashboard/${field.module}/${id}`}
                 >
                   {display}
@@ -102,6 +101,10 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
             </>
           );
         }
+
+        case "subform":
+          if (!value) return <div>-</div>;
+          return <div>See in Detail View</div>;
 
         case "number":
           return <>{parseDecimal(value)}</>;

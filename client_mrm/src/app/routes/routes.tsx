@@ -12,7 +12,6 @@ import { HomePage } from "@/features/home/routes/HomePage";
 
 // Auth
 import { ProtectedRoute } from "./guards/ProtectedRoute";
-import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { RegisterForm } from "@/features/auth/components/register-form";
 import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
@@ -42,6 +41,7 @@ import { FormGeneratorPage } from "@/lib/form-generator/demo/FormGeneratorPage";
 import { TestListPage } from "@/lib/form-generator/demo/ListGeneratorPage";
 import { DetailsGeneratorPage } from "@/lib/form-generator/demo/DetailsGeneratorPage";
 import { RepairJobEditPage } from "@/features/repairJob/routes/RepairJobEditPage";
+import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
 
 export const router = createBrowserRouter([
   {
@@ -61,39 +61,27 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTES.GUEST_PATHS.AUTH,
-    element: <AuthLayout />,
+    element: (
+      <GuestOnlyRoute>
+        <AuthLayout />
+      </GuestOnlyRoute>
+    ),
     children: [
       {
         index: true,
-        element: (
-          <GuestOnlyRoute>
-            <LoginForm />
-          </GuestOnlyRoute>
-        ),
+        element: <LoginForm />,
       },
       {
         path: "login",
-        element: (
-          <GuestOnlyRoute>
-            <LoginForm />
-          </GuestOnlyRoute>
-        ),
+        element: <LoginForm />,
       },
       {
         path: "register",
-        element: (
-          <GuestOnlyRoute>
-            <RegisterForm />
-          </GuestOnlyRoute>
-        ),
+        element: <RegisterForm />,
       },
       {
         path: "forgot-password",
-        element: (
-          <GuestOnlyRoute>
-            <ForgotPasswordForm />
-          </GuestOnlyRoute>
-        ),
+        element: <ForgotPasswordForm />,
       },
     ],
   },
@@ -258,7 +246,8 @@ export const router = createBrowserRouter([
         handle: {
           breadcrumb: () => "List Generator",
         },
-      },{
+      },
+      {
         path: "details-generator",
         element: <DetailsGeneratorPage />,
         handle: {

@@ -4,6 +4,7 @@ import Customer from "../models/customerModel.js";
 import RepairJob from "../models/repairJobModel.js";
 import SparePart from "../models/sparePartModel.js";
 import Supplier from "../models/supplierModel.js"
+import SparePartEntry from "../models/sparePartEntryModel.js";
 
 export const modelsMap = {
   users: User,
@@ -13,6 +14,11 @@ export const modelsMap = {
   customers:Customer,
   Customer,
   RepairJob,
+  sparePartEntry:SparePartEntry,
+  SparePartEntry,
+  spareParts:SparePart,
+  sparePart:SparePart,
   SparePart,
+  supplier:Supplier,
   Supplier
 };

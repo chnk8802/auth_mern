@@ -7,7 +7,8 @@ import {
   formatSnakeCaseLabel,
   parseDecimal,
 } from "@/lib/utils";
-import type { ModuleField } from "@/lib/form-generator/types/field-types";
+import type { ModuleField, SubformField } from "@/lib/form-generator/types/field-types";
+import { Link } from "react-router-dom";
 
 type Props = {
   fields: ModuleField[];
@@ -59,7 +60,20 @@ export function DetailsRenderer({ fields, data }: Props) {
           .filter(Boolean)
           .join(" ");
 
-        return display || "-";
+        return (
+          <>
+            {display ? (
+              <Link
+                className="hover:underline hover:text-blue-600"
+                to={`/dashboard/${field.module}/${id}`}
+              >
+                {display}
+              </Link>
+            ) : (
+              "-"
+            )}
+          </>
+        );
       }
       case "file":
         return Array.isArray(value)
@@ -75,12 +89,22 @@ export function DetailsRenderer({ fields, data }: Props) {
               </a>
             ))
           : value?.name || value?.url || "-";
-      case "subform":
-        return Array.isArray(value)
-          ? value.map((item, i) => (
-              <div key={i}>{item?.name || item?.id || "-"}</div>
-            ))
-          : "-";
+      case "subform": {
+        if (!Array.isArray(value) || value.length === 0) return "-";
+
+        const subformField = field as SubformField; // type-narrowing
+        if (!subformField.fields) return "-";
+
+        return value.map((item, i) => (
+          <div
+            key={i}
+            className="flex flex-col border p-2 mb-2 rounded bg-gray-50"
+          >
+            <DetailsRenderer fields={subformField.fields} data={item} />
+          </div>
+        ));
+      }
+
       default:
         return String(value);
     }

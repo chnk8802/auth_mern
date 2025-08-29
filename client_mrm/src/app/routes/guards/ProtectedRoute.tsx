@@ -8,8 +8,12 @@ interface Props {
 }
 
 export function ProtectedRoute({ children }: Props) {
-  const { user} = useAppSelector((state) => state.auth)
+  const { user, loading } = useAppSelector((state) => state.auth)
+
+  if (loading) return <div>Loading...</div>
+
   if (!user) {
+    console.log("No user found....redirecting to login")
     return <Navigate to={ROUTES.GUEST_PATHS.LOGIN} replace />
   }
 

@@ -3,6 +3,7 @@ import { RepairJobStatus } from "@/constants/repairJobStatus";
 import { RepairType } from "@/constants/repairType";
 import { PAYMENT_STATUSES } from "@/constants/paymentStatus";
 import { DEVICE_COMPONENTS } from "@/constants/deviceComponents";
+import { SPARE_PART_SOURCE_TYPE } from "@/constants/sparePartSourceType";
 
 export const repairJobFields: FieldConfig = [
   {
@@ -23,7 +24,7 @@ export const repairJobFields: FieldConfig = [
         id: "customer",
         label: "Customer",
         type: "lookup",
-        module: "customers",
+        module: "customer",
         displayField: "customerCode,fullName",
         placeholder: "Select Customer",
       },
@@ -97,22 +98,30 @@ export const repairJobFields: FieldConfig = [
     fields: [
       {
         id: "spareParts",
-        label: "Spare Parts",
+        label: "Spare Part Entry",
         type: "subform",
+        module: "sparePart",
+        displayFields: ["sparePartName", "unitCost", "supplier.fullName"],
         minRows: 1,
         maxRows: 10,
         fields: [
           {
-            id: "Spare Part",
-            label: "sparePart",
-            type: "lookup",
-            module: "sparePart",
-            displayField: "sparePart",
+            id: "sourceType",
+            label: "Source Type",
+            type: "select",
+            options: SPARE_PART_SOURCE_TYPE
           },
           {
-            id: "cost",
-            placeholder: "Cost",
-            label: "Cost",
+            id: "sparePart",
+            label: "Spare Part",
+            type: "lookup",
+            module: "sparePart",
+            displayField: "partCode",
+          },
+          {
+            id: "unitCost",
+            placeholder: "Unit Cost",
+            label: "Unit Cost",
             type: "currency",
           },
           {
@@ -120,7 +129,7 @@ export const repairJobFields: FieldConfig = [
             label: "Supplier",
             type: "lookup",
             module: "supplier",
-            displayField: "name",
+            displayField: "fullName.supplierCode",
           },
         ],
       },

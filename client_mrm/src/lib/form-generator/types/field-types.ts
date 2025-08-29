@@ -376,6 +376,14 @@ export interface FileField extends BaseField {
 export interface SubformField extends BaseField {
   type: "subform";
   /**
+   * Module
+   */
+  module: string;
+  /**
+   * displayFields
+   */
+  displayFields: string[];
+  /**
    * Fields that make up the subform
    */
   fields: ModuleField[];

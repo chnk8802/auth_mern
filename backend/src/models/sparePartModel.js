@@ -11,7 +11,7 @@ const sparePartSchema = new mongoose.Schema(
     },
     brand: { type: String, trim: true, }, // e.g. "Samsung"
     model: { type: String, trim: true, }, // e.g. "Galaxy S21"
-    name: { type: String, trim: true, }, // e.g. "Screen"
+    partName: { type: String, trim: true, }, // e.g. "Screen"
     partType: {
       type: String,
       trim: true,
@@ -36,12 +36,5 @@ sparePartSchema.pre("save", async function (next) {
   }
 });
 
-sparePartSchema.virtual("partName").get(function () {
-  return `${this.brand} ${this.model} ${this.name}`;
-});
-
-sparePartSchema.virtual("displayName").get(function () {
-  return `${this.partCode} - ${this.brand} ${this.model} ${this.name}`;
-});
 const SparePart = mongoose.model("SparePart", sparePartSchema);
 export default SparePart;

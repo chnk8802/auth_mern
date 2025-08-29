@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
+import { generateModuleId } from "../utils/generateModuleId.js";
 
 export const paymentEntrySchema = new mongoose.Schema(
   {
     // filter Based on selected customer
+    paymentEntryCode: {
+      type: String,
+      trim: true,
+      unique: true,
+      immutable: true,
+    },
     repairJob: { type: mongoose.Schema.Types.ObjectId, ref: "RepairJob" },
     // filter Based on selected supplier
     sparePartEntry: {
@@ -17,6 +24,13 @@ export const paymentEntrySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+paymentEntrySchema.pre("save", async function (next) {
+  if (this.isNew && !this.paymentEntryCode) {
+    this.paymentEntryCode = await generateModuleId("paymentEntry", "PAY");
+  }
+  next();
+});
 
 const PaymentEntry = mongoose.model("PaymentEntry", paymentEntrySchema);
 export default PaymentEntry;

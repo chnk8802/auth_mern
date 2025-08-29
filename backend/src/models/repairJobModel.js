@@ -40,7 +40,7 @@ const repairJobSchema = new mongoose.Schema(
       type: [String],
       enum: DEVICE_COMPONENTS,
     },
-    spareParts: [
+    sparePartsEntries: [
       { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
     ],
     repairCost: { type: mongoose.Schema.Types.Decimal128 },
@@ -91,10 +91,6 @@ repairJobSchema.pre("save", async function (next) {
   } catch (error) {
     next(error);
   }
-});
-
-repairJobSchema.virtual("displayName").get(function () {
-  return `${this.repairJobCode} - ${this.deviceModel}`;
 });
 
 const RepairJob = mongoose.model("RepairJob", repairJobSchema);

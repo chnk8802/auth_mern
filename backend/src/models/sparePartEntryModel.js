@@ -1,7 +1,14 @@
 import mongoose from "mongoose";
+import { generateModuleId } from "../utils/generateModuleId.js";
 
 const sparePartEntrySchema = new mongoose.Schema(
   {
+    sparePartEntryCode: {
+      type: String,
+      trim: true,
+      unique: true,
+      immutable: true,
+    },
     repairJob: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "RepairJob",
@@ -30,11 +37,14 @@ const sparePartEntrySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-sparePartEntrySchema.virtual("sparePartName").get(function () {
+sparePartEntrySchema.pre("save", async function (next) {
+  if (this.isNew && !this.sparePartEntryCode) {
+    this.sparePartEntryCode = await generateModuleId("sparePartEntry", "SPE");
+  }
   if (this.sourceType === "External") {
     return this.externalPartName || "External Part";
   }
-  return `${this.sparePart.brand} ${this.sparePart.model} ${this.sparePart.name}`;
+  next();
 });
 
 const SparePartEntry = mongoose.model("SparePartEntry", sparePartEntrySchema);

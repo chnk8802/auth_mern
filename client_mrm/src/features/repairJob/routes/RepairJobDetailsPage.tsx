@@ -21,7 +21,7 @@ export function RepairJobDetailPage() {
 
     const fetchRepairJob = async () => {
       try {
-        const res = await getRepairjobById(repairJobId);
+        const res = await getRepairjobById(repairJobId); 
         setRepairJob(res.data[0]);
       } catch (err) {
         console.error("Failed to fetch repair job", err);
