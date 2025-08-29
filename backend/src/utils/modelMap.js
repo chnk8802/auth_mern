@@ -9,6 +9,8 @@ export const modelsMap = {
   users: User,
   user: User,
   User,
+  customer:Customer,
+  customers:Customer,
   Customer,
   RepairJob,
   SparePart,

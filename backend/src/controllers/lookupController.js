@@ -86,7 +86,7 @@ export const lookup = async (req, res, next) => {
 
     const {
       module: moduleName,
-      displayFields,
+      displayField,
       criteria,
       search,
       populate,
@@ -100,8 +100,8 @@ export const lookup = async (req, res, next) => {
     }
 
     // 3) Parse fields & validate
-    const fields = displayFields.split(",").map((f) => f.trim()).filter(Boolean);
-    if (!fields.length) throw createError(400, "displayFields must include at least one field");
+    const fields = displayField.split(",").map((f) => f.trim()).filter(Boolean);
+    if (!fields.length) throw createError(400, "displayField must include at least one field");
     validateDisplayFields(Model, fields);
 
     // 4) Build query/filter

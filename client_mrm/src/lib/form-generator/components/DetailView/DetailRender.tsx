@@ -1,7 +1,12 @@
 "use client";
 
 import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
-import { formatCurrency, formatDate, formatSnakeCaseLabel, parseDecimal } from "@/lib/utils";
+import {
+  formatCurrency,
+  formatDate,
+  formatSnakeCaseLabel,
+  parseDecimal,
+} from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 
 type Props = {
@@ -25,16 +30,14 @@ export function DetailsRenderer({ fields, data }: Props) {
       case "datetime":
         return formatDate(value);
       case "checkbox":
-        return Array.isArray(value)
-          ? value.join(", ")
-          : value 
-          ? "Yes"
-          : "No";
+        return Array.isArray(value) ? value.join(", ") : value ? "Yes" : "No";
       case "radio":
       case "select":
         return formatSnakeCaseLabel(value) || "-";
       case "multiselect":
-        return Array.isArray(value) ? value.map(formatSnakeCaseLabel).join(", ") : "-";
+        return Array.isArray(value)
+          ? value.map(formatSnakeCaseLabel).join(", ")
+          : "-";
       case "address":
         return [
           value?.street,
@@ -45,24 +48,39 @@ export function DetailsRenderer({ fields, data }: Props) {
         ]
           .filter(Boolean)
           .join(", ");
-      case "lookup":
-        return value?.[field.displayField] || "-";
+      case "lookup": {
+        if (!value) return "-";
+
+        // Support multiple display fields: e.g. "firstName, lastName"
+        const keys = field.displayField.split(",").map((k) => k.trim());
+        const id = value._id as string;
+        const display = keys
+          .map((key) => value?.[key])
+          .filter(Boolean)
+          .join(" ");
+
+        return display || "-";
+      }
       case "file":
         return Array.isArray(value)
           ? value.map((f, i) => (
-              <a key={i} href={f.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+              <a
+                key={i}
+                href={f.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
                 {f.name || f.url}
               </a>
             ))
           : value?.name || value?.url || "-";
-          case "subform":
-            return Array.isArray(value)
-              ? value.map((item, i) => (
-                  <div key={i}>
-                    {item?.name || item?.id || "-"}
-                  </div>
-                ))
-              : "-";
+      case "subform":
+        return Array.isArray(value)
+          ? value.map((item, i) => (
+              <div key={i}>{item?.name || item?.id || "-"}</div>
+            ))
+          : "-";
       default:
         return String(value);
     }

@@ -3,40 +3,55 @@
 import { useEffect, useState } from "react";
 import { fetchLookupOptions } from "@/lib/form-generator/core/lookupOptionsFetcher";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import type { LookupField } from "@/lib/form-generator/types/field-types";
-import { set } from "lodash";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   field: LookupField;
   value: string;
-  onChange: (val: string | number) => void;
   disabled?: boolean;
   required?: boolean;
-  module: string;
-  displayField: string;
-  criteria?: string;
+  onChange: (val: string | number) => void;
 };
 
-export function LookupInput({field, value, onChange, disabled, required, module, displayField, criteria }: Props) {
+export function LookupInput({
+  field,
+  value,
+  disabled,
+  required,
+  onChange,
+}: Props) {
   const [options, setOptions] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadOptions() {
       try {
-        const res = await fetchLookupOptions({module, displayField, criteria, search});
-          setOptions(Array.isArray(res) ? res : []); // ✅ ensure it's always an array
+        const res = await fetchLookupOptions({
+          module: field.module,
+          displayField: field.displayField,
+          criteria: field.criteria,
+          search,
+        });
+        
+        setOptions(Array.isArray(res?.data) ? res.data : []);
       } catch (error) {
         console.error("Failed to fetch lookup data:", error);
       }
     }
 
     loadOptions();
-  }, [module, displayField, criteria, search]);
+  }, [field.module, field.displayField, field.criteria, search]);
 
   const selectedLabel = options.find((item) => item.value === value)?.label;
 
@@ -49,11 +64,20 @@ export function LookupInput({field, value, onChange, disabled, required, module,
         value={value}
         onChange={() => {}}
         required={required}
-        style={{ position: "absolute", opacity: 0, height: 0, pointerEvents: "none" }}
+        style={{
+          position: "absolute",
+          opacity: 0,
+          height: 0,
+          pointerEvents: "none",
+        }}
       />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-between" disabled={disabled}>
+          <Button
+            variant="outline"
+            className="w-full justify-between"
+            disabled={disabled}
+          >
             {selectedLabel || field.placeholder || "Select"}
           </Button>
         </PopoverTrigger>
@@ -64,25 +88,35 @@ export function LookupInput({field, value, onChange, disabled, required, module,
             onChange={(e) => setSearch(e.target.value)}
             className="mb-2"
           />
-          <ScrollArea className="max-h-60">
-            {options.map((item) => (
-              <div
-                key={item.value}
-                className="px-3 py-2 hover:bg-muted cursor-pointer rounded-md"
-                onClick={() => {
-                  onChange(item.value);
-                  setOpen(false);
-                }}
-              >
-                {item.label}
-              </div>
-            ))}
-            {options.length === 0 && (
-              <div className="text-muted-foreground text-sm px-3 py-2">
-                No results found
-              </div>
-            )}
+          {/* Scrollable list */}
+          <ScrollArea className="h-60 flex-1">
+            <div className="space-y-1">
+              {options.map((item) => (
+                <div
+                  key={item.value}
+                  className="px-3 py-2 hover:bg-muted cursor-pointer rounded-md"
+                  onClick={() => {
+                    onChange(item.value);
+                    setOpen(false);
+                  }}
+                >
+                  {item.label}
+                </div>
+              ))}
+              {options.length === 0 && (
+                <div className="text-muted-foreground text-sm px-3 py-2">
+                  No results found
+                </div>
+              )}
+            </div>
           </ScrollArea>
+
+          {/* Fixed footer button */}
+          <div className="pt-2 border-t mt-2">
+            <Button variant="outline" className="w-full" onClick={() => {navigate(`/dashboard/${module}/new`);}}>
+              <Plus className="mr-2 h-4 w-4" /> Add New
+            </Button>
+          </div>
         </PopoverContent>
       </Popover>
     </div>

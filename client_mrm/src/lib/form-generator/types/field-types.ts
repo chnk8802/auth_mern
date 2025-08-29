@@ -267,6 +267,10 @@ export interface LookupField extends BaseField {
    * Optional criteria for filtering lookup options
    */
   criteria?: Record<string, any>;
+  /**
+   * Optional search for fetchin lookup options
+   */
+  search?: string
 }
 
 /**

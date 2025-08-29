@@ -7,6 +7,20 @@ export const testFields: FieldConfig = [
     col: 2,
     fields: [
       {
+        id: "assigned_to",
+        label: "Assigned To",
+        type: "lookup",
+        module: "user",
+        displayField: "userCode,fullName",
+      },
+      {
+        id: "customer",
+        label: "Customer",
+        type: "lookup",
+        module: "customer",
+        displayField: "customerCode,fullName",
+      },
+      {
         id: "first_name",
         label: "First Name",
         type: "text",
@@ -168,8 +182,8 @@ export const testFields: FieldConfig = [
         id: "assigned_to",
         label: "Assigned To",
         type: "lookup",
-        module: "users",
-        displayField: "fullName",
+        module: "user",
+        displayField: "userCode,fullName",
       },
       {
         id: "resume",

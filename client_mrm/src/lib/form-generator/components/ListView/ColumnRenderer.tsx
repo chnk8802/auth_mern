@@ -1,10 +1,17 @@
 import { ArrowUpDown } from "lucide-react";
-import { formatCurrency, formatDate, formatSnakeCaseLabel, parseDecimal } from "@/lib/utils";
+import {
+  formatCurrency,
+  formatDate,
+  formatSnakeCaseLabel,
+  parseDecimal,
+} from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 import { Button } from "@/components/ui/button";
 import { indianStateMap } from "@/constants/indianStates";
 import type { ColumnDef } from "@tanstack/react-table";
 import { COUNTRY_MAP } from "@/constants/countries";
+import { Link } from "react-router-dom";
+import { spawn } from "child_process";
 
 export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
   if (field.showInTable === false) return undefined;
@@ -70,20 +77,34 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
           );
 
         case "lookup": {
-          if (!value || typeof value !== "object") return <div>—</div>;
+          if (!value) return <div>—</div>;
+          // Force TS to treat it as a record
+          const obj = value as Record<string, any>;
+          const id = value._id as string;
+          const keys = field.displayField.split(",").map((k) => k.trim());
+          const display = keys
+            .map((key) => obj[key])
+            .filter(Boolean)
+            .join(" ");
 
-          const display =
-            (value as any).displayName ??
-            (value as any).fullName ??
-            (value as any).name ??
-            (value as any).label ??
-            (value as any)._id ??
-            "—";
-
-          return <div>{display}</div>;
+          return (
+            <>
+              {display ? (
+                <Link
+                  className="hover:underline"
+                  to={`/dashboard/${field.module}/${id}`}
+                >
+                  {display}
+                </Link>
+              ) : (
+                <span>"-"</span>
+              )}
+            </>
+          );
         }
+
         case "number":
-          return (<>{parseDecimal(value)}</>);
+          return <>{parseDecimal(value)}</>;
         case "text":
         case "phone":
         case "email":
