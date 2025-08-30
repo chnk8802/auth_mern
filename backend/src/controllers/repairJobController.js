@@ -51,7 +51,7 @@ const getAllRepairJobs = async (req, res, next) => {
       .populate("customer", "customerCode fullName phone address")
       .populate("technician", "userCode fullName email phone role")
       .populate({
-        path: "spareParts",
+        path: "sparePartsEntries",
         populate: [
           {
             path: "sparePart",
@@ -89,7 +89,7 @@ const getRepairJobById = async (req, res, next) => {
       .populate("customer", "customerCode fullName email phone address")
       .populate("technician", "userCode fullName email phone")
       .populate({
-        path: "spareParts",
+        path: "sparePartsEntries",
         populate: [
           {
             path: "sparePart",
@@ -152,7 +152,7 @@ const updateRepairJob = async (req, res, next) => {
         select: "userCode fullname email phone",
       },
       {
-        path: "spareParts",
+        path: "sparePartsEntries",
         populate: [
           {
             path: "sparePart",
@@ -171,76 +171,6 @@ const updateRepairJob = async (req, res, next) => {
     next(error);
   }
 };
-
-// const updateRepairJob = async (req, res, next) => {
-//   const session = await mongoose.startSession();
-//   session.startTransaction();
-//   try {
-//     const repairJobId = req.params.id;
-
-//     const { error, value } = updateRepairJobValidation.validate(req.body, {
-//       abortEarly: false,
-//       stripUnknown: true,
-//     });
-//     if (error) {
-//       throw createError(400, error.details.map((d) => d.message).join(", "));
-//     }
-
-//     const repairJobUpdates = flattenObject(value.data[0]);
-
-//     if (repairJobUpdates?.customer) {
-//       const customerExists = await Customer.findById({
-//         _id: repairJobUpdates.customer,
-//       }).select("customerCode");
-//       if (!customerExists) {
-//         throw createError(404, "customer not found");
-//       }
-//     }
-//     if (repairJobUpdates?.technician) {
-//       const technicianExists = await User.findById({
-//         _id: repairJobUpdates.technician,
-//         role: "technician",
-//       }).select("userCode");
-//       if (!technicianExists) {
-//         throw createError(404, "Technician not found");
-//       }
-//     }
-//     // flattenObjects(value)
-//     const updates = {};
-//     if (Object.keys(repairJobUpdates).length > 0) {
-//       updates.$set = repairJobUpdates;
-//     }
-
-//     const updatedRepairJob = await RepairJob.findByIdAndUpdate(
-//       repairJobId,
-//       updates,
-//       { new: true }
-//     )
-//       .populate("customer", "customerCode fullname email phone address")
-//       .populate("technician", "userCode fullname email phone")
-//       .populate({
-//         path: "spareParts",
-//         populate: [
-//           {
-//             path: "sparePart",
-//             select: "partCode brand model name displayName",
-//           },
-//           { path: "supplier", select: "supplierCode fullName displayName" },
-//         ],
-//       });
-
-//     if (!updatedRepairJob) {
-//       throw createError(404, "Repair job not found");
-//     }
-//     await session.commitTransaction();
-//     session.endSession();
-//     response(res, updatedRepairJob, "Repair job updated successfully");
-//   } catch (error) {
-//     await session.abortTransaction();
-//     session.endSession();
-//     next(error);
-//   }
-// };
 
 const updateRepairJobStatus = async (req, res, next) => {
   try {

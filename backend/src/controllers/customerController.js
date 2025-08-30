@@ -65,6 +65,10 @@ const getCustomer = async (req, res, next) => {
     const { id } = req.params;
 
     const customer = await Customer.findById(id);
+
+    if (!customer) {
+      throw createError(404, "Customer not found");
+    }
     
     response(res, customer, "Customer fetched successfully");
   } catch (error) {

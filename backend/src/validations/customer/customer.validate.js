@@ -44,7 +44,6 @@ export const createCustomer = Joi.object({
       .default("india")
       .optional(),
   }).optional(),
-  isBulkCustomer: Joi.boolean().optional(),
 });
 
 const updateCustomer = Joi.object({
@@ -80,7 +79,6 @@ const updateCustomer = Joi.object({
       .default("india")
       .optional(),
   }).optional(),
-  isBulkCustomer: Joi.boolean().optional(),
 }).min(1);
 
 export const createCustomerValidation = inputDataWrapper(createCustomer);

@@ -54,7 +54,7 @@ export const updateSupplier = Joi.object({
         "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
       }),
 
-    country: Joi.string().valid(...COUNTRIES).default("India").optional(),
+    country: Joi.string().valid(...COUNTRIES).default("india").optional(),
   }).optional()
 }).min(1);
 export const createSupplierValidation = inputDataWrapper(createSupplier)

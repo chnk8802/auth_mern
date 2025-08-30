@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
+import { SPARE_PART_TYPES } from "../constants/enums.js";
 
 const sparePartSchema = new mongoose.Schema(
   {
@@ -15,7 +16,7 @@ const sparePartSchema = new mongoose.Schema(
     partType: {
       type: String,
       trim: true,
-      enum: ["Display", "Battery", "IC", "Camera", "Storage", "Other"],
+      enum: [...SPARE_PART_TYPES],
     },
     costPrice: { type: mongoose.Schema.Types.Decimal128},
     stockQty: { type: Number, default: 0 }, // Default to 0 if not specified
@@ -24,17 +25,31 @@ const sparePartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Pre-save hook to generate partCode if not provided
 sparePartSchema.pre("save", async function (next) {
   try {
-    if (this.isNew && !this.partCode) {
+    if (!this.partCode) {
       this.partCode = await generateModuleId("sparePart", "SP");
     }
     next();
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 });
+
+sparePartSchema.pre("insertMany", async function (next, docs) {
+  try {
+    for (const doc of docs) {
+      if (!doc.partCode) {
+        doc.partCode = await generateModuleId("sparePart", "SP");
+      }
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 
 const SparePart = mongoose.model("SparePart", sparePartSchema);
 export default SparePart;

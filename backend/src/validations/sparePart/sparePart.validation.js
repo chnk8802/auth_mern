@@ -1,12 +1,13 @@
 import Joi from "joi";
 import {inputDataWrapper, joiObjectId } from "../custom/custom.validators.js";
+import { SPARE_PART_TYPES } from "../../constants/enums.js";
 
 export const createSparePart = Joi.object({
   brand: Joi.string().trim().required(),
   model: Joi.string().trim().required(),
-  name: Joi.string().trim().required(),
+  partName: Joi.string().trim().required(),
   partType: Joi.string()
-    .valid("Display", "Battery", "Processor", "Camera", "Storage", "Other")
+    .valid(...SPARE_PART_TYPES)
     .required(),
   costPrice: Joi.number().positive().precision(2).required(),
   stockQty: Joi.number().min(0).optional(),
@@ -16,8 +17,8 @@ export const createSparePart = Joi.object({
 export const updateSparePart = Joi.object({
   brand: Joi.string().trim(),
   model: Joi.string().trim(),
-  name: Joi.string().trim(),
-  partType: Joi.string().valid("Display", "Battery", "IC", "Camera", "Storage", "Other"),
+  partName: Joi.string().trim(),
+  partType: Joi.string().valid(...SPARE_PART_TYPES),
   costPrice: Joi.number().positive().precision(2),
   stockQty: Joi.number().min(0),
   supplier: joiObjectId(),

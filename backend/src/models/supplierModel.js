@@ -50,11 +50,6 @@ supplierSchema.pre("save", async function (next) {
     next(error);
   }
 });
-
-supplierSchema.virtual("displayName").get(function () {
-  return `${this.supplierCode} - ${this.fullName}`;
-});
-
 const Supplier = mongoose.model("Supplier", supplierSchema);
 
 export default Supplier;

@@ -45,10 +45,11 @@ export const CUSTOMER_TYPES = ["individual", "business", "bulk"];
  
 // Repair Job
 export const REPAIR_STATUS = ["pending", "in-progress", "incomplete", "complete", "picked"];
-export const REPAIR_TYPE = ["Hardware", "Software", "Both"];
-export const DEVICE_COMPONENTS = ["Sim Tray", "Screen", "Front Camera", "Back Camera", "Battery"];
+export const REPAIR_TYPE = ["hardware", "software", "both"];
+export const DEVICE_COMPONENTS = ["sim_tray", "screen", "front_camera", "back_camera", "battery"];
 export const PAYMENT_STATUS = ["paid", "unpaid", "partial"];
-
+// Spare Parts
+export const SPARE_PART_TYPES = ["display", "battery", "processor", "camera", "storage", "other"];
 // Payment
-export const PAYMENT_METHODS = ["Cash", "Card", "UPI", "Bank Transfer"];
-export const PAYMENT_TYPE = ["Receivable", "Payable"];
+export const PAYMENT_METHODS = ["cash", "card", "upi", "bank_transfer"];
+export const PAYMENT_TYPE = ["receivable", "payable"];

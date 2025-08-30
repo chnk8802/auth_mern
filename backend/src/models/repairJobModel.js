@@ -30,7 +30,7 @@ const repairJobSchema = new mongoose.Schema(
     repairType: {
       type: String,
       enum: REPAIR_TYPE,
-      default: "Hardware",
+      default: "hardware",
     },
     technician: {
       type: mongoose.Schema.Types.ObjectId,
@@ -72,7 +72,7 @@ repairJobSchema.pre("save", async function (next) {
       this.repairJobCode = await generateModuleId("repairJob", "REP");
     }
 
-    const sparePartsCost = this.spareParts.reduce((total, part) => {
+    const sparePartsCost = this.sparePartsEntries.reduce((total, part) => {
       const partCost = parseFloat(part.unitCost?.toString()) || 0;
       return total + partCost;
     }, 0);

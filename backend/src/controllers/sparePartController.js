@@ -8,7 +8,6 @@ import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import {
   paramIdValidation,
-  multipleIdsValidation,
 } from "../validations/common/common.validation.js";
 
 const createSparePart = async (req, res, next) => {
@@ -17,22 +16,40 @@ const createSparePart = async (req, res, next) => {
       abortEarly: true,
       stripUnknown: true,
     });
+
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    const sparePart = new SparePart(value);
 
-    let savedSparePart = await sparePart.save();
+    const sparePartsData = value.data;
 
-    if (!savedSparePart) {
-      throw createError(400, "Failed to create spare part");
+    for (const part of sparePartsData) {
+      const exists = await SparePart.findOne({
+        brand: part.brand,
+        model: part.model,
+        partName: part.partName,
+      });
+      if (exists) {
+        throw createError(
+          400,
+          `Spare part already exists: ${part.brand} ${part.model} ${part.partName}`
+        );
+      }
     }
 
-    response(res, savedSparePart, "Spare part created successfully");
+    // ✅ insert many at once
+    const savedSpareParts = await SparePart.insertMany(sparePartsData);
+
+    if (!savedSpareParts || savedSpareParts.length === 0) {
+      throw createError(400, "Failed to create spare parts");
+    }
+
+    response(res, savedSpareParts, "Spare parts created successfully");
   } catch (error) {
     next(error);
   }
 };
+
 
 const getSpareParts = async (req, res, next) => {
   try {
@@ -42,6 +59,7 @@ const getSpareParts = async (req, res, next) => {
       .skip(skip)
       .limit(limit)
       .sort(sort);
+
     const totalRecords = await SparePart.countDocuments();
     response(res, spareParts, "Spare parts retrieved successfully", {
       pagination: {
@@ -108,8 +126,9 @@ const deleteSparePart = async (req, res, next) => {
     }
     let sparePart = await SparePart.findByIdAndDelete(sparePartId);
     if (!sparePart) {
-      throw createError(400, "Could not update Spare Part");
+      throw createError(404, "Spare part not found");
     }
+
     sparePart = {
       _id: sparePart._id,
       partCode: sparePart.partCode,
@@ -125,5 +144,5 @@ export default {
   getSpareParts,
   getSparePart,
   updateSparePart,
-  deleteSparePart
+  deleteSparePart,
 };
