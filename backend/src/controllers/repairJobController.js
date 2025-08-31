@@ -122,7 +122,9 @@ const updateRepairJob = async (req, res, next) => {
     }
 
     const repairJobUpdates = flattenObject(value.data[0]);
-
+    if (repairJobUpdates.repairStatus === "picked") {
+  repairJobUpdates.pickedAt = new Date();
+}
     if (repairJobUpdates?.customer) {
       const customerExists = await Customer.findById(repairJobUpdates.customer, { customerCode: 1 });
       if (!customerExists) {

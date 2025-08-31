@@ -64,6 +64,26 @@ const repairJobSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+repairJobSchema.set("toJSON", { getters: true });
+repairJobSchema.set("toObject", { getters: true });
+
+repairJobSchema.set("toJSON", {
+  transform: (doc, ret) => {
+    // Convert Decimal128 -> number
+    Object.keys(ret).forEach((key) => {
+      if (ret[key] && ret[key]._bsontype === "Decimal128") {
+        ret[key] = parseFloat(ret[key].toString());
+      }
+    });
+
+    // Recursively clean nested objects
+    return JSON.parse(JSON.stringify(ret, (k, v) => {
+      if (v && v._bsontype === "Decimal128") return parseFloat(v.toString());
+      return v;
+    }));
+  },
+});
+
 
 repairJobSchema.pre("save", async function (next) {
   try {
@@ -83,10 +103,6 @@ repairJobSchema.pre("save", async function (next) {
     this.totalReceivable = (repairCost - discount).toFixed(2);
     this.profit = this.totalReceivable - this.totalSparePartsCost;
 
-    // Ensure pickedAt is set to current date if repairStatus is 'picked'
-    if (this.isModified("repairStatus") && this.repairStatus === "picked") {
-      this.pickedAt = new Date();
-    }
     next();
   } catch (error) {
     next(error);

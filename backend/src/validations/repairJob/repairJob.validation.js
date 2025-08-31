@@ -12,7 +12,7 @@ export const createRepairJob = Joi.object({
   deviceIMEI: Joi.string().optional().allow(null, ""),
   repairType: Joi.string()
     .valid(...REPAIR_TYPE)
-    .default("Hardware"),
+    .default("hardware"),
   issueDescription: Joi.string().required(),
   deviceComponents: Joi.array()
     .items(Joi.string().valid(...DEVICE_COMPONENTS))
@@ -32,7 +32,7 @@ export const updateRepairJob = Joi.object({
   issueDescription: Joi.string().optional(),
   repairType: Joi.string()
     .valid(...REPAIR_TYPE)
-    .default("Hardware"),
+    .default("hardware"),
   technician: joiObjectId().optional().allow(null, ""),
   deviceComponents: Joi.array()
     .items(Joi.string().valid(...DEVICE_COMPONENTS))
@@ -43,7 +43,7 @@ export const updateRepairJob = Joi.object({
 
   // totalSparePartsCost: Joi.number().precision(2).optional(),
 
-  // spareParts: Joi.array().items(updateSparePartEntryValidation).optional(),
+  // sparePartsEntries: Joi.array().items(updateSparePartEntryValidation).optional(),
 
   // totalReceivable: Joi.number().precision(2).optional(),
 
@@ -57,7 +57,7 @@ export const updateRepairJob = Joi.object({
   //   amountDue: Joi.number().precision(2).default(0),
   // }).optional(),
 
-  // pickedAt: Joi.date().optional().allow(null),
+  pickedAt: Joi.date().optional().allow(null),
 }).min(1);
 
 
