@@ -11,6 +11,7 @@ import { indianStateMap } from "@/constants/indianStates";
 import type { ColumnDef } from "@tanstack/react-table";
 import { COUNTRY_MAP } from "@/constants/countries";
 import { Link } from "react-router-dom";
+import pluralize from "pluralize";
 
 export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
   if (field.showInTable === false) return undefined;
@@ -29,7 +30,8 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
       const value = row.getValue(field.id);
       switch (field.type) {
         case "currency":
-          return <>{formatCurrency(parseDecimal(value))}</>;
+          return <>{value}</>;
+          // return <>{formatCurrency(parseDecimal(value))}</>;
         case "date":
         case "datetime":
           return <div>{value ? formatDate(value as string) : "—"}</div>;
@@ -91,7 +93,7 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
               {display ? (
                 <Link
                   className="hover:underline hover:text-blue-600"
-                  to={`/dashboard/${field.module}/${id}`}
+                  to={`/dashboard/${pluralize(field.module)}/${id}`}
                 >
                   {display}
                 </Link>
@@ -107,7 +109,8 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
           return <div>See in Detail View</div>;
 
         case "number":
-          return <>{parseDecimal(value)}</>;
+          return <>{value}</>;
+          // return <>{parseDecimal(value)}</>;
         case "text":
         case "phone":
         case "email":

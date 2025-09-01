@@ -26,7 +26,8 @@ export function DetailsRenderer({ fields, data }: Props) {
       case "textarea":
         return String(value) || "-";
       case "currency":
-        return formatCurrency(parseDecimal(value));
+        return value;
+        // return formatCurrency(parseDecimal(value));
       case "date":
       case "datetime":
         return formatDate(value);

@@ -6,6 +6,7 @@ import {
   REPAIR_STATUS,
   REPAIR_TYPE,
 } from "../constants/enums.js";
+import { DecimalField } from "../utils/decimalField.js";
 
 const repairJobSchema = new mongoose.Schema(
   {
@@ -34,7 +35,7 @@ const repairJobSchema = new mongoose.Schema(
     },
     technician: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
     deviceComponents: {
       type: [String],
@@ -43,66 +44,76 @@ const repairJobSchema = new mongoose.Schema(
     sparePartsEntries: [
       { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
     ],
-    repairCost: { type: mongoose.Schema.Types.Decimal128 },
-    discount: { type: mongoose.Schema.Types.Decimal128 },
+    repairCost: DecimalField,
+    discount: DecimalField,
     // Tobe auto calculated
-    totalSparePartsCost: { type: mongoose.Schema.Types.Decimal128 },
-    totalReceivable: { type: mongoose.Schema.Types.Decimal128 },
-    profit: { type: mongoose.Schema.Types.Decimal128 },
+    totalSparePartsCost: DecimalField,
+    totalReceivable: DecimalField,
+    profit: DecimalField,
     paymentDetails: {
       paymentStatus: {
         type: String,
         enum: PAYMENT_STATUS,
         default: "unpaid",
       },
-      amountReceived: { type: mongoose.Schema.Types.Decimal128 }, // Amount paid by the customer
-      amountDue: { type: mongoose.Schema.Types.Decimal128 }, // Amount still due
+      amountReceived: DecimalField,
+      amountDue: DecimalField,
+      
     },
     // Tobe auto calculated
     notes: { type: String },
     pickedAt: { type: Date },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { getters: true, virtuals: true },
+    toObject: { getters: true, virtuals: true },
+  }
 );
-repairJobSchema.set("toJSON", { getters: true });
-repairJobSchema.set("toObject", { getters: true });
 
-repairJobSchema.set("toJSON", {
-  transform: (doc, ret) => {
-    // Convert Decimal128 -> number
-    Object.keys(ret).forEach((key) => {
-      if (ret[key] && ret[key]._bsontype === "Decimal128") {
-        ret[key] = parseFloat(ret[key].toString());
-      }
-    });
-
-    // Recursively clean nested objects
-    return JSON.parse(JSON.stringify(ret, (k, v) => {
-      if (v && v._bsontype === "Decimal128") return parseFloat(v.toString());
-      return v;
-    }));
-  },
-});
-
-
+// Pre-save hook: runs before each RepairJob is saved
 repairJobSchema.pre("save", async function (next) {
   try {
-    // Ensure repairJobCode is generated if not provided
+    /**
+     * 1. Auto-generate repairJobCode if this is a new record
+     */
     if (this.isNew && !this.repairJobCode) {
       this.repairJobCode = await generateModuleId("repairJob", "REP");
     }
 
+    /**
+     * 2. Calculate total spare parts cost
+     *
+     * NOTE: this.sparePartsEntries might contain only ObjectIds if not populated.
+     * For correct calculation, ensure `sparePartsEntries` is populated with `unitCost`.
+     */
     const sparePartsCost = this.sparePartsEntries.reduce((total, part) => {
-      const partCost = parseFloat(part.unitCost?.toString()) || 0;
+      // Safely extract cost (part may be populated doc or plain ID)
+      const partCost =
+        part && part.unitCost ? parseFloat(part.unitCost.toString()) : 0;
       return total + partCost;
     }, 0);
-    this.totalSparePartsCost = sparePartsCost;
 
-    const repairCost = parseFloat(this.repairCost?.toString() || "0");
-    const discount = parseFloat(this.discount?.toString() || "0");
-    this.totalReceivable = (repairCost - discount).toFixed(2);
-    this.profit = this.totalReceivable - this.totalSparePartsCost;
+    // Store back as Decimal128
+    this.totalSparePartsCost = sparePartsCost
 
+    /**
+     * 3. Calculate totals (repair cost, discount, receivable, profit)
+     */
+    const repairCost = this.repairCost
+    const discount = this.discount
+
+    // Total Receivable = repair cost - discount
+    const totalReceivable = repairCost - discount;
+    this.totalReceivable = totalReceivable;
+
+    // Profit = receivable - spare parts cost
+    const profit = totalReceivable - sparePartsCost;
+    this.profit = profit;
+
+    /**
+     * 4. Continue saving
+     */
     next();
   } catch (error) {
     next(error);

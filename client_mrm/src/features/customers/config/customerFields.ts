@@ -3,7 +3,7 @@ import { type FieldConfig } from "@/lib/form-generator/types/field-types";
 
 export const customerFields: FieldConfig = [
   {
-    section: "",
+    section: "General Details",
     sectionType: "basic",
     col: 2,
     fields: [

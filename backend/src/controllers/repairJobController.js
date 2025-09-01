@@ -21,8 +21,9 @@ const createRepairJob = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
+    console.log("value", value);
     const repairJobData = flattenObject(value.data[0]);
-    console.log(repairJobData);
+    
     const customerExists = await Customer.findById(repairJobData.customer);
     if (!customerExists) {
       throw createError(404, "Customer not found");
@@ -30,7 +31,7 @@ const createRepairJob = async (req, res, next) => {
 
     const newRepairJob = new RepairJob(repairJobData);
     const savedRepairJob = await newRepairJob.save();
-
+    console.log(savedRepairJob);
     if (!savedRepairJob) {
       throw createError(500, "Failed to create repair job");
     }
@@ -102,7 +103,6 @@ const getRepairJobById = async (req, res, next) => {
     if (!repairJob) {
       throw createError(404, "Repair job not found");
     }
-    console.log(repairJob);
     response(res, repairJob, "Repair job retrieved successfully");
   } catch (error) {
     next(error);
@@ -257,7 +257,7 @@ const searchRepairJobs = async (req, res, next) => {
   try {
     const { search } = req.query;
     const { page, limit, skip, sort } = getPaginationOptions(req.query);
-    console.log(search, page, limit, sort);
+    
     const result = await listRepairJobs({
       search,
       page,

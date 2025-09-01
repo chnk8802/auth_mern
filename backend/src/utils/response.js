@@ -7,7 +7,7 @@ const sendFormattedResponse = (
   const { status = "success", code = 200, pagination = {} } = meta;
 
   const formatData = (item) => (item?.toJSON ? item.toJSON() : item);
-
+  
   let formattedData = [];
 
   if (data != null) {
