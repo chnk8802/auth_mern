@@ -5,7 +5,6 @@ import {
   formatCurrency,
   formatDate,
   formatSnakeCaseLabel,
-  parseDecimal,
 } from "@/lib/utils";
 import type { ModuleField, SubformField } from "@/lib/form-generator/types/field-types";
 import { Link } from "react-router-dom";
@@ -26,8 +25,8 @@ export function DetailsRenderer({ fields, data }: Props) {
       case "textarea":
         return String(value) || "-";
       case "currency":
-        return value;
-        // return formatCurrency(parseDecimal(value));
+        if (isNaN(value)) return "-";
+        return formatCurrency(value);
       case "date":
       case "datetime":
         return formatDate(value);
@@ -99,7 +98,7 @@ export function DetailsRenderer({ fields, data }: Props) {
         return value.map((item, i) => (
           <div
             key={i}
-            className="flex flex-col border p-2 mb-2 rounded bg-gray-50"
+            className="border p-2 mb-2 rounded bg-gray-50"
           >
             <DetailsRenderer fields={subformField.fields} data={item} />
           </div>

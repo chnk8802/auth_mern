@@ -44,7 +44,7 @@ export const createCustomer = Joi.object({
       .default("india")
       .optional(),
   }).optional(),
-});
+}).unknown(false);
 
 const updateCustomer = Joi.object({
   customerType: Joi.string()
@@ -79,7 +79,7 @@ const updateCustomer = Joi.object({
       .default("india")
       .optional(),
   }).optional(),
-}).min(1);
+}).min(1).unknown(false);
 
 export const createCustomerValidation = inputDataWrapper(createCustomer);
 export const updateCustomerValidation = inputDataWrapper(updateCustomer);

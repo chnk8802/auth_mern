@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
+import { DecimalField } from "../utils/decimalField.js";
+import { SPARE_PART_SOURCE_TYPE } from "../constants/enums.js";
 
 const sparePartEntrySchema = new mongoose.Schema(
   {
@@ -15,7 +17,8 @@ const sparePartEntrySchema = new mongoose.Schema(
     },
     sourceType: {
       type: String,
-      enum: ["In-house", "External"],
+      enum: [...SPARE_PART_SOURCE_TYPE],
+      default: "external",
     },
     sparePart: {
       type: mongoose.Schema.Types.ObjectId,
@@ -29,9 +32,7 @@ const sparePartEntrySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Supplier",
     },
-    unitCost: {
-      type: mongoose.Schema.Types.Decimal128,
-    },
+    unitCost: DecimalField,
     isPaid: { type: Boolean },
   },
   { timestamps: true }

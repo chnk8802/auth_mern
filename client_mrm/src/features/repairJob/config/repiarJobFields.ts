@@ -97,11 +97,11 @@ export const repairJobFields: FieldConfig = [
     col: 1,
     fields: [
       {
-        id: "spareParts",
-        label: "Spare Part Entry",
+        id: "sparePartEntries",
+        label: "Spare Part Entries",
         type: "subform",
         module: "sparePart",
-        displayFields: ["sparePartName", "unitCost", "supplier.fullName"],
+        displayFields: ["sparePartName", "unitCost", "supplier"],
         minRows: 1,
         maxRows: 10,
         fields: [
@@ -113,10 +113,15 @@ export const repairJobFields: FieldConfig = [
           },
           {
             id: "sparePart",
-            label: "Spare Part",
+            label: "In-house Part",
             type: "lookup",
             module: "sparePart",
-            displayField: "partCode",
+            displayField: "partCode,brand,model,partName,partType",
+          },
+          {
+            id: "externalPartName",
+            label: "External Part",
+            type: "text",
           },
           {
             id: "unitCost",
@@ -129,7 +134,7 @@ export const repairJobFields: FieldConfig = [
             label: "Supplier",
             type: "lookup",
             module: "supplier",
-            displayField: "fullName.supplierCode",
+            displayField: "supplierCode,fullName",
           },
         ],
       },

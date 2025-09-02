@@ -6,9 +6,7 @@ import {
 } from "../validations/sparePart/sparePart.validation.js";
 import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
-import {
-  paramIdValidation,
-} from "../validations/common/common.validation.js";
+import { paramIdValidation } from "../validations/common/common.validation.js";
 
 const createSparePart = async (req, res, next) => {
   try {
@@ -50,7 +48,6 @@ const createSparePart = async (req, res, next) => {
   }
 };
 
-
 const getSpareParts = async (req, res, next) => {
   try {
     const { page, limit, skip, sort } = getPaginationOptions(req.query);
@@ -59,7 +56,9 @@ const getSpareParts = async (req, res, next) => {
       .skip(skip)
       .limit(limit)
       .sort(sort);
-
+    if (!spareParts || spareParts.length === 0) {
+      throw createError(404, "No spare parts found");
+    }
     const totalRecords = await SparePart.countDocuments();
     response(res, spareParts, "Spare parts retrieved successfully", {
       pagination: {

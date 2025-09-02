@@ -1,38 +1,39 @@
 import Joi from "joi";
 import {inputDataWrapper, joiObjectId } from "../../custom/custom.validators.js";
+import { SPARE_PART_SOURCE_TYPE } from "../../../constants/enums.js";
 
 export const createSparePartEntry = Joi.object({
   repairJob: joiObjectId().required(),
-  sourceType: Joi.string().valid("In-house", "External").required(),
+  sourceType: Joi.string().valid(...SPARE_PART_SOURCE_TYPE).required(),
   sparePart: Joi.when("sourceType", {
-    is: "In-house",
+    is: "in_house",
     then: joiObjectId().required(),
     otherwise: Joi.forbidden(),
   }),
   externalPartName: Joi.when("sourceType", {
-    is: "External",
+    is: "external",
     then: Joi.string().trim().required(),
     otherwise: Joi.forbidden(),
   }),
   supplier: joiObjectId().required(),
   unitCost: Joi.number().min(0).required(),
-});
+}).unknown(false);
 
 export const updateSparePartEntry = Joi.object({
-  sourceType: Joi.string().valid("In-house", "External"),
+  sourceType: Joi.string().valid(...SPARE_PART_SOURCE_TYPE),
   sparePart: Joi.when("sourceType", {
-    is: "In-house",
+    is: "in_house",
     then: joiObjectId(),
     otherwise: Joi.forbidden(),
   }),
   externalPartName: Joi.when("sourceType", {
-    is: "External",
+    is: "external",
     then: Joi.string().trim(),
     otherwise: Joi.forbidden(),
   }),
   supplier: joiObjectId(),
-  unitCost: Joi.number().min(0),
-});
+  unitCost: Joi.number().optional(),
+}).unknown(false).min(1);
 
 export const createSparePartEntryValidation = inputDataWrapper(createSparePartEntry)
 export const updateSparePartEntryValidation = inputDataWrapper(updateSparePartEntry)

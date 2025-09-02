@@ -6,7 +6,9 @@ const sendFormattedResponse = (
 ) => {
   const { status = "success", code = 200, pagination = {} } = meta;
 
-  const formatData = (item) => (item?.toJSON ? item.toJSON() : item);
+  const formatData = (item) => {
+    return item?.toJSON ? item.toJSON({ getters: true, setters: true }) : item;
+  };
   
   let formattedData = [];
 
@@ -14,10 +16,10 @@ const sendFormattedResponse = (
     if (Array.isArray(data)) {
       formattedData = data.map(formatData);
     } else {
-      formattedData = [formatData(data)]; // wrap single object in array
+      formattedData = [formatData(data)];
     }
   }
-
+  
   res.status(code).json({
     data: formattedData,
     dataCount: formattedData.length,

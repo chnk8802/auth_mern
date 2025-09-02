@@ -85,7 +85,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
               col={section.col}
             >
               {visibleFields.map((field) => {
-                const state = fieldStateMap?.[field.id];
+                let state = fieldStateMap?.[field.id];
 
                 return (
                   <FieldRenderer

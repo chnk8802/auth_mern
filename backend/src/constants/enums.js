@@ -49,7 +49,8 @@ export const REPAIR_TYPE = ["hardware", "software", "both"];
 export const DEVICE_COMPONENTS = ["sim_tray", "screen", "front_camera", "back_camera", "battery"];
 export const PAYMENT_STATUS = ["paid", "unpaid", "partial"];
 // Spare Parts
-export const SPARE_PART_TYPES = ["display", "battery", "processor", "camera", "storage", "other"];
+export const SPARE_PART_SOURCE_TYPE = ["in_house", "external"];
+export const SPARE_PART_TYPES = ["display", "battery", "processor", "camera", "storage", "other", "ic"];
 // Payment
 export const PAYMENT_METHODS = ["cash", "card", "upi", "bank_transfer"];
 export const PAYMENT_TYPE = ["receivable", "payable"];

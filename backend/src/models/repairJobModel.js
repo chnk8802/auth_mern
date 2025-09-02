@@ -41,7 +41,7 @@ const repairJobSchema = new mongoose.Schema(
       type: [String],
       enum: DEVICE_COMPONENTS,
     },
-    sparePartsEntries: [
+    sparePartEntries: [
       { type: mongoose.Schema.Types.ObjectId, ref: "SparePartEntry" },
     ],
     repairCost: DecimalField,
@@ -50,24 +50,19 @@ const repairJobSchema = new mongoose.Schema(
     totalSparePartsCost: DecimalField,
     totalReceivable: DecimalField,
     profit: DecimalField,
-    paymentDetails: {
-      paymentStatus: {
-        type: String,
-        enum: PAYMENT_STATUS,
-        default: "unpaid",
-      },
-      amountReceived: DecimalField,
-      amountDue: DecimalField,
-      
+    paymentStatus: {
+      type: String,
+      enum: PAYMENT_STATUS,
+      default: "unpaid",
     },
+    amountReceived: DecimalField,
+    amountDue: DecimalField,
     // Tobe auto calculated
     notes: { type: String },
     pickedAt: { type: Date },
   },
   {
     timestamps: true,
-    toJSON: { getters: true, virtuals: true },
-    toObject: { getters: true, virtuals: true },
   }
 );
 
@@ -84,10 +79,10 @@ repairJobSchema.pre("save", async function (next) {
     /**
      * 2. Calculate total spare parts cost
      *
-     * NOTE: this.sparePartsEntries might contain only ObjectIds if not populated.
-     * For correct calculation, ensure `sparePartsEntries` is populated with `unitCost`.
+     * NOTE: this.sparePartEntries might contain only ObjectIds if not populated.
+     * For correct calculation, ensure `sparePartEntries` is populated with `unitCost`.
      */
-    const sparePartsCost = this.sparePartsEntries.reduce((total, part) => {
+    const sparePartsCost = this.sparePartEntries.reduce((total, part) => {
       // Safely extract cost (part may be populated doc or plain ID)
       const partCost =
         part && part.unitCost ? parseFloat(part.unitCost.toString()) : 0;
@@ -95,13 +90,13 @@ repairJobSchema.pre("save", async function (next) {
     }, 0);
 
     // Store back as Decimal128
-    this.totalSparePartsCost = sparePartsCost
+    this.totalSparePartsCost = sparePartsCost;
 
     /**
      * 3. Calculate totals (repair cost, discount, receivable, profit)
      */
-    const repairCost = this.repairCost
-    const discount = this.discount
+    const repairCost = this.repairCost ? this.repairCost : 0;
+    const discount = this.discount;
 
     // Total Receivable = repair cost - discount
     const totalReceivable = repairCost - discount;

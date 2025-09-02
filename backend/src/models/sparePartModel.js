@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
 import { SPARE_PART_TYPES } from "../constants/enums.js";
+import { DecimalField } from "../utils/decimalField.js";
 
 const sparePartSchema = new mongoose.Schema(
   {
@@ -18,7 +19,7 @@ const sparePartSchema = new mongoose.Schema(
       trim: true,
       enum: [...SPARE_PART_TYPES],
     },
-    costPrice: { type: mongoose.Schema.Types.Decimal128},
+    costPrice: DecimalField,
     stockQty: { type: Number, default: 0 }, // Default to 0 if not specified
     supplier: { type: mongoose.Schema.Types.ObjectId, ref: "Supplier" },
   },

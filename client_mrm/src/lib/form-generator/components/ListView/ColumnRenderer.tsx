@@ -3,7 +3,6 @@ import {
   formatCurrency,
   formatDate,
   formatSnakeCaseLabel,
-  parseDecimal,
 } from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 import { Button } from "@/components/ui/button";
@@ -30,8 +29,8 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
       const value = row.getValue(field.id);
       switch (field.type) {
         case "currency":
-          return <>{value}</>;
-          // return <>{formatCurrency(parseDecimal(value))}</>;
+          if (value == null) return <div>—</div>;
+          return <>{formatCurrency(value as number)}</>;
         case "date":
         case "datetime":
           return <div>{value ? formatDate(value as string) : "—"}</div>;

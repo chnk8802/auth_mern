@@ -4,7 +4,8 @@ import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilde
 import { ROUTES } from "@/constants/routes";
 import { type RepairJob } from "../types";
 import { useForm, useWatch } from "react-hook-form";
-import { useCustomerFieldStates } from "@/features/customers/hooks/useCustomerFieldState";
+import { useRepairJobFieldStates } from "../hooks/useRepairJobFieldStates";
+
 
 export interface RepairJobFormProps {
   repairJob: RepairJob;
@@ -19,7 +20,7 @@ export const RepairJobEditForm = ({ repairJob, onSubmit }: RepairJobFormProps) =
     control: form.control,
   });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-//   const fieldStates = useRepairJobFieldStates(formValues);
+  const fieldStates = useRepairJobFieldStates(formValues);
 
   const handleChange = (fieldId: string, value: any) => {
     form.setValue(fieldId as keyof RepairJob, value, {
@@ -39,7 +40,7 @@ export const RepairJobEditForm = ({ repairJob, onSubmit }: RepairJobFormProps) =
       title="Repair Job"
       backLink={ROUTES.REPAIR_JOBS.DETAILS(repairJob._id)}
       mode="edit"
-//       fieldStateMap={fieldStates}
+      fieldStateMap={fieldStates}
       fieldsConfig={repairJobFields}
       formData={formValues}
       onChange={handleChange}

@@ -48,10 +48,10 @@ const createSparePartEntry = async (req, res, next) => {
 
     const updateRepairJob = await RepairJob.findByIdAndUpdate(
       sparePartEntryData.repairJob,
-      { $push: { spareParts: savedSparePartEntry._id } },
+      { $push: { sparePartEntries: savedSparePartEntry._id } },
       { new: true }
     );
-
+    console.log(updateRepairJob)
     if (!updateRepairJob) {
       throw createError(400, "Spare Part Entry created but not appended to Repair Job");
     }

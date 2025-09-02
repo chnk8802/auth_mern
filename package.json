@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "concurrently \"npm run start --prefix backend\" \"npm run start --prefix client_mrm\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

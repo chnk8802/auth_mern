@@ -2,6 +2,7 @@ import Joi from "joi";
 import { inputDataWrapper, joiObjectId } from "../custom/custom.validators.js";
 import {
   DEVICE_COMPONENTS,
+  PAYMENT_STATUS,
   REPAIR_STATUS,
   REPAIR_TYPE,
 } from "../../constants/enums.js";
@@ -17,48 +18,50 @@ export const createRepairJob = Joi.object({
   deviceComponents: Joi.array()
     .items(Joi.string().valid(...DEVICE_COMPONENTS))
     .optional(),
-  repairCost: Joi.number().precision(2).required(),
-  discount: Joi.number().precision(2).optional(),
+  repairCost: Joi.number().required(),
+  discount: Joi.number().optional(),
   notes: Joi.string().optional().allow(null, ""),
-});
+  paymentStatus: Joi.string()
+      .valid(...PAYMENT_STATUS)
+      .default("unpaid"),
+    amountReceived: Joi.number().optional(),
+    amountDue: Joi.number().optional(),
+}).unknown(false);
 
 export const updateRepairJob = Joi.object({
-  repairStatus: Joi.string()
-    .valid(...REPAIR_STATUS)
-    .default("pending"),
+  repairStatus: Joi.string().optional()
+    .valid(...REPAIR_STATUS),
   customer: joiObjectId().optional().allow(null, ""),
   deviceModel: Joi.string().optional(),
-  deviceIMEI: Joi.string().optional().allow(null, "").optional(),
+  deviceIMEI: Joi.string().optional().allow(null, ""),
   issueDescription: Joi.string().optional(),
   repairType: Joi.string()
     .valid(...REPAIR_TYPE)
-    .default("hardware"),
+    .default("hardware").optional(),
   technician: joiObjectId().optional().allow(null, ""),
   deviceComponents: Joi.array()
     .items(Joi.string().valid(...DEVICE_COMPONENTS))
     .optional(),
-  repairCost: Joi.number().precision(2).optional(),
-  discount: Joi.number().precision(2).optional(),
+  repairCost: Joi.number().optional(),
+  discount: Joi.number().optional(),
   notes: Joi.string().optional().allow(null, ""),
 
-  // totalSparePartsCost: Joi.number().precision(2).optional(),
+  // totalSparePartsCost: Joi.number().optional(),
 
-  // sparePartsEntries: Joi.array().items(updateSparePartEntryValidation).optional(),
+  // sparePartEntries: Joi.array().items(updateSparePartEntryValidation).optional(),
 
-  // totalReceivable: Joi.number().precision(2).optional(),
+  // totalReceivable: Joi.number().optional(),
 
-  // profit: Joi.number().precision(2).optional(),
+  // profit: Joi.number().optional(),
 
-  // paymentDetails: Joi.object({
-  //   paymentStatus: Joi.string()
-  //     .valid(...PAYMENT_STATUS)
-  //     .default("unpaid"),
-  //   amountReceived: Joi.number().precision(2).default(0),
-  //   amountDue: Joi.number().precision(2).default(0),
-  // }).optional(),
+  paymentStatus: Joi.string()
+      .valid(...PAYMENT_STATUS)
+      .default("unpaid"),
+    amountReceived: Joi.number().optional(),
+    amountDue: Joi.number().optional(),
 
   pickedAt: Joi.date().optional().allow(null),
-}).min(1);
+}).min(1).unknown(false);
 
 
 export const createRepairJobValidation = inputDataWrapper(createRepairJob)
