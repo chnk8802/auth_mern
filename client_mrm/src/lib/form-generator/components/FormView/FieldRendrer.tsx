@@ -17,6 +17,7 @@ import { SignatureInput } from "@/components/form/SignatureInput";
 import { LocationInput } from "@/components/form/LocationInput";
 import { SubformInput } from "@/components/form/SubFormInput";
 import { FileInput } from "@/components/form/FileInput";
+import { FormatLookup } from "@/lib/utils";
 
 interface FieldRendererProps {
   formMode?: "create" | "edit";
@@ -221,7 +222,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
         return (
           <LookupInput
             field={field}
-            value={value ?? ""}
+            value={FormatLookup(value) ?? ""}
             onChange={onChange}
             required={field.required}
             disabled={field.readOnly || disabled}

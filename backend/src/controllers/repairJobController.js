@@ -54,22 +54,24 @@ const getAllRepairJobs = async (req, res, next) => {
       .populate([
         {
           path: "customer",
-          select: "customerCode fullName address.city",
+          // select: "customerCode fullName address.city",
         },
         {
           path: "technician",
-          select: "userCode fullName",
+          // select: "userCode fullName",
         },
         {
           path: "sparePartEntries",
-          populate: [
-            {
-              path: "sparePart",
-              select:
-                "partCode brand model partName partType costPrice stockQty",
-            },
-            { path: "supplier", select: "supplierCode fullName" },
-          ],
+          // populate: [
+          //   {
+          //     path: "sparePart",
+          //     select: "partCode",
+          //   },
+          //   {
+          //     path: "supplier",
+          //     select: "supplierCode fullName",
+          //   },
+          // ],
         },
       ]);
 
@@ -97,21 +99,14 @@ const getRepairJobById = async (req, res, next) => {
     const repairJob = await RepairJob.findById(repairJobId).populate([
       {
         path: "customer",
-        select: "customerCode fullName email phone address",
+        // select: "customerCode fullName email phone address",
       },
       {
         path: "technician",
-        select: "userCode fullName email phone",
+        // select: "userCode fullName email phone",
       },
       {
         path: "sparePartEntries",
-        populate: [
-          {
-            path: "sparePart",
-            select: "partCode brand model partName partType costPrice stockQty",
-          },
-          { path: "supplier", select: "supplierCode fullName" },
-        ],
       },
     ]);
 

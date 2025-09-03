@@ -98,7 +98,7 @@ export function DetailsRenderer({ fields, data }: Props) {
         return value.map((item, i) => (
           <div
             key={i}
-            className="border p-2 mb-2 rounded bg-gray-50"
+            className="border p-2 my-2 rounded"
           >
             <DetailsRenderer fields={subformField.fields} data={item} />
           </div>

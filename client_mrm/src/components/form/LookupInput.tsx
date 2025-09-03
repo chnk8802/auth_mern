@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import type { LookupField } from "@/lib/form-generator/types/field-types";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import pluralize from "pluralize";
 
 type Props = {
   field: LookupField;
@@ -75,7 +76,7 @@ export function LookupInput({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-full justify-between"
+            className="w-full justify-between overflow-hidden"
             disabled={disabled}
           >
             {selectedLabel || field.placeholder || "Select"}
@@ -113,7 +114,7 @@ export function LookupInput({
 
           {/* Fixed footer button */}
           <div className="pt-2 border-t mt-2">
-            <Button variant="outline" className="w-full" onClick={() => {navigate(`/dashboard/${module}/new`);}}>
+            <Button variant="outline" className="w-full" onClick={() => {navigate(`/dashboard/${pluralize(field.module)}/new`);}}>
               <Plus className="mr-2 h-4 w-4" /> Add New
             </Button>
           </div>

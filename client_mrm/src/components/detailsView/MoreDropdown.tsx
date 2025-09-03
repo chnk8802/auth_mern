@@ -11,8 +11,6 @@ import { Button } from "../ui/button";
 import { Ellipsis } from "lucide-react";
 import type { ReactNode } from "react";
 import { DeleteConfirmDialog } from "../form/DeleteConfirmDialog";
-import { cn } from "@/lib/utils";
-import React from "react";
 
 type MoreDropdownProps = {
   onDownloadPdf: () => void;
@@ -27,7 +25,6 @@ export function MoreDropdown({
   onDelete,
   actions,
 }: MoreDropdownProps) {
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
   const renderActions = () => {
     if (!actions) return null;
 

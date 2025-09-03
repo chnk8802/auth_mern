@@ -16,11 +16,11 @@ export function DetailItem({ label, value, ref }: DetailItemProps) {
     <>
       <p className="text-sm text-muted-foreground">{label}</p>
       <p className="text-sm break-words">{value ?? "-"}</p>
-      <Separator className="my-4 sm:hidden" />
+      <Separator className="my-2 sm:hidden" />
     </>
   );
 
-  const wrapperClass = "block rounded-md hover:bg-muted/50 transition-colors px-2 -mx-2";
+  const wrapperClass = "block rounded-md hover:bg-muted/50 transition-colors px-2 mx-2";
 
   return ref?.id ? (
     <Link to={`/dashboard/${ref.module}/${ref.id}`} className={wrapperClass}>

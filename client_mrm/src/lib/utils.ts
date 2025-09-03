@@ -14,6 +14,24 @@ export const parseDecimal = (value: any): number => {
   return typeof value === "number" ? value : 0;
 };
 
+export function FormatLookup(input: any): string | null {
+  if (!input) return null;
+
+  // Case 1: Input is an object with _id
+  if (typeof input === "object" && "_id" in input) {
+    return String(input._id);
+  }
+
+  // Case 2: Input is already an id (string/number)
+  if (typeof input === "string" || typeof input === "number") {
+    return String(input);
+  }
+
+  return null;
+}
+
+
+
 export const formatCurrency = (
   amount: number,
   currency: string = "INR",

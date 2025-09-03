@@ -34,7 +34,7 @@ export function RepairJobListPage() {
   };
 
   const handleRowEdit = (repairJob: RepairJob) => {
-    navigate(`/dashboard/repairJob/${repairJob._id}/edit`);
+    navigate(`/dashboard/repairJobs/${repairJob._id}/edit`);
   };
 
   const handleRowDelete = async (repairJob: RepairJob) => {
