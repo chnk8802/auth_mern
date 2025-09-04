@@ -44,17 +44,54 @@ export const formatCurrency = (
 };
 
 
-export function formatDate(dateInput: Date | string): string {
-  const date = new Date(dateInput);
-  const dd = String(date.getDate()).padStart(2, '0');
-  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-  const yyyy = date.getFullYear();
+// export function formatDate(dateInput: Date | string): string {
+//   const date = new Date(dateInput);
+//   const dd = String(date.getDate()).padStart(2, '0');
+//   const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+//   const yyyy = date.getFullYear();
 
-  const hh = String(date.getHours()).padStart(2, '0');
-  const min = String(date.getMinutes()).padStart(2, '0');
+//   const hh = String(date.getHours()).padStart(2, '0');
+//   const min = String(date.getMinutes()).padStart(2, '0');
 
-  return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+//   return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+// }
+
+// utils/dateTime.ts
+export function toDate(value: string | Date | undefined): Date | undefined {
+  if (!value) return undefined;
+  return value instanceof Date ? value : new Date(value);
 }
+
+/**
+ * Format a server date string or Date object to 'dd/MM/yyyy'
+ */
+export function formatDate(value: string | Date | undefined): string {
+  const date = toDate(value);
+  if (!date) return "";
+  return date.toLocaleDateString("en-IN"); // dd/MM/yyyy format
+}
+
+/**
+ * Format a server time string or Date object to 'HH:mm:ss' or 'HH:mm'
+ */
+export function formatTime(value: string | Date | undefined, includeSeconds = true): string {
+  const date = toDate(value);
+  if (!date) return includeSeconds ? "00:00:00" : "00:00";
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const seconds = date.getSeconds().toString().padStart(2, "0");
+  return includeSeconds ? `${hours}:${minutes}:${seconds}` : `${hours}:${minutes}`;
+}
+
+/**
+ * Format a server datetime string or Date object to 'dd/MM/yyyy HH:mm:ss'
+ */
+export function formatDateTime(value: string | Date | undefined): string {
+  const date = toDate(value);
+  if (!date) return "";
+  return `${formatDate(date)} ${formatTime(date)}`;
+}
+
 
 export function formatSnakeCaseLabel(input: string): string {
   return input.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())

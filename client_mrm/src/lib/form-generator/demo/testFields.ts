@@ -53,6 +53,7 @@ export const testFields: FieldConfig = [
         id: "appointment_time",
         label: "Appointment Time",
         type: "time",
+        timeFormat: "12h"
       },
       {
         id: "event_timestamp",
@@ -203,6 +204,7 @@ export const testFields: FieldConfig = [
         id: "work_experience",
         label: "Work Experience",
         type: "subform",
+        layout: "grid",
         module: "sparePart",
         displayFields: [],
         minRows: 1,

@@ -4,34 +4,30 @@ import { useRef, useEffect } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
+import type { SignatureField } from "@/lib/form-generator/types/field-types";
 
 type Props = {
-  id?: string;
-  label?: string;
+  field: SignatureField
   value?: string; // base64 string
   onChange: (val: string) => void;
-  disabled?: boolean;
-  required?: boolean
 };
 
 export function SignatureInput({
-  id,
-  label,
+  field,
   value,
   onChange,
-  disabled,
 }: Props) {
   const sigPadRef = useRef<SignatureCanvas>(null);
 
   // Handle drawing enable/disable
   useEffect(() => {
     if (!sigPadRef.current) return;
-    if (disabled) {
+    if (field.disabled || field.readOnly) {
       sigPadRef.current.off(); // disables drawing
     } else {
       sigPadRef.current.on(); // enables drawing
     }
-  }, [disabled]);
+  }, [field.disabled, field.readOnly]);
 
   // Load existing signature
   useEffect(() => {
@@ -70,7 +66,7 @@ export function SignatureInput({
             className: clsx(
               "rounded-md w-full h-48",
               "bg-white dark:bg-neutral-900",
-              disabled && "opacity-70 cursor-not-allowed"
+              field.readOnly || field.disabled && "opacity-70 cursor-not-allowed"
             ),
           }}
           onEnd={handleEnd}
@@ -81,7 +77,7 @@ export function SignatureInput({
         type="button"
         variant="outline"
         onClick={handleClear}
-        disabled={disabled}
+        disabled={field.disabled || field.readOnly}
       >
         Clear
       </Button>

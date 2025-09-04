@@ -1,6 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-import { type ModuleField } from "@/lib/form-generator/types/field-types";
+import type { ModuleField } from "@/lib/form-generator/types/field-types";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,15 +9,15 @@ import { MultiSelectCombobox } from "@/components/form/MultiselectCombobox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DateTimePicker } from "@/components/form/DateTimePicker";
 import { DateInput } from "@/components/form/DateInput";
-import { TimeInput } from "@/components/form/TimeInput";
 import { LookupInput } from "@/components/form/LookupInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AddressInput } from "@/components/form/AddressInput";
 import { SignatureInput } from "@/components/form/SignatureInput";
 import { LocationInput } from "@/components/form/LocationInput";
-import { SubformInput } from "@/components/form/SubFormInput";
 import { FileInput } from "@/components/form/FileInput";
-import { FormatLookup } from "@/lib/utils";
+import { formatDateTime, FormatLookup, formatTime, toDate } from "@/lib/utils";
+import { SubformInputGrid } from "@/components/form/SubFormInputGrid";
+import { TimePicker } from "@/components/form/TimePicker";
 
 interface FieldRendererProps {
   formMode?: "create" | "edit";
@@ -25,7 +25,6 @@ interface FieldRendererProps {
   value: any;
   onChange: (value: any) => void;
   defaultValue?: any;
-  visible?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
 }
@@ -36,7 +35,6 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   value,
   onChange,
   defaultValue,
-  visible,
   disabled,
   readOnly,
 }) => {
@@ -81,10 +79,11 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
             disabled={field.readOnly || disabled}
           />
         );
+
       case "currency":
         return (
           <Input
-          id={field.id}
+            id={field.id}
             type="number"
             placeholder={field.placeholder}
             value={value ?? defaultValue ?? ""}
@@ -98,12 +97,9 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
       case "file":
         return (
           <FileInput
-            id={field.id}
-            label={field.label}
+            field={field}
             value={Array.isArray(value) ? value : []}
             onChange={onChange}
-            required={field.required}
-            disabled={field.readOnly || disabled}
           />
         );
 
@@ -195,12 +191,11 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
       case "select":
         return (
           <Combobox
-            key={field.id}
             value={value}
             onChange={onChange}
+            key={field.id}
             options={field.options}
             placeholder={field.placeholder}
-            defaultValue={defaultValue ?? ""}
             required={field.required}
             disabled={field.readOnly || disabled}
           />
@@ -221,50 +216,38 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
       case "lookup":
         return (
           <LookupInput
-            field={field}
             value={FormatLookup(value) ?? ""}
             onChange={onChange}
-            required={field.required}
-            disabled={field.readOnly || disabled}
+            field={field}
           />
         );
 
       // ---------------- BASIC DATE/TIME ----------------
       case "date":
-        return (
-          <DateInput
-            id={field.id}
-            label={field.label}
-            placeholder={field.placeholder}
-            value={value ? new Date(value) : undefined}
-            onChange={(val) => onChange(val?.toISOString().split("T")[0] ?? "")}
-            required={field.required}
-            disabled={field.readOnly || disabled}
-          />
-        );
+    return (
+      <DateInput
+        field={field}
+        value={value ? toDate(value) : undefined} // convert server string to Date
+        onChange={(val) => onChange(val?.toISOString().split("T")[0] ?? "")} // keep ISO yyyy-MM-dd for server
+      />
+    );
 
-      case "time":
-        return (
-          <TimeInput
-            id={field.id}
-            label={field.label}
-            placeholder={field.placeholder}
-            value={value}
-            onChange={onChange}
-            required={field.required}
-            disabled={field.readOnly || disabled}
-          />
-        );
+  case "time":
+    return (
+      <TimePicker
+        field={field}
+        value={value} // format server string for TimePicker
+        onChange={onChange}
+      />
+    );
 
-      case "datetime":
-        return (
-          <DateTimePicker
-            value={value ? new Date(value) : undefined}
-            onChange={(val) => onChange(val?.toISOString() ?? "")}
-            required={field.required}
-            disabled={field.readOnly || disabled}
-          />
-        );
+  case "datetime":
+    return (
+      <DateTimePicker
+        field={field}
+        value={value}
+      />
+    );
 
       // ---------------- ADVANCED ----------------
       case "address":
@@ -280,28 +263,20 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
 
       case "subform":
         return (
-          <SubformInput
-            id={field.id}
-            label={field.label}
-            fields={field.fields}
+          <SubformInputGrid
+            field={field}
             value={value ?? []}
             onChange={onChange}
-            minRows={field.minRows}
-            maxRows={field.maxRows}
-            required={field.required}
-            disabled={field.readOnly || disabled}
+            disabled={disabled}
           />
         );
 
       case "signature":
         return (
           <SignatureInput
-            id={field.id}
-            label={field.label}
+            field={field}
             value={value}
             onChange={onChange}
-            required={field.required}
-            disabled={field.readOnly || disabled}
           />
         );
 
@@ -326,7 +301,6 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   if (!field.showInForm) return null;
   if (formMode === "create" && field.hiddenInCreate) return null;
   if (formMode === "edit" && field.hiddenInEdit) return null;
-  if (visible === false) return null;
 
   const cssClass = clsx("space-y-1", {
     "sm:w-64": field.type !== "subform",
@@ -334,10 +308,10 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
 
   return (
     <div className={cssClass}>
-      <Label htmlFor={field.id} className="font-semibold pb-1">
+      {/* <Label htmlFor={field.id} className="font-semibold pb-1">
         {field.label}{" "}
         {field.required && <span className="text-red-500">*</span>}
-      </Label>
+      </Label> */}
       {renderInput()}
       {field.helpText && (
         <p className="text-xs text-muted-foreground">{field.helpText}</p>

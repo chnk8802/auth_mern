@@ -18,16 +18,12 @@ import pluralize from "pluralize";
 type Props = {
   field: LookupField;
   value: string;
-  disabled?: boolean;
-  required?: boolean;
   onChange: (val: string | number) => void;
 };
 
 export function LookupInput({
   field,
   value,
-  disabled,
-  required,
   onChange,
 }: Props) {
   const [options, setOptions] = useState<any[]>([]);
@@ -64,7 +60,7 @@ export function LookupInput({
         autoComplete="off"
         value={value}
         onChange={() => {}}
-        required={required}
+        required={field.required}
         style={{
           position: "absolute",
           opacity: 0,
@@ -77,7 +73,7 @@ export function LookupInput({
           <Button
             variant="outline"
             className="w-full justify-between overflow-hidden"
-            disabled={disabled}
+            disabled={field.disabled}
           >
             {selectedLabel || field.placeholder || "Select"}
           </Button>

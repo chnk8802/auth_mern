@@ -3,35 +3,28 @@ import { Upload, X } from "lucide-react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import type { FileField } from "@/lib/form-generator/types/field-types";
 
 interface FileInputProps {
-  id: string;
-  label: string;
+  field: FileField;
   value: File[];
   onChange: (files: File[]) => void;
-  required?: boolean;
-  disabled?: boolean;
-  fileType?: string
 }
 
 export const FileInput: React.FC<FileInputProps> = ({
-  id,
-  label,
+  field,
   value,
   onChange,
-  required,
-  disabled,
-  fileType = "image", // default to image
 }) => {
   // Set allowed file types
   const acceptedTypes =
-    fileType === "pdf" ? "application/pdf" : "image/png, image/jpeg, image/jpg";
+    field.fileType === "pdf" ? "application/pdf" : "image/png, image/jpeg, image/jpg";
 
   return (
     <div className="space-y-2">
-      {label && (
-        <Label htmlFor={id} className="text-sm font-medium">
-          {label} {required && <span className="text-red-500">*</span>}
+      {field.label && (
+        <Label htmlFor={field.id} className="text-sm font-medium">
+          {field.label} {field.required && <span className="text-red-500">*</span>}
         </Label>
       )}
 
@@ -40,28 +33,28 @@ export const FileInput: React.FC<FileInputProps> = ({
         <div
           className={cn(
             "flex justify-between items-center gap-2 border border-input shadow-xs rounded-md dark:bg-muted/40",
-            disabled && "opacity-60 cursor-not-allowed"
+            field.disabled && "opacity-60 cursor-not-allowed"
           )}
         >
           {/* Hidden native input */}
           <input
-            id={id}
+            id={field.id}
             type="file"
             accept={acceptedTypes} // NEW
             className="hidden"
             onChange={(e) =>
               onChange(e.target.files ? Array.from(e.target.files) : [])
             }
-            required={required}
-            disabled={disabled}
+            required={field.required}
+            disabled={field.disabled}
           />
           
           <span className="text-sm p-2">Choose File</span>
           <Label
-            htmlFor={id}
+            htmlFor={field.id}
             className={cn(
               "flex items-center gap-2 px-3 py-2 rounded-md border-input cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors",
-              disabled && "pointer-events-none"
+              field.disabled && "pointer-events-none"
             )}
           >
             <Upload className="w-5 h-5" />

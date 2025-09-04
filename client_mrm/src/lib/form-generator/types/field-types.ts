@@ -27,92 +27,30 @@ export type FieldType =
  */
 export interface BaseField {
   /**
-   * Unique identifier for the field (used as the key in form data)
-   */
+   * General
+  */
   id: string;
-
-  /**
-   * Display label for the field
-   */
   label: string;
-
-  /**
-   * Type of field (e.g., text, number, select, etc.)
-   */
   type: FieldType;
-
-  /**
-   * Default value used to initialize the field
-   */
   defaultValue?: any;
-
-  /**
-   * Placeholder text shown inside the input when it's empty
-   */
   placeholder?: string;
-
-  /**
-   * Optional helper text displayed below the field for guidance
-   */
   helpText?: string;
-
-  /**
-   * Whether the field is required to be filled
-   */
   required?: boolean;
-
+  readOnly?: boolean; // value can be copied / submitted
+  disabled?: boolean; // field completely inactive, usually not submitted
   /**
-   * Whether the field is read-only (can be viewed but not edited)
-   */
-  readOnly?: boolean;
-
-  /**
-   * Whether the field is rendered in the form (in both create and edit)
-   */
-  visible?: boolean;
-
-  /**
-   * Whether the field is hidden when creating a new entry
-   */
-  hiddenInCreate?: boolean;
-
-  /**
-   * Whether the field is hidden when editing an existing entry
-   */
-  hiddenInEdit?: boolean;
-
-  // Layout
-
-  /**
-   * Optional title of the section this field belongs to
-   */
+   * Layout
+  */
   section?: string;
-
-  /**
-   * Optional column span (e.g., for grid layouts)
-   */
-  col?: number;
-
-  /**
-   * Defines the visual type of the section (e.g., animated tabs or simple grouping)
-   */
   sectionType?: "animated" | "basic";
-
-  // Display Controls
-
+  col?: number;
   /**
-   * Whether this field should be shown in forms (default: true)
-   */
+   * Visibility
+  */
+  hiddenInCreate?: boolean;
+  hiddenInEdit?: boolean;
   showInForm?: boolean;
-
-  /**
-   * Whether this field should be shown in table views (default: false)
-   */
   showInTable?: boolean;
-
-  /**
-   * Whether this field should be shown in detail views (default: true)
-   */
   showInDetails?: boolean;
 }
 
@@ -218,6 +156,7 @@ export interface DateField extends BaseField {
  */
 export interface TimeField extends BaseField {
   type: "time";
+  timeFormat?: "24h" | "12h"
 }
 
 /**
@@ -225,6 +164,7 @@ export interface TimeField extends BaseField {
  */
 export interface DateTimeField extends BaseField {
   type: "datetime";
+  timeFormat?: "24h" | "12h"
 }
 
 /**
@@ -375,6 +315,10 @@ export interface FileField extends BaseField {
  */
 export interface SubformField extends BaseField {
   type: "subform";
+  /**
+   * Layout
+   */
+  layout: "grid" | "row";
   /**
    * Module
    */

@@ -9,34 +9,22 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
+import type { DateField } from "@/lib/form-generator/types/field-types";
 
 type DateInputProps = {
-  id?: string;
-  label?: string;
-  placeholder?: string;
+  field: DateField;
   value: Date | undefined;
   onChange: (date: Date | undefined) => void;
-  disabled?: boolean;
-  required?: boolean;
 };
 
-export function DateInput({
-  id,
-  label,
-  placeholder = "Select date",
-  value,
-  onChange,
-  disabled,
-  required,
-}: DateInputProps) {
+export function DateInput({ field, value, onChange }: DateInputProps) {
   const [open, setOpen] = React.useState(false);
 
   return (
     <div className="flex flex-col gap-3">
       <input
         type="text"
-        required={required}
+        required={field.required}
         value={value ? value.toISOString() : ""}
         onChange={() => {}}
         style={{
@@ -53,11 +41,11 @@ export function DateInput({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            id={id}
-            disabled={disabled}
+            id={field.id}
+            disabled={field.disabled}
             className="sm:w-64 sm:min-w-64 w-full justify-between font-normal"
           >
-            {value ? value.toLocaleDateString() : placeholder}
+            {value ? value.toLocaleDateString() : field.placeholder}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>

@@ -12,6 +12,13 @@ export const repairJobFields: FieldConfig = [
     col: 2,
     fields: [
       {
+        id: "image",
+        label: "Image",
+        type: "file",
+        // fileType: "pdf"
+        // options: SPARE_PART_SOURCE_TYPE
+      },
+      {
         id: "repairStatus",
         label: "Repair Status",
         type: "select",
@@ -100,6 +107,8 @@ export const repairJobFields: FieldConfig = [
         id: "sparePartEntries",
         label: "Spare Part Entries",
         type: "subform",
+        required: true,
+        layout: "grid",
         module: "sparePart",
         displayFields: ["sparePartName", "unitCost", "supplier"],
         minRows: 1,
