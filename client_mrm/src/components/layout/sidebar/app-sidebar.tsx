@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  Bot,
-  Folder,
-  Settings2,
-  Wrench,
-} from "lucide-react";
+import { Bot, Folder, Settings2, Wrench } from "lucide-react";
 
 import { NavMain } from "@/components/layout/sidebar/nav-main";
 // import { NavProjects } from "@/components/nav-projects"
@@ -33,8 +28,8 @@ const data = {
       city: "Delhi",
       state: "Delhi",
       country: "India",
-      zip: "110011"
-    }
+      zip: "110011",
+    },
   },
   teams: [
     {
@@ -62,17 +57,25 @@ const data = {
           title: "Users",
           url: ROUTES.USERS.LIST,
         },
-        // {
-        //   title: "Spare Parts",
-        //   url: ROUTES.SPARE_PARTS.LIST,
-        // },
-        // {
-        //   title: "Vendors",
-        //   url: ROUTES.VENDORS.LIST,
-        // },
+        {
+          title: "Spare Parts",
+          url: ROUTES.SPARE_PARTS.LIST,
+        },
+        {
+          title: "Spare Part Entry",
+          url: ROUTES.SPARE_PART_ENTRY.LIST,
+        },
+        {
+          title: "Supplier",
+          url: ROUTES.SUPPLIERS.LIST,
+        },
         {
           title: "Payments",
           url: ROUTES.PAYMENTS.LIST,
+        },
+        {
+          title: "Payment Entry",
+          url: ROUTES.PAYMENT_ENTRY.LIST,
         },
       ],
     },
@@ -108,14 +111,14 @@ const data = {
         {
           title: "Users",
           url: "/dashboard/users",
-        },
+        }
       ],
     },
-  ]
+  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const user = useAppSelector((state) => state.auth.user)
+  const user = useAppSelector((state) => state.auth.user);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -127,7 +130,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-      {user ? <NavUser user={user} /> : <NavUser user={data.user} /> }
+        {user ? <NavUser user={user} /> : <NavUser user={data.user} />}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

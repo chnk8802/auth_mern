@@ -29,10 +29,15 @@ import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
 import { CustomerDetailPage } from "@/features/customers/routes/CustomerDetailsPage";
 import { CustomerEditPage } from "@/features/customers/routes/CustomerEditPage";
 import { CustomersListPage } from "@/features/customers/routes/CustomerListPage";
+// Spare Parts
+import { SparePartListPage } from "@/features/spareParts/routes/SparePartListPage";
+import { SparePartAddPage } from "@/features/spareParts/routes/SparePartAddPage";
+import { SparePartDetailPage } from "@/features/spareParts/routes/SparePartDetailsPage";
+import { SparePartEditPage } from "@/features/spareParts/routes/SparePartEditPage";
 // Others
 import { RepairJobListPage } from "@/features/repairJob/routes/RepairJobListPage";
-import { TechniciansPage } from "@/features/technician/routes/TechniciansPage";
-import { PaymentsPage } from "@/features/payment/routes/PaymentsPage";
+import { TechniciansPage } from "@/features/technicians/routes/TechniciansPage";
+import { PaymentsPage } from "@/features/payments/routes/PaymentsPage";
 import { PermissionDenied } from "@/app/PermissionDenied";
 import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetailsPage";
 import { RepairJobAddPage } from "@/features/repairJob/routes/RepairJobAddPage";
@@ -225,6 +230,82 @@ export const router = createBrowserRouter([
         handle: {
           breadcrumb: () => "Technicians",
         },
+      },
+      {
+        path: "spareparts",
+        handle: {
+          breadcrumb: () => "Spare Parts",
+        },
+        children: [
+          {
+            index: true,
+            element: <SparePartListPage />,
+            handle: {
+              breadcrumb: "Spare Part List",
+            },
+          },
+          {
+            path: ":sparePartId",
+            element: <SparePartDetailPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { sparePartId: string } }) =>
+                `${params.sparePartId}`,
+            },
+          },
+          {
+            path: ":sparePartId/edit",
+            element: <SparePartEditPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { sparePartId: string } }) =>
+                `Edit ${params.sparePartId}`,
+            },
+          },
+          {
+            path: "new",
+            element: <SparePartAddPage />,
+            handle: {
+              breadcrumb: "New Spare Part",
+            },
+          },
+        ],
+      },
+      {
+        path: "sparepartentries",
+        handle: {
+          breadcrumb: () => "Spare Part Entries",
+        },
+        children: [
+          {
+            index: true,
+            element: <SparePartListPage />,
+            handle: {
+              breadcrumb: "Spare Part Entry List",
+            },
+          },
+          {
+            path: ":sparePartEntryId",
+            element: <SparePartDetailPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { sparePartEntryId: string } }) =>
+                `${params.sparePartEntryId}`,
+            },
+          },
+          {
+            path: ":sparePartEntryId/edit",
+            element: <SparePartEditPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { sparePartEntryId: string } }) =>
+                `Edit ${params.sparePartEntryId}`,
+            },
+          },
+          {
+            path: "new",
+            element: <SparePartAddPage />,
+            handle: {
+              breadcrumb: "New Spare Part",
+            },
+          },
+        ],
       },
       {
         path: "payments",

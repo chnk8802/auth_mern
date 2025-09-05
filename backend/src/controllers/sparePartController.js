@@ -19,25 +19,22 @@ const createSparePart = async (req, res, next) => {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
 
-    const sparePartsData = value.data;
-
-    for (const part of sparePartsData) {
-      const exists = await SparePart.findOne({
-        brand: part.brand,
-        model: part.model,
-        partName: part.partName,
+    const sparePart = value.data[0];
+    const existingParts = await SparePart.find({
+        brand: sparePart.brand,
+        model: sparePart.model,
+        partName: sparePart.partName,
+        partType: sparePart.partType,
       });
-      if (exists) {
-        throw createError(
-          400,
-          `Spare part already exists: ${part.brand} ${part.model} ${part.partName}`
-        );
-      }
+
+    if (existingParts.length > 0) {
+      throw createError(
+        400,
+        `${existingParts[0].brand} ${existingParts[0].model} ${existingParts[0].partName} ${existingParts[0].partType} already exists`
+      );
     }
-
-    // ✅ insert many at once
-    const savedSpareParts = await SparePart.insertMany(sparePartsData);
-
+    const savedSpareParts = new SparePart(sparePart);
+    await savedSpareParts.save();
     if (!savedSpareParts || savedSpareParts.length === 0) {
       throw createError(400, "Failed to create spare parts");
     }

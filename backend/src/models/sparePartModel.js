@@ -37,20 +37,5 @@ sparePartSchema.pre("save", async function (next) {
   }
 });
 
-sparePartSchema.pre("insertMany", async function (next, docs) {
-  try {
-    for (const doc of docs) {
-      if (!doc.partCode) {
-        doc.partCode = await generateModuleId("sparePart", "SP");
-      }
-    }
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
-
-
-
 const SparePart = mongoose.model("SparePart", sparePartSchema);
 export default SparePart;

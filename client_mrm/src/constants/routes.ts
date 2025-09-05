@@ -29,10 +29,35 @@ export const ROUTES = {
     EDIT: (id: string) => `/dashboard/repairjobs/${id}/edit`,
     DETAILS: (id: string) => `/dashboard/repairjobs/${id}`,
   },
-
+  SPARE_PARTS: {
+    NEW: "/dashboard/spareparts/new",
+    LIST: "/dashboard/spareparts",
+    EDIT: (id: string) => `/dashboard/spareparts/${id}/edit`,
+    DETAILS: (id: string) => `/dashboard/spareparts/${id}`,
+  },
+  SPARE_PART_ENTRY: {
+    NEW: "/dashboard/sparepartentries/new",
+    LIST: "/dashboard/sparepartentries",
+    EDIT: (id: string) => `/dashboard/sparepartentries/${id}/edit`,
+    DETAILS: (id: string) => `/dashboard/sparepartentries/${id}`,
+  },
+  SUPPLIERS: {
+    NEW: "/dashboard/suppliers/new",
+    LIST: "/dashboard/suppliers",
+    EDIT: (id: string) => `/dashboard/suppliers/${id}/edit`,
+    DETAILS: (id: string) => `/dashboard/suppliers/${id}`,
+  },
   PAYMENTS: {
-    LIST: "/payments",
-    DETAILS: (id: string) => `/payments/${id}`,
+    NEW: "/dashboard/payments/new",
+    LIST: "/dashboard/payments",
+    EDIT: (id: string) => `/dashboard/payments/${id}/edit`,
+    DETAILS: (id: string) => `/dashboard/payments/${id}`,
+  },
+  PAYMENT_ENTRY: {
+    NEW: "/dashboard/paymententries/new",
+    LIST: "/dashboard/paymententries",
+    EDIT: (id: string) => `/dashboard/paymententries/${id}/edit`,
+    DETAILS: (id: string) => `/dashboard/paymententries/${id}`,
   },
 
   SETTINGS: "/settings",

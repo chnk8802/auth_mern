@@ -308,10 +308,10 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
 
   return (
     <div className={cssClass}>
-      {/* <Label htmlFor={field.id} className="font-semibold pb-1">
+      <Label htmlFor={field.id} className="font-semibold pb-1">
         {field.label}{" "}
         {field.required && <span className="text-red-500">*</span>}
-      </Label> */}
+      </Label>
       {renderInput()}
       {field.helpText && (
         <p className="text-xs text-muted-foreground">{field.helpText}</p>
