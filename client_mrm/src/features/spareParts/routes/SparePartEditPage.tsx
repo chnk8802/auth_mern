@@ -6,6 +6,7 @@ import { ROUTES } from "@/constants/routes";
 import { getSparePartById, updateSparePart } from "../api/sparePartApi";
 import type { SparePart } from "../types";
 import { SparePartEditForm } from "../components/sparePartEditForm";
+import { Loading } from "@/components/common/Loading";
 
 export function SparePartEditPage() {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ export function SparePartEditPage() {
     submitUpdate();
   };
 
-  if (loading) return <div className="p-2 text-center">Loading...</div>;
+  if (loading) return <Loading fullscreen={true} />;
   console.log(sparePart)
   if (!sparePart)
     return <div className="p-2 text-center">Spare Part not found</div>;

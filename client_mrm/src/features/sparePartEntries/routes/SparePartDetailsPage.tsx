@@ -12,6 +12,7 @@ import {
 import { customerFields } from "@/features/customers/config/customerFields";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
+import { Loading } from "@/components/common/Loading";
 
 export function SparePartDetailPage() {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export function SparePartDetailPage() {
      navigate(ROUTES.CUSTOMERS.EDIT(customer._id));
   }
 
-  if (loading) return <div className="p-6 text-center">Loading...</div>;
+  if (loading) return <Loading fullscreen={true} />;
   if (!customer)
     return (
       <div className="p-6 text-start">

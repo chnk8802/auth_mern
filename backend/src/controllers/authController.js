@@ -49,7 +49,7 @@ const register = async (req, res, next) => {
       role: newUser.role,
     };
 
-    response(res, safeUser, "User registered successfully");
+    response(res, null, "User registered successfully" );
   } catch (error) {
     next(error);
   }

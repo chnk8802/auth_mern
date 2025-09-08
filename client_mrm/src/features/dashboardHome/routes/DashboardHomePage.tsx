@@ -1,3 +1,4 @@
+import { Loading } from "@/components/common/Loading";
 import React from "react";
 
 export const DashboardHomePage: React.FC = () => {
@@ -6,6 +7,7 @@ export const DashboardHomePage: React.FC = () => {
       <h1 className="text-2xl font-semibold">Dashboard Home</h1>
       <p className="text-muted-foreground">
         Welcome to your admin dashboard. Use the sidebar to navigate.
+        <Loading fullscreen={false} />
       </p>
     </div>
   );

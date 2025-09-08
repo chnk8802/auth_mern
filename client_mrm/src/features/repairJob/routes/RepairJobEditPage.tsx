@@ -6,6 +6,7 @@ import { getRepairjobById, updateRepairJob } from "../api/repairJobApi";
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
 import { RepairJobEditForm } from "../components/RepairJobEditForm";
+import { Loading } from "@/components/common/Loading";
 
 export function RepairJobEditPage() {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ export function RepairJobEditPage() {
     submitUpdate();
   };
 
-  if (loading) return <div className="p-2 text-center">Loading...</div>;
+  if (loading) return <Loading fullscreen={true} />;
   if (!repairJob)
     return <div className="p-2 text-center">Customer not found</div>;
 

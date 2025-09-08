@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { getUserById, updateUser } from "../api/userApi";
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
+import { Loading } from "@/components/common/Loading";
 
 export function UserEditPage() {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ export function UserEditPage() {
     submitUpdate();
   };
 
-  if (loading) return <div className="p-2 text-center">Loading...</div>;
+  if (loading) return <Loading fullscreen={true} />;
   if (!user) return <div className="p-2 text-center">User not found</div>;
 
   return (

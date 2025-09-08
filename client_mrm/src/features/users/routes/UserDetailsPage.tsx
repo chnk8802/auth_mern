@@ -10,6 +10,7 @@ import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
 import { userFields } from "../config/userFields";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
+import { Loading } from "@/components/common/Loading";
 
 export function UserDetailPage() {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ export function UserDetailPage() {
     fetchUser();
   }, [userId]);
 
-  if (loading) return <div className="p-6 text-center">Loading...</div>;
+  if (loading) return <Loading fullscreen={true} />;
   if (!user)
     return (
       <div className="p-6 text-start">

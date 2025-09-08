@@ -11,12 +11,13 @@ export const AuthLoader = () => {
   useEffect(() => {
     const initializeAuth = async () => {
       const res = await fetchCurrentUser();
-
+      console.log("AuthLoader: fetchCurrentUser response", res);
       if (res.meta.status !== "success" || !res.data) {
         toast.error(res.message || "Failed to fetch user data");
         dispatch(logout());
         return;
       }
+
       const user: AuthUser = Array.isArray(res.data) ? res.data[0] : res.data;
 
       if (!user) {

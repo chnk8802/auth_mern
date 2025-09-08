@@ -10,6 +10,7 @@ import { LiveFormData } from "@/components/debugging/LiveFormData";
 import type { FieldState } from "@/lib/form-generator/types/default-field-state";
 import type { FieldConfig } from "@/lib/form-generator/types/field-types";
 import { normalizeFieldConfig } from "../../utils/normalizeFields";
+import { Loading } from "@/components/common/Loading";
 
 interface FormBuilderProps {
   title?: string;
@@ -39,7 +40,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   isSubmitting,
 }) => {
   const [showLiveData, setShowLiveData] = React.useState(false);
-  if (!fieldsConfig) return <div>Loading form...</div>;
+  if (!fieldsConfig) return <Loading fullscreen={true} />;
   const normalizedFields = React.useMemo(
     () => normalizeFieldConfig(fieldsConfig),
     [fieldsConfig]
@@ -94,7 +95,6 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                     field={field}
                     value={formData[field.id]}
                     onChange={(val) => onChange(field.id, val)}
-                    visible={state?.visible}
                     disabled={state?.disabled}
                     readOnly={state?.readOnly}
                   />

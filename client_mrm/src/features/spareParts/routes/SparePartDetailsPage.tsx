@@ -9,6 +9,7 @@ import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/Detai
 import { deleteSparePart, getSparePartById } from "../api/sparePartApi";
 import { sparePartConfig } from "../config/sparePartFields";
 import type { SparePart } from "../types";
+import { Loading } from "@/components/common/Loading";
 
 export function SparePartDetailPage() {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ export function SparePartDetailPage() {
      navigate(ROUTES.SPARE_PARTS.EDIT(sparePart._id));
   }
 
-  if (loading) return <div className="p-6 text-center">Loading...</div>;
+  if (loading) return <Loading fullscreen={true} />;
   if (!sparePart)
     return (
       <div className="p-6 text-start">

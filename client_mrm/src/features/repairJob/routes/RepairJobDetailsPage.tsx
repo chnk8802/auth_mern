@@ -9,6 +9,7 @@ import { deleteRepairJob, getRepairjobById } from "../api/repairJobApi";
 import { repairJobFields } from "../config/repiarJobFields";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
+import { Loading } from "@/components/common/Loading";
 
 export function RepairJobDetailPage() {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ export function RepairJobDetailPage() {
      navigate(ROUTES.REPAIR_JOBS.EDIT(repairJob._id));
   }
 
-  if (loading) return <div className="p-6 text-center">Loading...</div>;
+  if (loading) return <Loading fullscreen={true} />;
   if (!repairJob)
     return (
       <div className="p-6 text-start">

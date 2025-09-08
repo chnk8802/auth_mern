@@ -6,6 +6,7 @@ import { getCustomerById, updateCustomer } from "@/features/customers/api/custom
 import { getChangedFields } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
 import { CustomerEditForm } from "@/features/customers/components/customerEditForm";
+import { Loading } from "@/components/common/Loading";
 
 export function SparePartEditPage() {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ export function SparePartEditPage() {
     submitUpdate();
   };
 
-  if (loading) return <div className="p-2 text-center">Loading...</div>;
+  if (loading) return <Loading fullscreen={true} />;
   if (!customer)
     return <div className="p-2 text-center">Customer not found</div>;
 
