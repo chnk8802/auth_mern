@@ -3,17 +3,15 @@ import { ROUTES } from "@/constants/routes";
 import { NotFound } from "@/app/NotFound";
 
 // Layouts
-import { MainLayout } from "@/layouts/MainLayout";
-import { GuestLayout } from "@/layouts/GuestLayout";
-import { AuthLayout } from "@/layouts/AuthLayout";
+import { MainLayout } from "@/layouts/main/MainLayout";
+import { GuestLayout } from "@/layouts/guest/GuestLayout";
+import { AuthLayout } from "@/layouts/auth/AuthLayout";
 
 // Guest
 import { HomePage } from "@/features/home/routes/HomePage";
 
 // Auth
 import { ProtectedRoute } from "./guards/ProtectedRoute";
-import { LoginForm } from "@/features/auth/components/login-form";
-import { RegisterForm } from "@/features/auth/components/register-form";
 import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
 
 // Dashboard
@@ -46,7 +44,8 @@ import { FormGeneratorPage } from "@/lib/form-generator/demo/FormGeneratorPage";
 import { TestListPage } from "@/lib/form-generator/demo/ListGeneratorPage";
 import { DetailsGeneratorPage } from "@/lib/form-generator/demo/DetailsGeneratorPage";
 import { RepairJobEditPage } from "@/features/repairJob/routes/RepairJobEditPage";
-import GuestOnlyRoute from "./guards/GuestsOnlyRoute";
+import { RegisterPage } from "@/features/auth/routes/RegisterPage";
+import { LoginPage } from "@/features/auth/routes/LoginPage";
 
 export const router = createBrowserRouter([
   {
@@ -66,23 +65,19 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTES.GUEST_PATHS.AUTH,
-    element: (
-      <GuestOnlyRoute>
-        <AuthLayout />
-      </GuestOnlyRoute>
-    ),
+    element: <AuthLayout />,
     children: [
       {
         index: true,
-        element: <LoginForm />,
+        element: <LoginPage />,
       },
       {
         path: "login",
-        element: <LoginForm />,
+        element: <LoginPage />,
       },
       {
         path: "register",
-        element: <RegisterForm />,
+        element: <RegisterPage />,
       },
       {
         path: "forgot-password",
@@ -286,16 +281,22 @@ export const router = createBrowserRouter([
             path: ":sparePartEntryId",
             element: <SparePartDetailPage />,
             handle: {
-              breadcrumb: ({ params }: { params: { sparePartEntryId: string } }) =>
-                `${params.sparePartEntryId}`,
+              breadcrumb: ({
+                params,
+              }: {
+                params: { sparePartEntryId: string };
+              }) => `${params.sparePartEntryId}`,
             },
           },
           {
             path: ":sparePartEntryId/edit",
             element: <SparePartEditPage />,
             handle: {
-              breadcrumb: ({ params }: { params: { sparePartEntryId: string } }) =>
-                `Edit ${params.sparePartEntryId}`,
+              breadcrumb: ({
+                params,
+              }: {
+                params: { sparePartEntryId: string };
+              }) => `Edit ${params.sparePartEntryId}`,
             },
           },
           {

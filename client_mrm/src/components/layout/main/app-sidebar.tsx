@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Bot, Folder, Settings2, Wrench } from "lucide-react";
 
-import { NavMain } from "@/components/layout/sidebar/nav-main";
+import { NavMain } from "@/components/layout/main/nav-main";
 // import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/layout/sidebar/nav-user";
-import { TeamSwitcher } from "@/components/layout/sidebar/team-switcher";
+import { NavUser } from "@/components/layout/main/nav-user";
+import { TeamSwitcher } from "@/components/layout/main/team-switcher";
 import {
   Sidebar,
   SidebarContent,

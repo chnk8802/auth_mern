@@ -23,7 +23,7 @@ export const fetchCurrentUser = async (): Promise<ApiResponse<AuthUser>> => {
     console.error("Failed to fetch current user:", error);
 
     return {
-      data: null as unknown as AuthUser,
+      data: null as any,
       message: error instanceof Error ? error.message : "Unknown error",
       meta: {
         code: 500,

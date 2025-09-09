@@ -8,7 +8,8 @@ export interface AuthUser {
 
 export interface AuthState {
   user: AuthUser | null
-  loading: { login: boolean; register: boolean }
+  loading: { /*login: boolean;*/ register: boolean }
+  bootstrapped: boolean
 }
 
 

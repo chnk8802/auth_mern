@@ -4,26 +4,19 @@ import type { AuthUser, AuthState } from "../types"
 
 const initialState: AuthState = {
   user: null,
-  loading: { login: false, register: false },
+  loading: { /*login: false;*/register: false },
+  bootstrapped: false,
 }
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginStart(state) {
-      state.loading.login = true
-    },
     loginSuccess(state, action: PayloadAction<AuthUser>) {
       state.user = action.payload
-      state.loading.login = false
-    },
-    loginFailure(state) {
-      state.loading.login = false
     },
     logout(state) {
       state.user = null
-      state.loading.login = false
     },
     registerStart(state) {
       state.loading.register = true
@@ -34,17 +27,21 @@ const authSlice = createSlice({
     registerFailure(state) {
       state.loading.register = false
     },
+    setBootstrapped(state, action: PayloadAction<boolean>) {
+      state.bootstrapped = action.payload
+    },
   },
 })
 
 export const {
-  loginStart,
+  // loginStart,
   loginSuccess,
-  loginFailure,
+  // loginFailure,
   logout,
   registerStart,
   registerSuccess,
   registerFailure,
+  setBootstrapped,
 } = authSlice.actions
 
 export default authSlice.reducer

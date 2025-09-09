@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { loginFailure, loginStart, loginSuccess } from "../store/authSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { /*loginFailure, loginStart,*/ loginSuccess } from "../store/authSlice";
+import { useAppDispatch } from "@/hooks/redux";
 import { loginUser } from "../api/authApi";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
@@ -19,12 +19,12 @@ export function LoginForm({
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const loading = useAppSelector((state) => state.auth.loading.login);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(loginStart());
+    // dispatch(loginStart());
+    setLoading(true);
 
     try {
       const user = await loginUser({ email, password });
@@ -43,7 +43,9 @@ export function LoginForm({
       const message =
         error.response?.data?.message || "Login failed. Please try again.";
       toast.error(message);
-      dispatch(loginFailure(message));
+      // dispatch(loginFailure(message));
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -91,7 +93,7 @@ export function LoginForm({
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? <Loading size="sm"/> : "Login"}
+          {loading ? <Loading size="sm" /> : "Login"}
         </Button>
       </div>
       <div className="text-center text-sm">

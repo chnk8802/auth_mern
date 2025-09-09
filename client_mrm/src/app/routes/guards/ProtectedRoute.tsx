@@ -9,12 +9,13 @@ interface Props {
 }
 
 export function ProtectedRoute({ children }: Props) {
-  const { user, loading } = useAppSelector((state) => state.auth)
+  const { user, bootstrapped } = useAppSelector((state) => state.auth)
 
-  if (user && loading.login) return <Loading fullscreen={true} />
+  if (!bootstrapped) {
+    return <Loading fullscreen={true} />;
+  }
 
   if (!user) {
-    console.log("No user found....redirecting to login")
     return <Navigate to={ROUTES.GUEST_PATHS.LOGIN} replace />
   }
 

@@ -66,9 +66,7 @@ export function RegisterForm({
       
       toast.success("Registration successful! Please log in.");
       console.log("Registration successful:", registeredUser);
-      setTimeout(() => {
-        navigate(ROUTES.GUEST_PATHS.LOGIN);
-      }, 50);
+  
     } catch (error) {
       toast.error("An error occurred during registration. Please try again.");
       console.error("Registration error:", error);
