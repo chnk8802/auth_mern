@@ -15,9 +15,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/ModeToggle";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function MainLayout() {
   const matches = useMatches();
+  const isMobile = useIsMobile();
 
   const breadcrumbs = matches
     .filter((match) => (match.handle as any).breadcrumb)
@@ -54,17 +56,19 @@ export function MainLayout() {
                group-has-data-[collapsible=icon]/sidebar-wrapper:h-12
                bg-background border-b px-4"
         >
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
+          <div className="flex items-center gap-2">
+            <SidebarTrigger />
             <Separator
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-            <Breadcrumb>
-              <BreadcrumbList>{breadcrumbs}</BreadcrumbList>
-            </Breadcrumb>
+            {!isMobile && (
+              <Breadcrumb>
+                <BreadcrumbList>{breadcrumbs}</BreadcrumbList>
+              </Breadcrumb>
+            )}
           </div>
-          <div className="gap-2 p-6">
+          <div className="gap-2">
             <ModeToggle />
           </div>
         </header>

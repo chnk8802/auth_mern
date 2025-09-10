@@ -1,11 +1,8 @@
 "use client";
 
-import { MoreDropdown } from "@/components/detailsView/MoreDropdown";
+import { DetailActionButton } from "@/components/detailsView/DetailActionButton";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
-import {
-  Section,
-  AnimatedSection,
-} from "@/components/layout/sectionLayouts/Sections";
+import { AnimatedSection, Section } from "@/components/layout/main/sectionLayouts/Sections";
 import { DetailsRenderer } from "@/lib/form-generator/components/DetailView/DetailRender";
 import type { FieldConfig } from "@/lib/form-generator/types/field-types";
 
@@ -35,7 +32,7 @@ export function DetailsBuilder({
           backLink={backLink}
           onEdit={onEdit}
           more={
-            <MoreDropdown
+            <DetailActionButton
               onDownloadPdf={() =>
                 console.log(
                   `Download PDF for: ${title} ${data._id} ${backLink}`

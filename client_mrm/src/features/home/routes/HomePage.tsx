@@ -1,18 +1,26 @@
-import { Button } from "@/components/ui/button"
-import { Phone, Tablet, Wrench, ShieldCheck, Clock, LogOut } from "lucide-react"
-import { motion } from "framer-motion"
-import { Link } from "react-router-dom"
-import { ROUTES } from "@/constants/routes"
-import { useAppDispatch, useAppSelector } from "@/hooks/redux"
-import { logout } from "@/features/auth/store/authSlice"
-import { ModeToggle } from "@/components/ModeToggle"
-import { ServiceCard } from "../components/ServiceCard"
-import { FeatureCard } from "../components/FeatureCard"
-import { Navigation } from "@/components/layout/guest/Navigation"
+import { Button } from "@/components/ui/button";
+import {
+  Phone,
+  Tablet,
+  Wrench,
+  ShieldCheck,
+  Clock,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
+import { useAppSelector } from "@/hooks/redux";
+import { ModeToggle } from "@/components/ModeToggle";
+import { ServiceCard } from "../components/ServiceCard";
+import { FeatureCard } from "../components/FeatureCard";
+import { Navigation } from "@/components/layout/guest/Navigation";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { MobileMenu } from "@/components/layout/guest/MobileMenu";
+import { Logo } from "@/components/common/Logo";
 
 export function HomePage() {
-  const dispatch = useAppDispatch()
-  const { user } = useAppSelector((state) => state.auth)
+  const { user } = useAppSelector((state) => state.auth);
+  const isMobile = useIsMobile();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -20,67 +28,40 @@ export function HomePage() {
       <header className="w-full border-b shadow-sm">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
           {/* Logo */}
-          <div className="text-2xl font-bold text-blue-600">
-            <Link to="/">RepairHub</Link>
-          </div>
+          <Logo />
 
           {/* Nav Menu */}
-          <Navigation />
-          {/* <NavigationMenu className="hidden md:block">
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/">Home</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/services">Services</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/about">About Us</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/contact">Contact</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu> */}
-
+          {!isMobile ? <Navigation /> : <MobileMenu />}
 
           {/* Right Side (Auth Buttons) */}
-          <div className="flex items-center gap-4">
-            {user ? (
-              <>
-                <Button size="sm" asChild>
-                  <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => dispatch(logout())}
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </>
-            ) : (
-              <Button variant="outline" size="sm" asChild>
-                <Link to={ROUTES.GUEST_PATHS.LOGIN}>Login</Link>
-              </Button>
-            )}
-            <ModeToggle />
-          </div>
+          {!isMobile && (
+            <div className="flex items-center gap-4">
+              {user ? (
+                <>
+                  <Button size="sm" asChild>
+                    <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to={ROUTES.GUEST_PATHS.LOGIN}>Login</Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link to={ROUTES.GUEST_PATHS.REGISTER}>Register</Link>
+                  </Button>
+                </>
+              )}
+              <ModeToggle />
+            </div>
+          )}
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative flex flex-col items-center justify-center text-center py-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <section className="flex flex-col items-center justify-center text-center py-20">
           <motion.h1
             className="text-4xl md:text-6xl font-bold mb-4"
             initial={{ opacity: 0, y: 30 }}
@@ -98,7 +79,7 @@ export function HomePage() {
             thousands of customers for quick, affordable, and guaranteed
             repairs.
           </motion.p>
-          <Button size="lg" variant="default" >
+          <Button size="lg" variant="default">
             Book a Repair Now
           </Button>
         </section>
@@ -169,5 +150,5 @@ export function HomePage() {
         © {new Date().getFullYear()} RepairHub. All rights reserved.
       </footer>
     </div>
-  )
+  );
 }

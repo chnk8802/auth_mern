@@ -5,12 +5,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { getUserById } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
-import { DetailToolbar } from "@/components/headers/DetailPageToolbar";
 import { deleteUser } from "@/features/users/api/userApi";
 import { ROUTES } from "@/constants/routes";
 import { userFields } from "../config/userFields";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 import { Loading } from "@/components/common/Loading";
+import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 
 export function UserDetailPage() {
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ export function UserDetailPage() {
   if (!user)
     return (
       <div className="p-6 text-start">
-        <DetailToolbar title="User Details" />
+        <DetailsPageHeader title="User Details" />
         User not found.
       </div>
     );

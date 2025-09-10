@@ -66,7 +66,7 @@ export function SparePartDetailPage() {
     );
 
   return (
-    <div className="px-4">
+    <>
       <DetailsBuilder
         title="Customer Details"
         backLink={ROUTES.CUSTOMERS.LIST}
@@ -75,6 +75,6 @@ export function SparePartDetailPage() {
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
-    </div>
+    </>
   );
 }

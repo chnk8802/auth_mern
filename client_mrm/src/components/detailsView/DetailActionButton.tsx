@@ -12,19 +12,19 @@ import { Ellipsis } from "lucide-react";
 import type { ReactNode } from "react";
 import { DeleteConfirmDialog } from "../form/DeleteConfirmDialog";
 
-type MoreDropdownProps = {
+type DetailActionButtonProps = {
   onDownloadPdf: () => void;
   onPrint: () => void;
   onDelete: () => void;
   actions?: ReactNode | ReactNode[];
 };
 
-export function MoreDropdown({
+export function DetailActionButton({
   onDownloadPdf,
   onPrint,
   onDelete,
   actions,
-}: MoreDropdownProps) {
+}: DetailActionButtonProps) {
   const renderActions = () => {
     if (!actions) return null;
 

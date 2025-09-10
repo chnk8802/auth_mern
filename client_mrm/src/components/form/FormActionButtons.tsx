@@ -1,5 +1,11 @@
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeClosed, MoreVertical } from "lucide-react";
 import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 type FormMode = "create" | "edit";
 
@@ -20,76 +26,41 @@ export function FormActionButtons({
   onSaveAndNew,
   onReset,
   showLiveData,
-  onToggleLiveData
+  onToggleLiveData,
 }: FormActionButtonsProps) {
   return (
     <div className="flex gap-2 justify-end">
-      <div>
-        <Button
-          type="button"
-          onClick={onToggleLiveData}
-          variant="outline"
-        >
-          {showLiveData ? (
+      {/* Primary Action */}
+      <Button onClick={onSave} disabled={isSubmitting}>
+        {mode === "create" ? "Save" : "Update"}
+      </Button>
+
+      {/* Secondary actions in a menu */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {mode === "create" ? (
             <>
-              <EyeOff className="w-4 h-4 mr-2" />
-              Hide Live Data
+              <DropdownMenuItem onClick={onSaveAndNew} disabled={isSubmitting}>
+                Save & New
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onReset} disabled={isSubmitting}>
+                Reset
+              </DropdownMenuItem>
             </>
           ) : (
-            <>
-              <Eye className="w-4 h-4 mr-2" />
-              Show Live Data
-            </>
+            <></>
           )}
-        </Button>
-      </div>
-      {mode === "create" && (
-        <>
-          <Button
-            type="button"
-            onClick={onSave}
-            disabled={isSubmitting}
-          >
-            Save
-          </Button>
-          <Button
-            type="button"
-            onClick={onSaveAndNew}
-            variant="secondary"
-            disabled={isSubmitting}
-          >
-            Save & New
-          </Button>
-          <Button
-            type="reset"
-            onClick={onReset}
-            variant="outline"
-            disabled={isSubmitting}
-          >
-            Reset
-          </Button>
-        </>
-      )}
-
-      {mode === "edit" && (
-        <>
-          <Button
-            type="button"
-            onClick={onSave}
-            disabled={isSubmitting}
-          >
-            Update
-          </Button>
-          <Button
-            type="reset"
-            onClick={onReset}
-            variant="outline"
-            disabled={isSubmitting}
-          >
-            Reset
-          </Button>
-        </>
-      )}
+          <DropdownMenuItem onClick={onToggleLiveData}>
+            {showLiveData ? <>Hide </> : <>Show </>}
+            Live Form Data
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

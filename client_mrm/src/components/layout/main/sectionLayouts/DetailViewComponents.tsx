@@ -13,11 +13,11 @@ interface DetailItemProps {
 
 export function DetailItem({ label, value, ref }: DetailItemProps) {
   const content = (
-    <>
-      <p className="text-sm text-muted-foreground">{label}</p>
-      <p className="text-sm break-words">{value ?? "-"}</p>
+    <div className="flex flex-col">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className="">{value ?? "-"}</span>
       <Separator className="my-2 sm:hidden" />
-    </>
+    </div>
   );
 
   const wrapperClass = "block rounded-md hover:bg-muted/50 transition-colors px-2 mx-2";

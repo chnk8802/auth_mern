@@ -1,6 +1,4 @@
 "use client";
-
-import { DetailItem } from "@/components/layout/sectionLayouts/DetailViewComponents";
 import {
   formatCurrency,
   formatDate,
@@ -8,6 +6,7 @@ import {
 } from "@/lib/utils";
 import type { ModuleField, SubformField } from "@/lib/form-generator/types/field-types";
 import { Link } from "react-router-dom";
+import { DetailItem } from "@/components/layout/main/sectionLayouts/DetailViewComponents";
 
 type Props = {
   fields: ModuleField[];

@@ -63,7 +63,7 @@ export function RepairJobDetailPage() {
     );
 
   return (
-    <div className="px-4">
+    <>
       <DetailsBuilder
         title="Repair Job Details"
         backLink={ROUTES.REPAIR_JOBS.LIST}
@@ -72,6 +72,6 @@ export function RepairJobDetailPage() {
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
-    </div>
+    </>
   );
 }

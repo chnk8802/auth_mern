@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronsUpDown, LogOut } from "lucide-react";
+import { Bell, ChevronsUpDown, Globe, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -19,13 +19,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import type { AuthUser } from "@/features/auth/types";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/hooks/redux";
 import { logout } from "@/features/auth/store/authSlice";
 import { logoutUser } from "@/features/auth/api/authApi";
 import { ROUTES } from "@/constants/routes";
 import { toast } from "sonner";
-import { ModeToggle } from "@/components/ModeToggle";
 
 interface NavUserProps {
   user: AuthUser;
@@ -106,6 +105,12 @@ export function NavUser({ user }: NavUserProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link to="/">
+                  <Globe />
+                  Go to Website
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
                 Notifications

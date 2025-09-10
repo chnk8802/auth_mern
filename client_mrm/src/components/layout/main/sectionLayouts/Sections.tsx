@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils"; // Optional: if you use a classnames util
 import { motion } from "framer-motion";
-import { ColumnGrid } from "@/components/layout/sectionLayouts/Grids";
+import { ColumnGrid } from "./Grids";
 
 export function Section({
   title,

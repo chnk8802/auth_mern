@@ -1,9 +1,5 @@
 import React from "react";
 import { FieldRenderer } from "@/lib/form-generator/components/FormView/FieldRendrer";
-import {
-  AnimatedSection,
-  Section,
-} from "@/components/layout/sectionLayouts/Sections";
 import { FormActionButtons } from "@/components/form/FormActionButtons";
 import { FormHeader } from "@/components/headers/FormHeader";
 import { LiveFormData } from "@/components/debugging/LiveFormData";
@@ -11,6 +7,7 @@ import type { FieldState } from "@/lib/form-generator/types/default-field-state"
 import type { FieldConfig } from "@/lib/form-generator/types/field-types";
 import { normalizeFieldConfig } from "../../utils/normalizeFields";
 import { Loading } from "@/components/common/Loading";
+import { AnimatedSection, Section } from "@/components/layout/main/sectionLayouts/Sections";
 
 interface FormBuilderProps {
   title?: string;
