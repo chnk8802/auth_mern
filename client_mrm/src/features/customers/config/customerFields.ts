@@ -8,6 +8,14 @@ export const customerFields: FieldConfig = [
     col: 2,
     fields: [
       {
+        id: "customerCode",
+        label: "Customer Code",
+        type: "text",
+        required: false,
+        readOnly: true, // auto-generated
+        placeholder: "Auto-generated",
+      },
+      {
         id: "customerType",
         label: "Customer Type",
         type: "select",

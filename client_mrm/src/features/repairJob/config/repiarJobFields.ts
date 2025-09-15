@@ -12,6 +12,14 @@ export const repairJobFields: FieldConfig = [
     col: 2,
     fields: [
       {
+        id: "repairJobCode",
+        label: "Repair Job Code",
+        type: "text",
+        required: false,
+        readOnly: true, // auto-generated
+        placeholder: "Auto-generated",
+      },
+      {
         id: "repairStatus",
         label: "Repair Status",
         type: "select",

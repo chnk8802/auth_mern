@@ -1,6 +1,7 @@
 import Joi from "joi";
-import { COUNTRIES, STATES, USER_ROLES } from "../../constants/enums.js";
 import { inputDataWrapper } from "../custom/custom.validators.js";
+import { address } from "../address/address.validation.js";
+import { USER_ROLES } from "../../constants/enums.js";
 
 export const signupUserValidation = Joi.object({
   email: Joi.string()
@@ -30,26 +31,7 @@ export const signupUserValidation = Joi.object({
         "Phone number must be a valid 10-digit Indian number",
     }),
 
-  address: Joi.object({
-    street: Joi.string().trim().optional(),
-    city: Joi.string().trim().optional(),
-    state: Joi.string()
-      .valid(...STATES)
-      .default("uttar_pradesh")
-      .optional(),
-
-    zip: Joi.string()
-      .pattern(/^[1-9][0-9]{5}$/)
-      .optional()
-      .messages({
-        "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
-      }),
-
-    country: Joi.string()
-      .valid(...COUNTRIES)
-      .default("ndia")
-      .optional(),
-  }).optional(),
+  address: address,
 
   role: Joi.string()
     .valid(...USER_ROLES)
@@ -81,17 +63,7 @@ const updateUser = Joi.object({
         "Phone number must be a valid 10-digit Indian number",
     }),
 
-  address: Joi.object({
-    street: Joi.string().trim(),
-    city: Joi.string().trim(),
-    state: Joi.string().valid(...STATES),
-    zip: Joi.string()
-      .pattern(/^[1-9][0-9]{5}$/)
-      .messages({
-        "string.pattern.base": "ZIP must be a valid 6-digit Indian PIN code",
-      }),
-    country: Joi.string().valid(...COUNTRIES),
-  }),
+  address: address,
 
   role: Joi.string().valid(...USER_ROLES),
 });

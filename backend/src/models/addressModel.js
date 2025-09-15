@@ -10,7 +10,7 @@ export const addressSchema = mongoose.Schema(
     city: {
       type: String,
       trim: true,
-      required: true,
+      // required: true,
     },
     state: {
       type: String,

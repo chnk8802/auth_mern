@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { COUNTRIES, CUSTOMER_TYPES, STATES } from "../../constants/enums.js";
+import { CUSTOMER_TYPES } from "../../constants/enums.js";
 import { inputDataWrapper } from "../custom/custom.validators.js";
 import { address } from "../address/address.validation.js";
 
