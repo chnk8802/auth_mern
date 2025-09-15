@@ -18,7 +18,6 @@ const sparePartEntrySchema = new mongoose.Schema(
     sourceType: {
       type: String,
       enum: [...SPARE_PART_SOURCE_TYPE],
-      default: "external",
     },
     sparePart: {
       type: mongoose.Schema.Types.ObjectId,

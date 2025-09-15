@@ -11,13 +11,14 @@ export const joiObjectId = () =>
     }
     return value;
   }, "ObjectId Validation");
+
 /**
  * Joi custom validator for wrapping input data in data array
  */
 export const inputDataWrapper = (itemSchema) => {
   return Joi.object({
     data: Joi.array()
-      .items(itemSchema)
+      .items(itemSchema.min(1).unknown(false))
       .min(1)
       .required()
       .messages({
@@ -25,5 +26,5 @@ export const inputDataWrapper = (itemSchema) => {
         "array.base": `"data" must be an array`,
         "array.min": `"data" must contain at least one item`,
       }),
-  });
+  }).unknown(false);
 };

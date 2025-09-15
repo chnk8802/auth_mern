@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { generateModuleId } from "../utils/generateModuleId.js";
 import { COUNTRIES, STATES, USER_ROLES } from "../constants/enums.js";
+import { addressSchema } from "./addressModel.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -45,35 +46,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    address: {
-      street: {
-        type: String,
-        trim: true,
-      },
-      city: {
-        type: String,
-        trim: true,
-      },
-      state: {
-        type: String,
-        enum: [...STATES],
-        default: "uttar_pradesh",
-        trim: true,
-      },
-      zip: {
-        type: String,
-        trim: true,
-        validate: {
-          validator: (v) => /^[1-9][0-9]{5}$/.test(v),
-          message: (props) => `${props.value} is not a valid Indian PIN code!`,
-        },
-      },
-      country: {
-        type: String,
-        enum: [...COUNTRIES],
-        default: "india",
-      },
-    },
+    address: addressSchema,
     role: {
       type: String,
       enum: [...USER_ROLES],

@@ -70,7 +70,7 @@ const getSpareParts = async (req, res, next) => {
   }
 };
 
-const getSparePart = async (req, res, next) => {
+const getSparePartById = async (req, res, next) => {
   try {
     const { error, value } = paramIdValidation.validate(req.params, {
       abortEarly: true,
@@ -100,7 +100,7 @@ const updateSparePart = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-
+    
     const sparePart = await SparePart.findByIdAndUpdate(sparePartId, value, {
       new: true,
       runValidators: true,
@@ -138,7 +138,7 @@ const deleteSparePart = async (req, res, next) => {
 export default {
   createSparePart,
   getSpareParts,
-  getSparePart,
+  getSparePartById,
   updateSparePart,
   deleteSparePart,
 };

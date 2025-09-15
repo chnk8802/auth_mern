@@ -12,7 +12,7 @@ export const createSparePart = Joi.object({
   costPrice: Joi.number().positive().precision(2).required(),
   stockQty: Joi.number().min(0).optional(),
   supplier: joiObjectId().optional(),
-}).unknown(false);
+});
 
 export const updateSparePart = Joi.object({
   brand: Joi.string().trim(),
@@ -22,7 +22,7 @@ export const updateSparePart = Joi.object({
   costPrice: Joi.number().positive().precision(2),
   stockQty: Joi.number().min(0),
   supplier: joiObjectId(),
-}).min(1).unknown(false);
+});
 
 
 export const createSparePartValidation = inputDataWrapper(createSparePart)

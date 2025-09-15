@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
-import { COUNTRIES, CUSTOMER_TYPES, STATES } from "../constants/enums.js";
+import { CUSTOMER_TYPES } from "../constants/enums.js";
+import { addressSchema } from "./addressModel.js";
 
 const customerSchema = mongoose.Schema(
   {
@@ -13,12 +14,12 @@ const customerSchema = mongoose.Schema(
     customerType: {
       type: String,
       enum: [...CUSTOMER_TYPES],
-      default: "individual",
       required: true,
     },
     fullName: {
       type: String,
       trim: true,
+      required: true,
     },
     phone: {
       type: String,
@@ -30,35 +31,7 @@ const customerSchema = mongoose.Schema(
         message: (props) => `${props.value} is not a valid phone number!`,
       },
     },
-    address: {
-      street: {
-        type: String,
-        trim: true,
-      },
-      city: {
-        type: String,
-        trim: true,
-      },
-      state: {
-        type: String,
-        enum: [...STATES],
-        default: "uttar_pradesh",
-        trim: true,
-      },
-      zip: {
-        type: String,
-        trim: true,
-        validate: {
-          validator: (v) => /^[1-9][0-9]{5}$/.test(v),
-          message: (props) => `${props.value} is not a valid Indian PIN code!`,
-        },
-      },
-      country: {
-        type: String,
-        enum: [...COUNTRIES],
-        default: "india",
-      },
-    },
+    address: addressSchema
   },
   { timestamps: true }
 );

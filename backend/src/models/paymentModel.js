@@ -6,15 +6,15 @@ import { paymentEntrySchema } from "../models/paymentEntryModel.js";
 
 const paymentSchema = new mongoose.Schema(
   {
-    paymentCode: {type: String, trim: true, unique: true, immutable: true},
-    paymentType: { type: String, enum: PAYMENT_TYPE, default: "Receivable" },
+    paymentCode: { type: String, trim: true, unique: true, immutable: true },
+    paymentType: { type: String, enum: PAYMENT_TYPE},
     /* customer or supplier based on payment type*/
-    customer: {type: mongoose.Schema.Types.ObjectId, ref: "Customer"},
-    supplier: {type: mongoose.Schema.Types.ObjectId, ref: "Supplier"},
+    customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
+    supplier: { type: mongoose.Schema.Types.ObjectId, ref: "Supplier" },
     // paymentEntries: [{type: mongoose.Schema.Types.ObjectId, ref: "PaymentEntry"}],
     paymentEntries: [paymentEntrySchema],
-    totalAmount: {type: mongoose.Types.Decimal128 },
-    paymentMethod: { type: String, enum: PAYMENT_METHODS, default: "Cash" },
+    totalAmount: { type: mongoose.Types.Decimal128 },
+    paymentMethod: { type: String, enum: PAYMENT_METHODS},
   },
   { timestamps: true }
 );

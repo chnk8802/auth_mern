@@ -69,7 +69,7 @@ export const loginUserValidation = Joi.object({
   password: Joi.string().required().messages({
     "string.empty": "Password is required",
   }),
-}).unknown(false);
+});
 
 const updateUser = Joi.object({
   fullName: Joi.string().trim().min(3).max(100),
@@ -94,6 +94,6 @@ const updateUser = Joi.object({
   }),
 
   role: Joi.string().valid(...USER_ROLES),
-}).min(1).unknown(false);
+});
 
 export const updateUserValidation = inputDataWrapper(updateUser);

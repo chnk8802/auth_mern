@@ -12,13 +12,6 @@ export const repairJobFields: FieldConfig = [
     col: 2,
     fields: [
       {
-        id: "image",
-        label: "Image",
-        type: "file",
-        // fileType: "pdf"
-        // options: SPARE_PART_SOURCE_TYPE
-      },
-      {
         id: "repairStatus",
         label: "Repair Status",
         type: "select",

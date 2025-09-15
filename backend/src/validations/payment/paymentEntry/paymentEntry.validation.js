@@ -18,7 +18,7 @@ export const createPaymentEntry = Joi.object({
   }),
 
   note: Joi.string().allow("").optional(),
-}).unknown(false);
+});
 
 export const updatePaymentEntry = Joi.object({
   repairJob: joiObjectId().optional().messages({
@@ -37,7 +37,7 @@ export const updatePaymentEntry = Joi.object({
   }),
 
   note: Joi.string().allow("").optional(),
-}).min(1).unknown(false);
+});
 
 export const createPaymentEntryValidation = inputDataWrapper(createPaymentEntry)
 export const updatePaymentEntryValidation = inputDataWrapper(updatePaymentEntry)

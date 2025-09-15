@@ -26,7 +26,7 @@ export const createRepairJob = Joi.object({
       .default("unpaid"),
     amountReceived: Joi.number().optional(),
     amountDue: Joi.number().optional(),
-}).unknown(false);
+});
 
 export const updateRepairJob = Joi.object({
   repairStatus: Joi.string().optional()
@@ -61,7 +61,7 @@ export const updateRepairJob = Joi.object({
     amountDue: Joi.number().optional(),
 
   pickedAt: Joi.date().optional().allow(null),
-}).min(1).unknown(false);
+});
 
 
 export const createRepairJobValidation = inputDataWrapper(createRepairJob)

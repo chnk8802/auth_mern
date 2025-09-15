@@ -14,7 +14,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ModeToggle } from "@/components/ModeToggle";
+import { ModeToggle } from "@/components/common/ModeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export function MainLayout() {

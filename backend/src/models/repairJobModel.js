@@ -19,7 +19,6 @@ const repairJobSchema = new mongoose.Schema(
     repairStatus: {
       type: String,
       enum: REPAIR_STATUS,
-      default: "pending",
     },
     customer: {
       type: mongoose.Schema.Types.ObjectId,
@@ -31,7 +30,6 @@ const repairJobSchema = new mongoose.Schema(
     repairType: {
       type: String,
       enum: REPAIR_TYPE,
-      default: "hardware",
     },
     technician: {
       type: mongoose.Schema.Types.ObjectId,
@@ -53,7 +51,6 @@ const repairJobSchema = new mongoose.Schema(
     paymentStatus: {
       type: String,
       enum: PAYMENT_STATUS,
-      default: "unpaid",
     },
     amountReceived: DecimalField,
     amountDue: DecimalField,

@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ModeToggle } from "@/components/ModeToggle";
+import { ModeToggle } from "@/components/common/ModeToggle";
 import { Logo } from "@/components/common/Logo";
 import { useAppSelector } from "@/hooks/redux";
 import { LoginButton } from "@/components/common/LoginButton";

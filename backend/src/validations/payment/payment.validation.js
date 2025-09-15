@@ -36,7 +36,7 @@ export const createPayment = Joi.object({
     .valid(...PAYMENT_METHODS)
     .default("Cash")
     .optional(),
-}).unknown(false);
+});
 
 export const updatePayment = Joi.object({
   paymentType: Joi.string()
@@ -62,6 +62,6 @@ export const updatePayment = Joi.object({
   paymentMethod: Joi.array()
     .items(Joi.string().valid(...PAYMENT_METHODS))
     .optional(),
-}).min(1).unknown(false);
+});
 export const createPaymentValidation = inputDataWrapper(createPayment)
 export const updatePaymentValidation = inputDataWrapper(updatePayment)

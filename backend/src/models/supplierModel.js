@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
 import { STATES, COUNTRIES } from "../constants/enums.js";
+import { addressSchema } from "./addressModel.js";
 
 const supplierSchema = new mongoose.Schema(
   {
@@ -21,19 +22,7 @@ const supplierSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid phone number!`,
       },
     },
-    address: {
-      street: { type: String },
-      city: { type: String, required: true },
-      state: {
-        type: String,
-        enum: [...STATES],
-        default: "uttar_pradesh",
-        required: true,
-        trim: true,
-      },
-      country: { type: String, enum: [...COUNTRIES], default: "india",},
-      zip: { type: String },
-    },
+    address: addressSchema,
   },
   { timestamps: true }
 );

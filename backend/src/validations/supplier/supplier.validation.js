@@ -28,7 +28,7 @@ export const createSupplier = Joi.object({
 
     country: Joi.string().valid(...COUNTRIES).default("india").optional(),
   }).optional(),
-}).unknown(false);
+});
 
 export const updateSupplier = Joi.object({
   fullName: Joi.string().trim().min(3).max(100).optional(),
@@ -56,6 +56,6 @@ export const updateSupplier = Joi.object({
 
     country: Joi.string().valid(...COUNTRIES).default("india").optional(),
   }).optional()
-}).min(1).unknown(false);
+});
 export const createSupplierValidation = inputDataWrapper(createSupplier)
 export const updateSupplierValidation = inputDataWrapper(updateSupplier)

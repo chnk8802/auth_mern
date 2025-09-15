@@ -27,6 +27,7 @@ const createCustomer = async (req, res, next) => {
     const safeCustomer = {
       _id: savedCustomer._id,
       customerCode: savedCustomer.customerCode,
+      customerType: savedCustomer.customerType,
       fullName: savedCustomer.fullName,
       phone: savedCustomer.phone,
       address: savedCustomer.address,
