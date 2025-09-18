@@ -1,38 +1,40 @@
 import React from "react";
-import { sparePartConfig } from "../config/sparePartFields";
+import { supplierConfig } from "../config/supplierConfig";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
 import { ROUTES } from "@/constants/routes";
-import { useSparePartFieldStates } from "../hooks/useSparePartFieldState";
+// import { useSupplierFieldStates } from "../hooks/useSupplierFieldState";
 
-export interface SparePartFormProps {
+export interface SupplierFormProps {
   onSubmit: (data: any) => void;
 }
 
-export const SparePartAddForm = ({ onSubmit }: SparePartFormProps) => {
+export const SupplierAddForm = ({ onSubmit }: SupplierFormProps) => {
   const [formData, setFormData] = React.useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const fieldStates = useSparePartFieldStates(formData);
+  // const fieldStates = useSupplierFieldStates(formData);
 
   const handleChange = (fieldId: string, value: any) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
   };
+
   const handleSubmit = () => {
-      setIsSubmitting(true);
-      onSubmit?.(formData);
-      setTimeout(() => setIsSubmitting(false), 300); // Simulate delay
-    };
-    const handleReset = () => {
-    setFormData({})
+    setIsSubmitting(true);
+    onSubmit?.(formData);
+    setTimeout(() => setIsSubmitting(false), 300); // Simulate delay
+  };
+
+  const handleReset = () => {
+    setFormData({});
     setIsSubmitting(false);
   };
 
   return (
     <FormBuilder
-      title="Spare Part"
-      backLink={ROUTES.SPARE_PARTS.LIST}
+      title="Supplier"
+      backLink={ROUTES.SUPPLIERS.LIST}
       mode="create"
-      fieldStateMap={fieldStates}
-      fieldsConfig={sparePartConfig}
+      // fieldStateMap={fieldStates}
+      fieldsConfig={supplierConfig}
       formData={formData}
       onChange={handleChange}
       onSubmit={handleSubmit}

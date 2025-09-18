@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
-import { STATES, COUNTRIES } from "../constants/enums.js";
 import { addressSchema } from "./addressModel.js";
 
 const supplierSchema = new mongoose.Schema(

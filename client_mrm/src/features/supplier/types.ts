@@ -1,13 +1,11 @@
-export interface SparePart {
+import type { Address } from "@/types/api";
+
+export interface Supplier {
   _id: string;
-  partCode: string;
-  brand?: string;
-  model?: string;
-  partName?: string;
-  partType?: string;
-  costPrice?: number;
-  stockQty: number;
-  supplier?: string;
+  supplierCode: string;
+  fullName: string;
+  phone?: string;
+  address?: Address;
   createdAt: string;
   updatedAt: string;
 }

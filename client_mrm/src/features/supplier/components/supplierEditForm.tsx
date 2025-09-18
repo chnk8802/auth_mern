@@ -2,27 +2,29 @@ import React from "react";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
 import { ROUTES } from "@/constants/routes";
 import { useForm, useWatch } from "react-hook-form";
-import { sparePartConfig } from "../config/sparePartFields";
-import type { SparePart } from "../types";
-import { useSparePartFieldStates } from "../hooks/useSparePartFieldState";
+import { supplierConfig } from "../config/supplierConfig";
+import type { Supplier } from "../types";
+// import { useSupplierFieldStates } from "../hooks/useSupplierFieldState";
 
-export interface SparePartFormProps {
-  sparePart: SparePart;
+export interface SupplierFormProps {
+  supplier: Supplier;
   onSubmit: (data: any) => void;
 }
 
-export const SparePartEditForm = ({ sparePart, onSubmit }: SparePartFormProps) => {
-  const form = useForm<SparePart>({
-    defaultValues: sparePart,
+export const SupplierEditForm = ({ supplier, onSubmit }: SupplierFormProps) => {
+  const form = useForm<Supplier>({
+    defaultValues: supplier,
   });
+
   const formValues = useWatch({
     control: form.control,
   });
+
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const fieldStates = useSparePartFieldStates(formValues);
+  // const fieldStates = useSupplierFieldStates(formValues);
 
   const handleChange = (fieldId: string, value: any) => {
-    form.setValue(fieldId as keyof SparePart, value, {
+    form.setValue(fieldId as keyof Supplier, value, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -36,11 +38,11 @@ export const SparePartEditForm = ({ sparePart, onSubmit }: SparePartFormProps) =
 
   return (
     <FormBuilder
-      title="Spare Part"
-      backLink={ROUTES.SPARE_PARTS.DETAILS(sparePart._id)}
+      title="Supplier"
+      backLink={ROUTES.SUPPLIERS.DETAILS(supplier._id)}
       mode="edit"
-      fieldStateMap={fieldStates}
-      fieldsConfig={sparePartConfig}
+      // fieldStateMap={fieldStates}
+      fieldsConfig={supplierConfig}
       formData={formValues}
       onChange={handleChange}
       onSubmit={handleSubmit}

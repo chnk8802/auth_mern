@@ -43,7 +43,7 @@ export const customerFields: FieldConfig = [
         section: "General",
       }
     ],
-  },{
+  }, {
     section: "Address",
     sectionType: "basic",
     col: 2,
@@ -73,7 +73,7 @@ export const customerFields: FieldConfig = [
               { label: "USA", value: "us" },
             ],
           },
-          postalCode: { id: "postal_code", label: "Postal Code", type: "text" },
+          zip: { id: "zip", label: "Zip", type: "text" },
         },
         section: "General",
       }

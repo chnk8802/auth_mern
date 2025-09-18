@@ -1,41 +1,38 @@
-import { CUSTOMER_TYPES } from "@/constants/customerTypes";
+import { COUNTRY } from "@/constants/countries";
+import { INDIAN_STATES } from "@/constants/indianStates";
 import { type FieldConfig } from "@/lib/form-generator/types/field-types";
 
-export const customerFields: FieldConfig = [
+export const supplierConfig: FieldConfig = [
   {
     section: "General Details",
     sectionType: "basic",
     col: 2,
     fields: [
       {
-        id: "customerType",
-        label: "Customer Type",
-        type: "select",
-        options: CUSTOMER_TYPES,
-        defaultValue: "individual",
-        required: true,
-        placeholder: "Select customer type",
-        section: "General",
+        id: "supplierCode",
+        label: "Supplier Code",
+        type: "text",
+        required: false,
+        readOnly: true, // auto-generated
+        placeholder: "Auto-generated",
       },
       {
         id: "fullName",
         label: "Full Name",
         type: "text",
         required: true,
-        placeholder: "Enter Full Name",
-        section: "General",
+        placeholder: "Enter supplier full name",
       },
       {
         id: "phone",
         label: "Phone",
-        type: "phone",
-        required: true,
-        placeholder: "9876543210",
-        format: "international",
-        section: "General",
-      }
+        type: "text",
+        required: false,
+        placeholder: "Enter 10-digit phone number",
+      },
     ],
-  },{
+  },
+  {
     section: "Address",
     sectionType: "basic",
     col: 2,
@@ -80,13 +77,15 @@ export const customerFields: FieldConfig = [
         id: "createdAt",
         label: "Created At",
         type: "datetime",
-        showInForm: false
+        showInForm: false,
+        readOnly: true,
       },
       {
         id: "updatedAt",
         label: "Updated At",
         type: "datetime",
-        showInForm: false
+        showInForm: false,
+        readOnly: true,
       },
     ],
   },

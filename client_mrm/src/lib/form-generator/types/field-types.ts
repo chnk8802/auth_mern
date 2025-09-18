@@ -283,7 +283,7 @@ export interface AddressField extends BaseField {
     city?: TextField;
     state?: SelectField;
     country?: SelectField;
-    postalCode?: TextField;
+    zip?: TextField;
   };
 }
 

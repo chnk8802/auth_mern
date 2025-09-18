@@ -60,7 +60,7 @@ export const userFields: FieldConfig = [
             { label: "USA", value: "us" },
           ],
         },
-        postalCode: { id: "postal_code", label: "Postal Code", type: "text" },
+        zip: { id: "zip", label: "Zip", type: "text" },
       },
     },]
 

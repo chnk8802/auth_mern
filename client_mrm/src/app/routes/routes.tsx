@@ -46,6 +46,10 @@ import { DetailsGeneratorPage } from "@/lib/form-generator/demo/DetailsGenerator
 import { RepairJobEditPage } from "@/features/repairJob/routes/RepairJobEditPage";
 import { RegisterPage } from "@/features/auth/routes/RegisterPage";
 import { LoginPage } from "@/features/auth/routes/LoginPage";
+import { SupplierListPage } from "@/features/supplier/routes/SupplierListPage";
+import { SupplierDetailPage } from "@/features/supplier/routes/SupplierDetailsPage";
+import { SupplierEditPage } from "@/features/supplier/routes/SupplierEditPage";
+import { SupplierAddPage } from "@/features/supplier/routes/SupplierAddPage";
 
 export const router = createBrowserRouter([
   {
@@ -225,6 +229,44 @@ export const router = createBrowserRouter([
         handle: {
           breadcrumb: () => "Technicians",
         },
+      },
+      {
+        path: "suppliers",
+        handle: {
+          breadcrumb: () => "Suppliers",
+        },
+        children: [
+          {
+            index: true,
+            element: <SupplierListPage />,
+            handle: {
+              breadcrumb: "Suppliers List",
+            },
+          },
+          {
+            path: ":supplierId",
+            element: <SupplierDetailPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { supplierId: string } }) =>
+                `${params.supplierId}`,
+            },
+          },
+          {
+            path: ":supplierId/edit",
+            element: <SupplierEditPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { supplierId: string } }) =>
+                `Edit ${params.supplierId}`,
+            },
+          },
+          {
+            path: "new",
+            element: <SupplierAddPage />,
+            handle: {
+              breadcrumb: "New Supplier",
+            },
+          },
+        ],
       },
       {
         path: "spareparts",

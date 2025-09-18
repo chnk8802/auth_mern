@@ -28,7 +28,7 @@
                         "city": "Chennai",
                         "state": "tn",
                         "country": "in",
-                        "postalCode": "600001"
+                        "zip": "600001"
                 },
                 "assigned_to": {
                         "id": "u123",
@@ -108,7 +108,7 @@
                         "city": "Springfield",
                         "state": "il",
                         "country": "us",
-                        "postalCode": "62704"
+                        "zip": "62704"
                 },
                 "assigned_to": {
                         "id": "u456",

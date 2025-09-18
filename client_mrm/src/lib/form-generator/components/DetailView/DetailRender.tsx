@@ -1,10 +1,9 @@
 "use client";
-import {
-  formatCurrency,
-  formatDate,
-  formatSnakeCaseLabel,
-} from "@/lib/utils";
-import type { ModuleField, SubformField } from "@/lib/form-generator/types/field-types";
+import { formatCurrency, formatDate, formatSnakeCaseLabel } from "@/lib/utils";
+import type {
+  ModuleField,
+  SubformField,
+} from "@/lib/form-generator/types/field-types";
 import { Link } from "react-router-dom";
 import { DetailItem } from "@/components/layout/main/sectionLayouts/DetailViewComponents";
 
@@ -33,18 +32,25 @@ export function DetailsRenderer({ fields, data }: Props) {
         return Array.isArray(value) ? value.join(", ") : value ? "Yes" : "No";
       case "radio":
       case "select":
-        return formatSnakeCaseLabel(value) || "-";
+        return typeof value === "string" ? formatSnakeCaseLabel(value) : "-";
       case "multiselect":
         return Array.isArray(value)
-          ? value.map(formatSnakeCaseLabel).join(", ")
+          ? value
+              .map((v) => (typeof v === "string" ? formatSnakeCaseLabel(v) : v))
+              .join(", ")
           : "-";
       case "address":
         return [
           value?.street,
           value?.city,
-          formatSnakeCaseLabel(value?.state),
-          formatSnakeCaseLabel(value?.country),
-          value?.postalCode,
+          typeof value?.state === "string"
+            ? formatSnakeCaseLabel(value?.state)
+            : value?.state,
+          typeof value?.country === "string"
+            ? formatSnakeCaseLabel(value?.country)
+            : value?.country,
+          ,
+          value?.zip,
         ]
           .filter(Boolean)
           .join(", ");
@@ -95,10 +101,7 @@ export function DetailsRenderer({ fields, data }: Props) {
         if (!subformField.fields) return "-";
 
         return value.map((item, i) => (
-          <div
-            key={i}
-            className="border p-2 my-2 rounded"
-          >
+          <div key={i} className="border p-2 my-2 rounded">
             <DetailsRenderer fields={subformField.fields} data={item} />
           </div>
         ));

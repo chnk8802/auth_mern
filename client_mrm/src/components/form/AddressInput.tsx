@@ -20,7 +20,6 @@ export function AddressInput({
   field,
   value = {},
   onChange,
-  visible,
   disabled,
   required,
 }: Props) {
@@ -32,7 +31,7 @@ export function AddressInput({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 pt-2">
-      {components.street && components.street?.visible !== false && (
+      {components.street && (
         // <div className="sm:flex sm:justify-between">
         <div>
           <Label className="pb-4 sm:pb-2" htmlFor={components.street.id}>
@@ -50,7 +49,7 @@ export function AddressInput({
         </div>
       )}
 
-      {components.city && components.city?.visible !== false && (
+      {components.city && (
         // <div className="sm:flex sm:justify-between">
         <div>
           <Label className="pb-4 sm:pb-2" htmlFor={components.city.id}>
@@ -68,7 +67,7 @@ export function AddressInput({
         </div>
       )}
 
-      {components.state && components.state?.visible !== false && (
+      {components.state && (
         // <div className="sm:flex sm:justify-between">
         <div>
           <Label className="pb-4 sm:pb-2" htmlFor={components.state.id}>
@@ -88,7 +87,7 @@ export function AddressInput({
         </div>
       )}
 
-      {components.country && components.country?.visible !== false && (
+      {components.country && (
         // <div className="sm:flex sm:justify-between">
         <div>
           <Label className="pb-4 sm:pb-2" htmlFor={components.country.id}>
@@ -106,19 +105,19 @@ export function AddressInput({
         </div>
       )}
 
-      {components.postalCode && components.postalCode?.visible !== false && (
+      {components.zip && (
         // <div className="sm:flex sm:justify-between">
         <div>
-          <Label className="pb-4 sm:pb-2" htmlFor={components.postalCode.id}>
-            {components.postalCode.label}
+          <Label className="pb-4 sm:pb-2" htmlFor={components.zip.id}>
+            {components.zip.label}
           </Label>
           <Input
-            id={components.postalCode.id}
-            value={value.postalCode ?? ""}
+            id={components.zip.id}
+            value={value.zip ?? ""}
             placeholder={
-              components.postalCode.placeholder || "Enter Postal Code"
+              components.zip.placeholder || "Enter Postal Code"
             }
-            onChange={(e) => handleChange("postalCode", e.target.value)}
+            onChange={(e) => handleChange("zip", e.target.value)}
             disabled={disabled}
             required={required}
             className="sm:w-64"

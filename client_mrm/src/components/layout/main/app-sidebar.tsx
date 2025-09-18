@@ -58,20 +58,28 @@ const data = {
           url: ROUTES.USERS.LIST,
         },
         {
-          title: "Spare Parts",
-          url: ROUTES.SPARE_PARTS.LIST,
-        },
-        {
-          title: "Spare Part Entry",
-          url: ROUTES.SPARE_PART_ENTRY.LIST,
-        },
-        {
           title: "Supplier",
           url: ROUTES.SUPPLIERS.LIST,
         },
         {
+          title: "Spare Parts",
+          url: ROUTES.SPARE_PARTS.LIST,
+        },
+        {
           title: "Payments",
           url: ROUTES.PAYMENTS.LIST,
+        },
+      ],
+    },
+    {
+      title: "Sub Modules",
+      url: "#",
+      icon: Bot,
+      isActive: true,
+      items: [
+        {
+          title: "Spare Part Entry",
+          url: ROUTES.SPARE_PART_ENTRY.LIST,
         },
         {
           title: "Payment Entry",
