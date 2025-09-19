@@ -1,4 +1,4 @@
-import { SPARE_PART_TYPES } from "@/constants/sparePartTypes";
+import { SPARE_PART_TYPES } from "@/constants/sparePart.constants";
 import { type FieldConfig } from "@/lib/form-generator/types/field-types";
 
 export const sparePartConfig: FieldConfig = [
@@ -12,7 +12,7 @@ export const sparePartConfig: FieldConfig = [
         label: "Part Code",
         type: "text",
         required: false,
-        readOnly: true, // auto-generated
+        readOnly: true,
         placeholder: "Auto-generated",
       },
       {

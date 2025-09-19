@@ -20,7 +20,6 @@ export class FieldViewController {
     if (context === "create" || context === "edit") {
       for (const field of this.fields) {
         this.stateMap[field.id] = {
-          visible: field.visible ?? true,
           disabled: field.readOnly ?? false,
         };
       }
@@ -31,7 +30,6 @@ export class FieldViewController {
    * Filters fields based on view-specific flags.
    */
   private filterFieldsForView(fields: ModuleField[], context: ViewContext): ModuleField[] {
-    console.log("fields class", fields)
     return fields.filter(field => {
       if (context === "create") {
         return field.showInForm !== false && !field.hiddenInCreate;

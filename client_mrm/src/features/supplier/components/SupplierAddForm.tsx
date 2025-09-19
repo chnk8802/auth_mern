@@ -1,7 +1,7 @@
 import React from "react";
 import { supplierConfig } from "../config/supplierConfig";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 // import { useSupplierFieldStates } from "../hooks/useSupplierFieldState";
 
 export interface SupplierFormProps {

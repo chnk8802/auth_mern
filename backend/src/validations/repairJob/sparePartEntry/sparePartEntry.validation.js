@@ -17,6 +17,7 @@ export const createSparePartEntry = Joi.object({
   }),
   supplier: joiObjectId().required(),
   unitCost: Joi.number().min(0).required(),
+  isPaid: Joi.boolean().optional()
 });
 
 export const updateSparePartEntry = Joi.object({
@@ -33,6 +34,7 @@ export const updateSparePartEntry = Joi.object({
   }),
   supplier: joiObjectId(),
   unitCost: Joi.number().optional(),
+  isPaid: Joi.boolean().optional()
 });
 
 export const createSparePartEntryValidation = inputDataWrapper(createSparePartEntry)

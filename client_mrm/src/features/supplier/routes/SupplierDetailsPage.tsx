@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 import { deleteSupplier, getSupplierById } from "../api/supplierApi";
@@ -25,7 +25,6 @@ export function SupplierDetailPage() {
         const res = await getSupplierById(supplierId);
         setSupplier(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch supplier", err);
         toast.error("Failed to fetch supplier");
       } finally {
         setLoading(false);
@@ -43,7 +42,6 @@ export function SupplierDetailPage() {
       toast.success(`${result.data[0].supplierCode} deleted successfully`);
       navigate(ROUTES.SUPPLIERS.LIST);
     } catch (err) {
-      console.error("Delete failed", err);
       toast.error("Failed to delete supplier");
     }
   };

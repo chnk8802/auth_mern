@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { useAppSelector } from "@/hooks/redux";
 import { ModeToggle } from "@/components/common/ModeToggle";
 import { ServiceCard } from "../components/ServiceCard";

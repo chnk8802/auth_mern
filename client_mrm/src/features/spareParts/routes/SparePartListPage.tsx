@@ -16,7 +16,7 @@ export function SparePartListPage() {
   const [total, setTotal] = useState(0);
 
   const handleRowEdit = (sparePart: SparePart) => {
-    navigate(`/dashboard/spare-parts/${sparePart._id}/edit`);
+    navigate(`/dashboard/spareparts/${sparePart._id}/edit`);
   };
 
   const handleRowDelete = async (sparePart: SparePart) => {
@@ -51,7 +51,6 @@ export function SparePartListPage() {
       setSpareParts(res.data);
     } catch (error: any) {
       toast.error("Failed to fetch spare parts");
-      console.error(error.response?.data?.message || error.message);
     }
   };
 

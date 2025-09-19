@@ -1,4 +1,5 @@
 import type { Customer } from "../customers/types";
+import type { SparePartEntry } from "../sparePartEntries/types";
 import type { User } from "../users/types";
 
 export type PaymentDetails = {
@@ -18,7 +19,7 @@ export type RepairJob = {
     repairType: "Hardware" | "Software" | string;
     technician?: User;
     deviceComponents?: string[];
-    spareParts?: string[];
+    sparePartsEntry?: SparePartEntry[];
     repairCost?: number | null;
     discount?: number | null;
     totalSparePartsCost?: number | null;
@@ -29,10 +30,4 @@ export type RepairJob = {
     pickedAt?: Date;
     createdAt: Date;
     updatedAt: Date;
-};
-
-export type SparePartEntry = {
-    _id: string;
-    name: string;
-    unitCost: number;
 };

@@ -1,4 +1,3 @@
-// constants/routes.ts
 // Only for frontend
 export const ROUTES = {
   GUEST_PATHS: {
@@ -35,7 +34,7 @@ export const ROUTES = {
     EDIT: (id: string) => `/dashboard/spareparts/${id}/edit`,
     DETAILS: (id: string) => `/dashboard/spareparts/${id}`,
   },
-  SPARE_PART_ENTRY: {
+  SPARE_PART_ENTRIES: {
     NEW: "/dashboard/sparepartentries/new",
     LIST: "/dashboard/sparepartentries",
     EDIT: (id: string) => `/dashboard/sparepartentries/${id}/edit`,

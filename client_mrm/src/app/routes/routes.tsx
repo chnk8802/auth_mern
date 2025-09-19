@@ -1,5 +1,5 @@
-import { createBrowserRouter } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import { ROUTES } from "@/constants/routes.constants";
 import { NotFound } from "@/app/NotFound";
 
 // Layouts
@@ -22,6 +22,11 @@ import { DashboardHomePage } from "@/features/dashboardHome/routes/DashboardHome
 import { UsersListPage } from "@/features/users/routes/UserListPage";
 import { UserDetailPage } from "@/features/users/routes/UserDetailsPage";
 import { UserEditPage } from "@/features/users/routes/UserEditPage";
+// Repair Job
+import { RepairJobListPage } from "@/features/repairJob/routes/RepairJobListPage";
+import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetailsPage";
+import { RepairJobEditPage } from "@/features/repairJob/routes/RepairJobEditPage";
+import { RepairJobAddPage } from "@/features/repairJob/routes/RepairJobAddPage";
 // Customer
 import { CustomerAddPage } from "@/features/customers/routes/CustomerAddPage";
 import { CustomerDetailPage } from "@/features/customers/routes/CustomerDetailsPage";
@@ -32,24 +37,31 @@ import { SparePartListPage } from "@/features/spareParts/routes/SparePartListPag
 import { SparePartAddPage } from "@/features/spareParts/routes/SparePartAddPage";
 import { SparePartDetailPage } from "@/features/spareParts/routes/SparePartDetailsPage";
 import { SparePartEditPage } from "@/features/spareParts/routes/SparePartEditPage";
-// Others
-import { RepairJobListPage } from "@/features/repairJob/routes/RepairJobListPage";
-import { TechniciansPage } from "@/features/technicians/routes/TechniciansPage";
-import { PaymentsPage } from "@/features/payments/routes/PaymentsPage";
-import { PermissionDenied } from "@/app/PermissionDenied";
-import { RepairJobDetailPage } from "@/features/repairJob/routes/RepairJobDetailsPage";
-import { RepairJobAddPage } from "@/features/repairJob/routes/RepairJobAddPage";
-// Form Generator
-import { FormGeneratorPage } from "@/lib/form-generator/demo/FormGeneratorPage";
-import { TestListPage } from "@/lib/form-generator/demo/ListGeneratorPage";
-import { DetailsGeneratorPage } from "@/lib/form-generator/demo/DetailsGeneratorPage";
-import { RepairJobEditPage } from "@/features/repairJob/routes/RepairJobEditPage";
-import { RegisterPage } from "@/features/auth/routes/RegisterPage";
-import { LoginPage } from "@/features/auth/routes/LoginPage";
+// Supplier
 import { SupplierListPage } from "@/features/supplier/routes/SupplierListPage";
 import { SupplierDetailPage } from "@/features/supplier/routes/SupplierDetailsPage";
 import { SupplierEditPage } from "@/features/supplier/routes/SupplierEditPage";
 import { SupplierAddPage } from "@/features/supplier/routes/SupplierAddPage";
+// Spare Part Entry
+import { SparePartEntryListPage } from "@/features/sparePartEntries/routes/SparePartEntryListPage";
+import { SparePartEntryDetailPage } from "@/features/sparePartEntries/routes/SparePartEntryDetailsPage";
+import { SparePartEntryAddPage } from "@/features/sparePartEntries/routes/SparePartEntryAddPage";
+import { SparePartEntryEditPage } from "@/features/sparePartEntries/routes/SparePartEntryEditPage";
+// Payment
+import { PaymentListPage } from "@/features/payments/routes/PaymentListPage";
+import { PaymentDetailPage } from "@/features/payments/routes/PaymentDetailsPage";
+import { PaymentEditPage } from "@/features/payments/routes/PaymentEditPage";
+import { PaymentAddPage } from "@/features/payments/routes/PaymentAddPage";
+// Form Generator
+import { FormGeneratorPage } from "@/lib/form-generator/demo/FormGeneratorPage";
+import { TestListPage } from "@/lib/form-generator/demo/ListGeneratorPage";
+import { DetailsGeneratorPage } from "@/lib/form-generator/demo/DetailsGeneratorPage";
+import { RegisterPage } from "@/features/auth/routes/RegisterPage";
+import { LoginPage } from "@/features/auth/routes/LoginPage";
+
+// Others
+import { TechniciansPage } from "@/features/technicians/routes/TechniciansPage";
+import { PermissionDenied } from "@/app/PermissionDenied";
 
 export const router = createBrowserRouter([
   {
@@ -60,7 +72,6 @@ export const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
-      // Unknown Routes
       {
         path: "*",
         element: <NotFound />,
@@ -111,6 +122,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "repairjobs",
+        element: <Outlet />,
         handle: {
           breadcrumb: () => "Repair Job",
         },
@@ -149,6 +161,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "users",
+        element: <Outlet />,
         handle: {
           breadcrumb: "Users",
         },
@@ -187,6 +200,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "customers",
+        element: <Outlet />,
         handle: {
           breadcrumb: () => "Customers",
         },
@@ -232,6 +246,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "suppliers",
+        element: <Outlet />,
         handle: {
           breadcrumb: () => "Suppliers",
         },
@@ -270,6 +285,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "spareparts",
+        element: <Outlet />,
         handle: {
           breadcrumb: () => "Spare Parts",
         },
@@ -308,20 +324,21 @@ export const router = createBrowserRouter([
       },
       {
         path: "sparepartentries",
+        element: <Outlet />,
         handle: {
           breadcrumb: () => "Spare Part Entries",
         },
         children: [
           {
             index: true,
-            element: <SparePartListPage />,
+            element: <SparePartEntryListPage />,
             handle: {
               breadcrumb: "Spare Part Entry List",
             },
           },
           {
             path: ":sparePartEntryId",
-            element: <SparePartDetailPage />,
+            element: <SparePartEntryDetailPage />,
             handle: {
               breadcrumb: ({
                 params,
@@ -332,7 +349,7 @@ export const router = createBrowserRouter([
           },
           {
             path: ":sparePartEntryId/edit",
-            element: <SparePartEditPage />,
+            element: <SparePartEntryEditPage />,
             handle: {
               breadcrumb: ({
                 params,
@@ -343,19 +360,51 @@ export const router = createBrowserRouter([
           },
           {
             path: "new",
-            element: <SparePartAddPage />,
+            element: <SparePartEntryAddPage />,
             handle: {
-              breadcrumb: "New Spare Part",
+              breadcrumb: "New Spare Part Entry",
             },
           },
         ],
       },
       {
         path: "payments",
-        element: <PaymentsPage />,
+        element: <Outlet />,
         handle: {
           breadcrumb: () => "Payments",
         },
+        children: [
+          {
+            index: true,
+            element: <PaymentListPage />,
+            handle: {
+              breadcrumb: "Payment List",
+            },
+          },
+          {
+            path: ":paymentId",
+            element: <PaymentDetailPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { paymentId: string } }) =>
+                `${params.paymentId}`,
+            },
+          },
+          {
+            path: ":paymentId/edit",
+            element: <PaymentEditPage />,
+            handle: {
+              breadcrumb: ({ params }: { params: { paymentId: string } }) =>
+                `Edit ${params.paymentId}`,
+            },
+          },
+          {
+            path: "new",
+            element: <PaymentAddPage />,
+            handle: {
+              breadcrumb: "New Payment",
+            },
+          },
+        ],
       },
       {
         path: "form-generator",

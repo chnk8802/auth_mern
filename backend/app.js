@@ -15,6 +15,7 @@ import repairJobRoutes from "./src/routes/repairJobRoutes.js";
 import sparePartRoutes from "./src/routes/sparePartRoutes.js";
 import supplierRoutes from "./src/routes/supplierRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js"
+import sparePartEntryRoutes from "./src/routes/sparePartEntryRoutes.js"
 
 import { notFound } from "./src/middlewares/routeNotFound.js";
 import { errorHandler } from "./src/middlewares/errorHandler.js";
@@ -55,6 +56,7 @@ app.use("/api/repairjobs", repairJobRoutes);
 app.use("/api/spareparts", sparePartRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/sparepartentries", sparePartEntryRoutes);
 
 // Handle 404 Not Found
 app.use(notFound);

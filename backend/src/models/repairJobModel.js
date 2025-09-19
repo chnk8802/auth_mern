@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
 import {
   DEVICE_COMPONENTS,
-  PAYMENT_STATUS,
+  PAYMENT_STATUSES,
   REPAIR_STATUS,
   REPAIR_TYPE,
 } from "../constants/enums.js";
@@ -50,7 +50,7 @@ const repairJobSchema = new mongoose.Schema(
     profit: DecimalField,
     paymentStatus: {
       type: String,
-      enum: PAYMENT_STATUS,
+      enum: PAYMENT_STATUSES,
     },
     amountReceived: DecimalField,
     amountDue: DecimalField,

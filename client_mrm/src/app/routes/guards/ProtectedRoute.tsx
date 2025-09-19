@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom"
 import { useAppSelector } from "@/hooks/redux"
 import type { ReactNode } from "react"
-import { ROUTES } from "@/constants/routes"
+import { ROUTES } from "@/constants/routes.constants"
 import { Loading } from "@/components/common/Loading"
 
 interface Props {

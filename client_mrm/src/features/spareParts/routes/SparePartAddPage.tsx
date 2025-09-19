@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import { createSparePart } from "../api/sparePartApi";
 import type { SparePart } from "@/features/spareParts/types";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { SparePartAddForm } from "@/features/spareParts/components/sparePartAddForm";
 
 export function SparePartAddPage() {
@@ -16,7 +16,6 @@ export function SparePartAddPage() {
         toast.success("Spare part added successfully");
         navigate(ROUTES.SPARE_PARTS.DETAILS(result.data[0]._id));
       } catch (error: any) {
-        console.error("Unable to add spare part", error);
         toast.error(`Unable to add spare part ${error?.response?.data?.message}`);
       }
     };

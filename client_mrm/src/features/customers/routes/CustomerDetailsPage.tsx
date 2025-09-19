@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import type { Customer } from "@/features/customers/types";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import {
   deleteCustomer,
   getCustomerById,
@@ -28,7 +28,6 @@ export function CustomerDetailPage() {
         const res = await getCustomerById(customerId);
         setCustomer(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch customer", err);
         toast.error("Failed to fetch customer");
       } finally {
         setLoading(false);
@@ -47,7 +46,6 @@ export function CustomerDetailPage() {
       toast.success(`${result.data[0].customerCode} deleted successfully`);
       navigate(ROUTES.CUSTOMERS.LIST);
     } catch (err) {
-      console.error("Delete failed", err);
       toast.error("Failed to delete customer");
     }
   };

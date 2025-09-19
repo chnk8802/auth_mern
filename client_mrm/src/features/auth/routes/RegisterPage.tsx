@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/hooks/redux";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { Navigate } from "react-router-dom";
 import { RegisterForm } from "../components/register-form";
 

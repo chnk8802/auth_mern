@@ -75,7 +75,7 @@ export function DetailsRenderer({ fields, data }: Props) {
                 {display}
               </Link>
             ) : (
-              "-"
+              <>-</>
             )}
           </>
         );

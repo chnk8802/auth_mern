@@ -16,7 +16,6 @@ export const AuthLoader = () => {
     const initializeAuth = async () => {
       try {
         const res = await fetchCurrentUser();
-        // console.log("AuthLoader: fetchCurrentUser response", res);
         if (res.meta.status !== "success" || !res.data) {
           toast.error(res.message || "Failed to fetch user data");
           dispatch(logout());
@@ -33,7 +32,6 @@ export const AuthLoader = () => {
 
         dispatch(loginSuccess(user));
       } catch (error) {
-        // console.error("AuthLoader: Unexpected error", error);
         toast.error("Unexpected error occurred while loading auth");
         dispatch(logout());
       } finally {

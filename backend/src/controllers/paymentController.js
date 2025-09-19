@@ -7,6 +7,7 @@ import { createPaymentValidation } from "../validations/payment/payment.validati
 
 const createPayment = async (req, res, next) => {
   try {
+    console.log(req.body)
     const {error, value} = createPaymentValidation.validate(req.body);
     if (error) {
       throw createError(400, error.details.map(d=>d.message).join(", "))

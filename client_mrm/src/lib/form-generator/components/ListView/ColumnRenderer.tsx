@@ -6,9 +6,8 @@ import {
 } from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 import { Button } from "@/components/ui/button";
-import { indianStateMap } from "@/constants/indianStates";
 import type { ColumnDef } from "@tanstack/react-table";
-import { COUNTRY_MAP } from "@/constants/countries";
+import { COUNTRY_MAP, INDIAN_STATE_MAP } from "@/constants/address.constants";
 import { Link } from "react-router-dom";
 import pluralize from "pluralize";
 
@@ -51,7 +50,7 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
           );
 
         case "checkbox":
-          return <div>{value ? "✔️" : "—"}</div>;
+          return <div>{value ? "Yes" : "No"}</div>;
 
         case "address":
           const address = value as {
@@ -67,7 +66,7 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
               {[
                 address?.street,
                 address?.city,
-                indianStateMap[address?.state as string] || address?.state,
+                INDIAN_STATE_MAP[address?.state as string] || address?.state,
                 COUNTRY_MAP[address?.country as string] || address?.country,
                 address?.zip,
               ]
@@ -78,7 +77,6 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
 
         case "lookup": {
           if (!value) return <div>—</div>;
-
           const obj = value as Record<string, any>;
           const id = obj._id as string;
           const keys = field.displayField.split(",").map((k) => k.trim());
@@ -97,7 +95,7 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
                   {display}
                 </Link>
               ) : (
-                <span>"-"</span>
+                <span>-</span>
               )}
             </>
           );

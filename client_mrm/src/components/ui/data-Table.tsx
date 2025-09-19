@@ -52,7 +52,9 @@ import { useSidebar } from "./sidebar";
 import { cn } from "@/lib/utils";
 import { ListPageHeader } from "../headers/ListPageHeader";
 import { SearchDrawer } from "../listView/SearchDrawer";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
+import { LiveFormData } from "../debugging/LiveFormData";
+import { entries } from "lodash";
 
 interface DataTableProps<TData extends { _id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -77,7 +79,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
 }: DataTableProps<TData, TValue>) {
   const navigate = useNavigate();
   const { isMobile } = useSidebar();
-
+  const [showLiveData, setShowLiveData] = React.useState(true);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -144,7 +146,8 @@ export function DataTable<TData extends { _id: string }, TValue>({
     },
   });
 
-  function ColumnVisibilityDropdown<TData>({
+
+  function ListViewActionButton<TData>({
     table,
   }: {
     table: ReturnType<typeof useReactTable<TData>>;
@@ -179,6 +182,10 @@ export function DataTable<TData extends { _id: string }, TValue>({
               </DropdownMenuSubContent>
             </DropdownMenuSub>
             <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setShowLiveData(!showLiveData)}>
+              {showLiveData ? <>Hide</> : <>Show</>}
+            Live Form Data
+            </DropdownMenuItem>
             <DropdownMenuItem>
               <Import className="mr-2 h-4 w-4" /> Import
             </DropdownMenuItem>
@@ -192,7 +199,8 @@ export function DataTable<TData extends { _id: string }, TValue>({
   }
 
   return (
-    <div className="">
+    <>
+    <div>
       <ListPageHeader
         title={pluralize(moduleName || "")}
         backLink={ROUTES.DASHBOARD}
@@ -225,7 +233,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
         }
         more={
           <>
-            <ColumnVisibilityDropdown table={table} />
+            <ListViewActionButton table={table} />
           </>
         }
       />
@@ -356,5 +364,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
         </div>
       </div>
     </div>
+    {showLiveData && <LiveFormData data={data}/>}
+    </>
   );
 }

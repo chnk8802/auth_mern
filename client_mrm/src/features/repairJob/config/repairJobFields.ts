@@ -1,9 +1,7 @@
 import { type FieldConfig } from "@/lib/form-generator/types/field-types";
-import { RepairJobStatus } from "@/constants/repairJobStatus";
-import { RepairType } from "@/constants/repairType";
-import { PAYMENT_STATUSES } from "@/constants/paymentStatus";
-import { DEVICE_COMPONENTS } from "@/constants/deviceComponents";
-import { SPARE_PART_SOURCE_TYPE } from "@/constants/sparePartSourceType";
+import { DEVICE_COMPONENTS, REPAIR_JOB_STATUS, REPAIR_TYPE } from "@/constants/repairJob.constants";
+import { PAYMENT_STATUSES } from "@/constants/payment.constants";
+import { SPARE_PART_SOURCE_TYPE } from "@/constants/sparePart.constants";
 
 export const repairJobFields: FieldConfig = [
   {
@@ -24,7 +22,7 @@ export const repairJobFields: FieldConfig = [
         label: "Repair Status",
         type: "select",
         defaultValue: "pending",
-        options: RepairJobStatus,
+        options: REPAIR_JOB_STATUS,
         placeholder: "Select",
         required: true,
       },
@@ -59,7 +57,7 @@ export const repairJobFields: FieldConfig = [
         id: "repairType",
         label: "Repair Type",
         type: "select",
-        options: RepairType,
+        options: REPAIR_TYPE,
         placeholder: "Select",
       },
       {

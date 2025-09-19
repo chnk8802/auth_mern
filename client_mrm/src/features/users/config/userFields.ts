@@ -1,4 +1,4 @@
-import { roles } from "@/constants/roles";
+import { roles } from "@/constants/user.constants";
 import type { FieldConfig } from "@/lib/form-generator/types/field-types";
 
 export const userFields: FieldConfig = [

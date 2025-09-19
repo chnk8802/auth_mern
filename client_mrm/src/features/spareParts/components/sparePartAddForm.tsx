@@ -1,7 +1,7 @@
 import React from "react";
 import { sparePartConfig } from "../config/sparePartFields";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { useSparePartFieldStates } from "../hooks/useSparePartFieldState";
 
 export interface SparePartFormProps {

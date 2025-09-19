@@ -2,7 +2,7 @@ import Joi from "joi";
 import { inputDataWrapper, joiObjectId } from "../custom/custom.validators.js";
 import {
   DEVICE_COMPONENTS,
-  PAYMENT_STATUS,
+  PAYMENT_STATUSES,
   REPAIR_STATUS,
   REPAIR_TYPE,
 } from "../../constants/enums.js";
@@ -22,7 +22,7 @@ export const createRepairJob = Joi.object({
   discount: Joi.number().optional(),
   notes: Joi.string().optional().allow(null, ""),
   paymentStatus: Joi.string()
-      .valid(...PAYMENT_STATUS)
+      .valid(...PAYMENT_STATUSES)
       .default("unpaid"),
     amountReceived: Joi.number().optional(),
     amountDue: Joi.number().optional(),
@@ -55,7 +55,7 @@ export const updateRepairJob = Joi.object({
   // profit: Joi.number().optional(),
 
   paymentStatus: Joi.string()
-      .valid(...PAYMENT_STATUS)
+      .valid(...PAYMENT_STATUSES)
       .default("unpaid"),
     amountReceived: Joi.number().optional(),
     amountDue: Joi.number().optional(),

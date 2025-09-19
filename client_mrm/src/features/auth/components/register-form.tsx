@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { Combobox } from "@/components/form/Combobox";
 import { registerUser } from "../api/authApi";
 import { toast } from "sonner";
@@ -65,11 +65,9 @@ export function RegisterForm({
       }
       
       toast.success("Registration successful! Please log in.");
-      console.log("Registration successful:", registeredUser);
   
     } catch (error) {
       toast.error("An error occurred during registration. Please try again.");
-      console.error("Registration error:", error);
     }
   };
 

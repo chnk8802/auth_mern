@@ -3,7 +3,7 @@ import { createCustomer } from "../api/customerApi";
 import { CustomerAddForm } from "@/features/customers/components/customerAddForm";
 import type { Customer } from "@/features/customers/types";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 
 export function CustomerAddPage() {
   const navigate = useNavigate();
@@ -16,7 +16,6 @@ export function CustomerAddPage() {
         toast.success("Customer added successfully");
         navigate(ROUTES.CUSTOMERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
-        console.error("Unable to add customer", error);
         toast.error(`Unable to add customer ${error?.response?.data?.message}`);
       }
     };

@@ -26,7 +26,7 @@ export function SupplierListPage() {
         toast.error("Supplier not found");
         return;
       }
-      toast.success(`${result.data[0].name} deleted`);
+      toast.success(`${result.data[0].fullName} deleted`);
       fetchSuppliers();
     } catch (err) {
       toast.error("Failed to delete supplier");
@@ -51,7 +51,6 @@ export function SupplierListPage() {
       setSuppliers(res.data);
     } catch (error: any) {
       toast.error("Failed to fetch suppliers");
-      console.error(error.response?.data?.message || error.message);
     }
   };
 

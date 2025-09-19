@@ -20,7 +20,6 @@ export const fetchCurrentUser = async (): Promise<ApiResponse<AuthUser>> => {
     const res = await api.get<ApiResponse<AuthUser>>("/auth/me");
     return res.data;
   } catch (error) {
-    console.error("Failed to fetch current user:", error);
 
     return {
       data: null as any,

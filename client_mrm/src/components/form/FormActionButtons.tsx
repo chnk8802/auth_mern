@@ -1,4 +1,4 @@
-import { Eye, EyeClosed, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,

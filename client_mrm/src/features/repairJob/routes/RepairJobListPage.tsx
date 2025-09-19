@@ -9,7 +9,7 @@ import {
 import type { RepairJob } from "@/features/repairJob/types";
 import { useNavigate } from "react-router-dom";
 import { ColumnGenerator } from "@/lib/form-generator/components/ListView/ColumnGenerator";
-import { repairJobFields } from "../config/repiarJobFields";
+import { repairJobFields } from "../config/repairJobFields";
 
 export function RepairJobListPage() {
   const navigate = useNavigate();
@@ -29,7 +29,6 @@ export function RepairJobListPage() {
       setRepairJobs(res.data);
     } catch (error: any) {
       toast.error("Failed to fetch repair jobs");
-      console.error(error.response?.data?.message || error.message);
     }
   };
 

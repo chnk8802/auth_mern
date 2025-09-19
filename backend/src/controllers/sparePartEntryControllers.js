@@ -20,27 +20,35 @@ const createSparePartEntry = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-
     const sparePartEntryData = flattenObject(value.data[0]);
 
-    const repairJobExists = await RepairJob.findById(sparePartEntryData.repairJob).select("_id");
+    const repairJobExists = await RepairJob.findById(
+      sparePartEntryData.repairJob
+    ).select("_id");
     if (!repairJobExists) {
       throw createError(404, "Repair Job not found or invalid reference.");
     }
 
     if (sparePartEntryData.sparePart) {
-      const sparePartExists = await SparePart.findById(sparePartEntryData.sparePart).select("_id").lean();
+      const sparePartExists = await SparePart.findById(
+        sparePartEntryData.sparePart
+      )
+        .select("_id")
+        .lean();
       if (!sparePartExists) {
         throw createError(404, "Spare Part not found");
       }
     }
 
-    const supplierExists = await Supplier.findById(sparePartEntryData.supplier).select("_id").lean();
+    const supplierExists = await Supplier.findById(sparePartEntryData.supplier)
+      .select("_id")
+      .lean();
     if (!supplierExists) {
       throw createError(404, "Supplier not found");
     }
 
     const sparePartEntry = new SparePartEntry(sparePartEntryData);
+
     const savedSparePartEntry = await sparePartEntry.save();
     if (!savedSparePartEntry) {
       throw createError(400, "Failed to create SparePartEntry");
@@ -51,9 +59,12 @@ const createSparePartEntry = async (req, res, next) => {
       { $push: { sparePartEntries: savedSparePartEntry._id } },
       { new: true }
     );
-    console.log(updateRepairJob)
+    console.log(updateRepairJob);
     if (!updateRepairJob) {
-      throw createError(400, "Spare Part Entry created but not appended to Repair Job");
+      throw createError(
+        400,
+        "Spare Part Entry created but not appended to Repair Job"
+      );
     }
 
     response(res, savedSparePartEntry, "Spare part entry created.");
@@ -68,13 +79,27 @@ const getAllSparePartEntries = async (req, res, next) => {
     const sparePartEntries = await SparePartEntry.find({})
       .sort(sort)
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .populate([
+        {
+          path: "repairJob",
+          select: "repairJobCode repairStatus",
+        },
+        {
+          path: "sparePart",
+          select: "partCode",
+        },
+        {
+          path: "supplier",
+          select: "supplierCode fullName",
+        },
+      ]);
 
-      if (!sparePartEntries) {
-        throw createError(404, "No entries found")
-      }
-      const totalRecords = await SparePartEntry.countDocuments({});
-      response(res, sparePartEntries, "Repair jobs retrieved successfully", {
+    if (!sparePartEntries) {
+      throw createError(404, "No entries found");
+    }
+    const totalRecords = await SparePartEntry.countDocuments({});
+    response(res, sparePartEntries, "Repair jobs retrieved successfully", {
       pagination: {
         page,
         limit,
@@ -91,10 +116,22 @@ const getSparePartEntryById = async (req, res, next) => {
   try {
     const sparePartEntryId = req.params.id;
 
-    const sparePartEntry = await SparePartEntry.findById(sparePartEntryId)
-      .populate("sparePart", "partCode brand model name displayName")
-      .populate("supplier", "supplierCode fullName displayName");
-
+    const sparePartEntry = await SparePartEntry.findById(
+      sparePartEntryId
+    ).populate([
+      {
+        path: "repairJob",
+        select: "repairJobCode repairStatus",
+      },
+      {
+        path: "sparePart",
+        select: "partCode",
+      },
+      {
+        path: "supplier",
+        select: "supplierCode fullName",
+      },
+    ]);
     if (!sparePartEntry) {
       throw createError(404, "No Spare Part Entry found");
     }
@@ -116,14 +153,16 @@ const updateSparePartEntry = async (req, res, next) => {
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-
+    const sparePartEntryData = value.data[0];
     const existingEntry = await SparePartEntry.findById(sparePartEntryId);
     if (!existingEntry) {
       throw createError(404, "Spare Part Entry not found");
     }
 
-    if (value.sparePart) {
-      const sparePartExists = await SparePart.findById(value.sparePart)
+    if (sparePartEntryData.sparePart) {
+      const sparePartExists = await SparePart.findById(
+        sparePartEntryData.sparePart
+      )
         .lean()
         .select("_id");
       if (!sparePartExists) {
@@ -131,8 +170,10 @@ const updateSparePartEntry = async (req, res, next) => {
       }
     }
 
-    if (value.supplier) {
-      const supplierExists = await Supplier.findById(value.supplier)
+    if (sparePartEntryData.supplier) {
+      const supplierExists = await Supplier.findById(
+        sparePartEntryData.supplier
+      )
         .lean()
         .select("_id");
       if (!supplierExists) {
@@ -140,14 +181,21 @@ const updateSparePartEntry = async (req, res, next) => {
       }
     }
     // MongoDB update Object
-    const updatePayload = { $set: value, $unset: {} };
+    const updatePayload = { $set: sparePartEntryData, $unset: {} };
     const sourceTypeChanged =
-      value.sourceType && value.sourceType !== existingEntry.sourceType;
+      sparePartEntryData.sourceType &&
+      sparePartEntryData.sourceType !== existingEntry.sourceType;
 
     if (sourceTypeChanged) {
-      if (value.sourceType === "In-house" && existingEntry.externalPartName) {
+      if (
+        sparePartEntryData.sourceType === "in_house" &&
+        existingEntry.externalPartName
+      ) {
         updatePayload.$unset.externalPartName = "";
-      } else if (value.sourceType === "External" && existingEntry.sparePart) {
+      } else if (
+        sparePartEntryData.sourceType === "external" &&
+        existingEntry.sparePart
+      ) {
         updatePayload.$unset.sparePart = "";
       }
     }
@@ -161,9 +209,16 @@ const updateSparePartEntry = async (req, res, next) => {
       sparePartEntryId,
       updatePayload,
       { new: true, runValidators: true }
-    )
-      .populate("sparePart", "partCode brand model name displayName")
-      .populate("supplier", "supplierCode fullName displayName");
+    ).populate([
+      {
+        path: "sparePart",
+        select: "partCode",
+      },
+      {
+        path: "supplier",
+        select: "supplierCode fullName",
+      },
+    ]);
 
     if (!updatedSparePartEntry) {
       throw createError(404, "Spare Part Entry update failed");
@@ -192,17 +247,23 @@ const deleteSparePartEntry = async (req, res, next) => {
       throw createError("No Spare Part Entry Found.");
     }
 
-    let deletedSparePartEntry = await SparePartEntry.findByIdAndDelete(sparePartEntryId);
+    let deletedSparePartEntry = await SparePartEntry.findByIdAndDelete(
+      sparePartEntryId
+    );
 
     if (!deletedSparePartEntry) {
       throw createError(400, "Could not delete Spare Part Entry");
     }
-    
+
     deletedSparePartEntry = {
       _id: deleteSparePartEntry._id,
     };
 
-    response(res, deleteSparePartEntry, "Spare Part Entry deleted successfully.");
+    response(
+      res,
+      deleteSparePartEntry,
+      "Spare Part Entry deleted successfully."
+    );
   } catch (error) {
     next(error);
   }
@@ -213,5 +274,5 @@ export default {
   getAllSparePartEntries,
   getSparePartEntryById,
   updateSparePartEntry,
-  deleteSparePartEntry
+  deleteSparePartEntry,
 };

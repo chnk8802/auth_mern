@@ -199,6 +199,10 @@ export interface LookupField extends BaseField {
    */
   module: string;
   /**
+   * ModuleResolver to select modules
+   */
+  moduleResolver: string;
+  /**
    * Field from the referenced module to display
    */
   displayField: string;

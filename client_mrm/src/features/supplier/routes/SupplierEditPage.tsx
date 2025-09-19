@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { getChangedFields } from "@/lib/utils";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { getSupplierById, updateSupplier } from "../api/supplierApi";
 import type { Supplier } from "../types";
 import { SupplierEditForm } from "../components/supplierEditForm";
@@ -22,7 +22,6 @@ export function SupplierEditPage() {
         const res = await getSupplierById(supplierId);
         setSupplier(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch supplier", err);
         toast.error("Failed to fetch supplier");
       } finally {
         setLoading(false);
@@ -52,10 +51,6 @@ export function SupplierEditPage() {
         toast.success("Supplier details updated");
         navigate(ROUTES.SUPPLIERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
-        console.error(
-          "Update failed:",
-          error.response?.data?.message || error.message
-        );
         toast.error(
           `Unable to update supplier: ${
             error.response?.data?.message || "Unknown error"

@@ -54,7 +54,6 @@ export function CustomersListPage() {
       setCustomers(res.data);
     } catch (error: any) {
       toast.error("Failed to fetch customers");
-      console.error(error.response?.data?.message || error.message);
     }
   };
 

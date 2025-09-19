@@ -1,6 +1,6 @@
 import { Home, Wrench, Users, Phone } from "lucide-react";
 
-export const menuItems = [
+export const WEBSITE_MAIN_MENU = [
   {
     label: "Home",
     to: "/",

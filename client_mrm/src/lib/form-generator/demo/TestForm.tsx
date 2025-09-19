@@ -16,7 +16,7 @@ FieldRenderer
 
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
 import { type FieldConfig} from "@/lib/form-generator/types/field-types";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import React from "react";
 // import { testStateMap } from "./testWorkflow";
 

@@ -41,9 +41,9 @@ sparePartEntrySchema.pre("save", async function (next) {
   if (this.isNew && !this.sparePartEntryCode) {
     this.sparePartEntryCode = await generateModuleId("sparePartEntry", "SPE");
   }
-  if (this.sourceType === "External") {
-    return this.externalPartName || "External Part";
-  }
+  // if (this.sourceType === "external") {
+  //   return this.externalPartName || "External Part";
+  // }
   next();
 });
 

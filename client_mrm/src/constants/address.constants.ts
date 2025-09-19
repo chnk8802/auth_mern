@@ -1,3 +1,15 @@
+export type CountryOption = {
+  label: string;
+  value: string;
+};
+
+export const COUNTRY: CountryOption[] = [
+  { label: "India", value: "india" },
+];
+export const COUNTRY_MAP = Object.fromEntries(
+  COUNTRY.map((country) => [country.value, country.label])
+);
+
 // src/constants/indianStates.ts
 export type StateOption = {
   label: string;
@@ -42,6 +54,6 @@ export const INDIAN_STATES: StateOption[] = [
   { label: "Lakshadweep", value: "lakshadweep" },
   { label: "Puducherry", value: "puducherry" },
 ];
-export const indianStateMap = Object.fromEntries(
+export const INDIAN_STATE_MAP = Object.fromEntries(
   INDIAN_STATES.map((state) => [state.value, state.label])
 );

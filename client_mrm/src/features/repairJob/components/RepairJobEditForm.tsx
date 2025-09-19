@@ -1,7 +1,7 @@
 import React from "react";
-import { repairJobFields } from "../config/repiarJobFields";
+import { repairJobFields } from "../config/repairJobFields";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { type RepairJob } from "../types";
 import { useForm, useWatch } from "react-hook-form";
 import { useRepairJobFieldStates } from "../hooks/useRepairJobFieldStates";

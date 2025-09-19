@@ -1,5 +1,4 @@
-import { COUNTRY } from "@/constants/countries";
-import { INDIAN_STATES } from "@/constants/indianStates";
+import { COUNTRY, INDIAN_STATES } from "@/constants/address.constants";
 import { type FieldConfig } from "@/lib/form-generator/types/field-types";
 
 export const supplierConfig: FieldConfig = [
@@ -48,19 +47,13 @@ export const supplierConfig: FieldConfig = [
             id: "state",
             label: "State",
             type: "select",
-            options: [
-              { label: "Tamil Nadu", value: "tn" },
-              { label: "Kerala", value: "kl" },
-            ],
+            options: INDIAN_STATES,
           },
           country: {
             id: "country",
             label: "Country",
             type: "select",
-            options: [
-              { label: "India", value: "in" },
-              { label: "USA", value: "us" },
-            ],
+            options: COUNTRY,
           },
           zip: { id: "zip", label: "Zip", type: "text" },
         },

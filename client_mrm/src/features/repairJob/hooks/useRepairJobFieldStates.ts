@@ -4,7 +4,6 @@ import { type FieldState } from "@/lib/form-generator/types/default-field-state"
 export function useRepairJobFieldStates(formData: Record<string, any>) {
   return useMemo<Record<string, FieldState>>(() => {
     const state: Record<string, FieldState> = {};
-    console.log("state", state);
      const sparePartEntries = formData.sparePartEntries || [];
 
     sparePartEntries.forEach((entry:any, index:number) => {
@@ -17,7 +16,6 @@ export function useRepairJobFieldStates(formData: Record<string, any>) {
         state[`externalPartName_${index}`] = { visible: true, reason: "", overridden: true };
       }
     });
-    console.log("state", state);
     return state;
   }, [formData]);
 }

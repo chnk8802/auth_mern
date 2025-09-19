@@ -14,6 +14,7 @@ export const modelsMap = {
   customers:Customer,
   Customer,
   RepairJob,
+  repairJob:RepairJob,
   sparePartEntry:SparePartEntry,
   SparePartEntry,
   spareParts:SparePart,

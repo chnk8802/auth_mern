@@ -14,7 +14,6 @@ export const getUserById = async (id: string): Promise<ApiResponse<User[]>> => {
 
 export const updateUser = async (id: string, data: {data: Partial<User>[]}): Promise<ApiResponse<User[]>> => {
         const res = await api.patch<ApiResponse<User[]>>(`users/${id}`, data)
-        console.log(res)
         return res.data;
 }
 

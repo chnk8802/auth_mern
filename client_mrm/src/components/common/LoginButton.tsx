@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { LogIn } from "lucide-react"
 import { Link } from "react-router-dom"
-import { ROUTES } from "@/constants/routes"
+import { ROUTES } from "@/constants/routes.constants"
 
 export function LoginButton() {
   return (

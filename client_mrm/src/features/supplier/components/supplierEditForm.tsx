@@ -1,6 +1,6 @@
 import React from "react";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { useForm, useWatch } from "react-hook-form";
 import { supplierConfig } from "../config/supplierConfig";
 import type { Supplier } from "../types";

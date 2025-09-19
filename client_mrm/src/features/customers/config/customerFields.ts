@@ -1,4 +1,4 @@
-import { CUSTOMER_TYPES } from "@/constants/customerTypes";
+import { CUSTOMER_TYPES } from "@/constants/customer.constants";
 import { type FieldConfig } from "@/lib/form-generator/types/field-types";
 
 export const customerFields: FieldConfig = [

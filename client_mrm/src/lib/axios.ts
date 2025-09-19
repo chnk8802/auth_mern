@@ -64,11 +64,10 @@ api.interceptors.response.use(
         store.dispatch(loginSuccess(user))
 
         processQueue(null, null)
-        console.log("======")
+        
         return api(originalRequest)
 
       } catch (refreshError) {
-        console.log("+++++++")
         processQueue(refreshError, null)
         store.dispatch(logout())
         return Promise.reject(refreshError)

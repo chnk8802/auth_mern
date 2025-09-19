@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { ROUTES } from "@/constants/routes";
-import { repairJobFields } from "../config/repiarJobFields";
+import { ROUTES } from "@/constants/routes.constants";
+import { repairJobFields } from "../config/repairJobFields";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
 
 type AddRepairJobFormProps = {

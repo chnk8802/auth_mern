@@ -4,7 +4,6 @@ import { type FieldState } from "@/lib/form-generator/types/default-field-state"
 export function useSparePartFieldStates(formData: Record<string, any>) {
   return useMemo<Record<string, FieldState>>(() => {
     const state: Record<string, FieldState> = {};
-    console.log("state", state);
     // const sparePartType = formData.sparePartType;
 
     // Make phone field required only for business spare parts

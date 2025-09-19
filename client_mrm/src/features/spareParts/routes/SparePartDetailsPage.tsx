@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 import { deleteSparePart, getSparePartById } from "../api/sparePartApi";
@@ -25,7 +25,6 @@ export function SparePartDetailPage() {
         const res = await getSparePartById(sparePartId);
         setSparePart(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch spare part", err);
         toast.error("Failed to fetch spare part");
       } finally {
         setLoading(false);
@@ -44,7 +43,6 @@ export function SparePartDetailPage() {
       toast.success(`${result.data[0].partCode} deleted successfully`);
       navigate(ROUTES.SPARE_PARTS.LIST);
     } catch (err) {
-      console.error("Delete failed", err);
       toast.error("Failed to delete spare part");
     }
   };

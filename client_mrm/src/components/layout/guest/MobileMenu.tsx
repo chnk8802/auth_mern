@@ -1,6 +1,5 @@
-import { menuItems } from "@/constants/menuItems";
 import { Button } from "@/components/ui/button";
-import { LogIn, LogInIcon, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Sheet,
@@ -13,9 +12,8 @@ import { ModeToggle } from "@/components/common/ModeToggle";
 import { Logo } from "@/components/common/Logo";
 import { useAppSelector } from "@/hooks/redux";
 import { LoginButton } from "@/components/common/LoginButton";
-import { Avatar } from "@radix-ui/react-avatar";
-import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
+import { WEBSITE_MAIN_MENU } from "@/constants/menu.constants";
 
 export function MobileMenu() {
   const user = useAppSelector((state) => state.auth.user);
@@ -33,7 +31,7 @@ export function MobileMenu() {
           </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-4">
-          {menuItems.map((item) => (
+          {WEBSITE_MAIN_MENU.map((item) => (
             <Link
               key={item.to}
               to={item.to}

@@ -4,8 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type AddressField } from "@/lib/form-generator/types/field-types";
 import { Combobox } from "./Combobox";
-import { INDIAN_STATES } from "@/constants/indianStates";
-import { COUNTRY } from "@/constants/countries";
+import { COUNTRY, INDIAN_STATES } from "@/constants/address.constants";
 
 type Props = {
   field: AddressField;

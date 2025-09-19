@@ -7,7 +7,7 @@ import { /*loginFailure, loginStart,*/ loginSuccess } from "../store/authSlice";
 import { useAppDispatch } from "@/hooks/redux";
 import { loginUser } from "../api/authApi";
 import { Link, useNavigate } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { toast } from "sonner";
 import { Loading } from "@/components/common/Loading";
 

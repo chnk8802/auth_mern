@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { getChangedFields } from "@/lib/utils";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { getSparePartById, updateSparePart } from "../api/sparePartApi";
 import type { SparePart } from "../types";
 import { SparePartEditForm } from "../components/sparePartEditForm";
@@ -22,7 +22,6 @@ export function SparePartEditPage() {
         const res = await getSparePartById(sparePartId);
         setSparePart(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch spare part", err);
         toast.error("Failed to fetch spare part");
       } finally {
         setLoading(false);
@@ -49,10 +48,6 @@ export function SparePartEditPage() {
         toast.success("Spare Part details updated");
         navigate(ROUTES.SPARE_PARTS.DETAILS(result.data[0]._id));
       } catch (error: any) {
-        console.error(
-          "Update failed:",
-          error.response?.data?.message || error.message
-        );
         toast.error(
           `Unable to update spare part: ${
             error.response?.data?.message || "Unknown error"
@@ -65,7 +60,6 @@ export function SparePartEditPage() {
   };
 
   if (loading) return <Loading fullscreen={true} />;
-  console.log(sparePart)
   if (!sparePart)
     return <div className="p-2 text-center">Spare Part not found</div>;
 

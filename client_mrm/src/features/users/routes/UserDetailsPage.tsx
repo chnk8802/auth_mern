@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { getUserById } from "@/features/users/api/userApi";
 import type { User } from "@/features/users/types";
 import { deleteUser } from "@/features/users/api/userApi";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { userFields } from "../config/userFields";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 import { Loading } from "@/components/common/Loading";
@@ -23,11 +23,9 @@ export function UserDetailPage() {
 
     try {
       const result = await deleteUser(user._id);
-      console.log("results", result);
       toast.success(`${result.data[0].userCode} deleted successfully`);
       navigate(ROUTES.USERS.LIST);
     } catch (err) {
-      console.error("Delete failed", err);
       toast.error("Failed to delete user");
     }
   };
@@ -44,7 +42,6 @@ export function UserDetailPage() {
         const res = await getUserById(userId);
         setUser(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch user", err);
         toast.error("Failed to fetch user");
       } finally {
         setLoading(false);

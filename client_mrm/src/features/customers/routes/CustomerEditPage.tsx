@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import type { Customer } from "@/features/customers/types";
 import { getCustomerById, updateCustomer } from "@/features/customers/api/customerApi";
 import { getChangedFields } from "@/lib/utils";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { CustomerEditForm } from "@/features/customers/components/customerEditForm";
 import { Loading } from "@/components/common/Loading";
 
@@ -22,7 +22,6 @@ export function CustomerEditPage() {
         const res = await getCustomerById(customerId);
         setCustomer(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch customer", err);
         toast.error("Failed to fetch customer");
       } finally {
         setLoading(false);
@@ -49,10 +48,6 @@ export function CustomerEditPage() {
         toast.success("Customer details updated");
         navigate(ROUTES.CUSTOMERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
-        console.error(
-          "Update failed:",
-          error.response?.data?.message || error.message
-        );
         toast.error(
           `Unable to update customer: ${
             error.response?.data?.message || "Unknown error"

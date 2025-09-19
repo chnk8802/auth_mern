@@ -4,7 +4,7 @@ import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import type { User } from "../types";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { userFields } from "../config/userFields";
 import { useUserFieldState } from "../hooks/useUserFieldState";
 

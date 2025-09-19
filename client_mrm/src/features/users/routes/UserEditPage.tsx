@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getUserById, updateUser } from "../api/userApi";
 import { getChangedFields } from "@/lib/utils";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { Loading } from "@/components/common/Loading";
 
 export function UserEditPage() {
@@ -22,7 +22,6 @@ export function UserEditPage() {
         const res = await getUserById(userId);
         setUser(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch user", err);
         toast.error("Failed to fetch user");
       } finally {
         setLoading(false);
@@ -38,7 +37,7 @@ export function UserEditPage() {
       return;
     }
     const changedFields = getChangedFields(updateUserData, user);
-    console.log("Changed fields:", changedFields);
+    
     if (Object.keys(changedFields).length === 0) {
       toast.info("No changes detected");
       return;
@@ -47,15 +46,11 @@ export function UserEditPage() {
     const submitUpdate = async () => {
       try {
         const result = await updateUser(userId, payload);
-        console.log("Update result:", result);
+        
         toast.success("User details updated");
         navigate(ROUTES.USERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
-        console.error(
-          "Update failed:",
-          error,
-          error.response?.data?.message || error.message
-        );
+        
         toast.error(
           `Unable to update user: ${
             error.response?.data?.message || "Unknown error"

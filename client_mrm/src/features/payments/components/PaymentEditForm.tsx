@@ -1,28 +1,30 @@
 import React from "react";
-import { customerFields } from "@/features/customers/config/customerFields";
+import { paymentFields } from "../config/paymentFields";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import { ROUTES } from "@/constants/routes";
-import type { Customer } from "@/features/customers/types";
+import { type Payment } from "../types";
 import { useForm, useWatch } from "react-hook-form";
-import { useCustomerFieldStates } from "@/features/customers/hooks/useCustomerFieldState";
+import { ROUTES } from "@/constants/routes.constants";
+// import { usePaymentFieldStates } from "../hooks/usePaymentFieldStates";
 
-export interface CustomerFormProps {
-  customer: Customer;
+export interface PaymentFormProps {
+  payment: Payment;
   onSubmit: (data: any) => void;
 }
 
-export const CustomerEditForm = ({ customer, onSubmit }: CustomerFormProps) => {
-  const form = useForm<Customer>({
-    defaultValues: customer,
+export const PaymentEditForm = ({ payment, onSubmit }: PaymentFormProps) => {
+  const form = useForm<Payment>({
+    defaultValues: payment,
   });
+
   const formValues = useWatch({
     control: form.control,
   });
+
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const fieldStates = useCustomerFieldStates(formValues);
+  // const fieldStates = usePaymentFieldStates(formValues);
 
   const handleChange = (fieldId: string, value: any) => {
-    form.setValue(fieldId as keyof Customer, value, {
+    form.setValue(fieldId as keyof Payment, value, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -36,11 +38,11 @@ export const CustomerEditForm = ({ customer, onSubmit }: CustomerFormProps) => {
 
   return (
     <FormBuilder
-      title="Customer"
-      backLink={ROUTES.CUSTOMERS.DETAILS(customer._id)}
+      title="Payment"
+      backLink={ROUTES.PAYMENTS.DETAILS(payment._id)}
       mode="edit"
-      fieldStateMap={fieldStates}
-      fieldsConfig={customerFields}
+      // fieldStateMap={fieldStates}
+      fieldsConfig={paymentFields}
       formData={formValues}
       onChange={handleChange}
       onSubmit={handleSubmit}

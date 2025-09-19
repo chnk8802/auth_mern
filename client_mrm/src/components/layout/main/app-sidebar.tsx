@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAppSelector } from "@/hooks/redux";
 import { Link } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 
 // This is sample data.
 const data = {
@@ -79,7 +79,7 @@ const data = {
       items: [
         {
           title: "Spare Part Entry",
-          url: ROUTES.SPARE_PART_ENTRY.LIST,
+          url: ROUTES.SPARE_PART_ENTRIES.LIST,
         },
         {
           title: "Payment Entry",

@@ -23,7 +23,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/hooks/redux";
 import { logout } from "@/features/auth/store/authSlice";
 import { logoutUser } from "@/features/auth/api/authApi";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { toast } from "sonner";
 
 interface NavUserProps {
@@ -40,12 +40,10 @@ export function NavUser({ user }: NavUserProps) {
       await logoutUser();
       dispatch(logout());
       toast.success("Logout successful");
-      console.log("Logout path:", ROUTES.GUEST_PATHS.LOGIN);
       setTimeout(() => {
         navigate(ROUTES.GUEST_PATHS.LOGIN);
       }, 50);
     } catch (error) {
-      console.error("Logout failed", error);
       toast.error("Logout failed. Please try again.");
     }
   };

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { type RepairJob } from "../types";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { deleteRepairJob, getRepairjobById } from "../api/repairJobApi";
-import { repairJobFields } from "../config/repiarJobFields";
+import { repairJobFields } from "../config/repairJobFields";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
 import { DetailsBuilder } from "@/lib/form-generator/components/DetailView/DetailBuilder";
 import { Loading } from "@/components/common/Loading";
@@ -25,7 +25,6 @@ export function RepairJobDetailPage() {
         const res = await getRepairjobById(repairJobId); 
         setRepairJob(res.data[0]);
       } catch (err) {
-        console.error("Failed to fetch repair job", err);
         toast.error("Failed to fetch repair job");
       } finally {
         setLoading(false);
@@ -44,7 +43,6 @@ export function RepairJobDetailPage() {
       toast.success(`${result.data[0].repairJobCode} deleted successfully`);
       navigate(ROUTES.REPAIR_JOBS.LIST);
     } catch (err) {
-      console.error("Delete failed", err);
       toast.error("Failed to delete repair job");
     }
   };

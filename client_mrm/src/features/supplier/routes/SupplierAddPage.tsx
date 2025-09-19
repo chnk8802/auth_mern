@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import { createSupplier } from "../api/supplierApi";
 import type { Supplier } from "../types";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES } from "@/constants/routes.constants";
 import { SupplierAddForm } from "../components/SupplierAddForm";
 
 
@@ -18,7 +18,6 @@ export function SupplierAddPage() {
         toast.success("Supplier added successfully");
         navigate(ROUTES.SUPPLIERS.DETAILS(result.data[0]._id));
       } catch (error: any) {
-        console.error("Unable to add supplier", error);
         toast.error(
           `Unable to add supplier ${error?.response?.data?.message || ""}`
         );

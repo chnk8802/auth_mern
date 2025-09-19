@@ -20,20 +20,20 @@ export const getSuppliers = async ({
   return res.data;
 };
 
-export const getSupplierById = async (id: string): Promise<ApiResponse<Supplier>> => {
-  const res = await api.get<ApiResponse<Supplier>>(`/suppliers/${id}`);
+export const getSupplierById = async (id: string): Promise<ApiResponse<Supplier[]>> => {
+  const res = await api.get<ApiResponse<Supplier[]>>(`/suppliers/${id}`);
   return res.data;
 };
 
 export const updateSupplier = async (
   id: string,
   supplierData: { data: Partial<Supplier>[] }
-): Promise<ApiResponse<Supplier>> => {
-  const res = await api.patch<ApiResponse<Supplier>>(`/suppliers/${id}`, supplierData);
+): Promise<ApiResponse<Supplier[]>> => {
+  const res = await api.patch<ApiResponse<Supplier[]>>(`/suppliers/${id}`, supplierData);
   return res.data;
 };
 
-export const deleteSupplier = async (id: string): Promise<ApiResponse<null>> => {
-  const res = await api.delete<ApiResponse<null>>(`/suppliers/${id}`);
+export const deleteSupplier = async (id: string): Promise<ApiResponse<Supplier[]>> => {
+  const res = await api.delete<ApiResponse<Supplier[]>>(`/suppliers/${id}`);
   return res.data;
 };
