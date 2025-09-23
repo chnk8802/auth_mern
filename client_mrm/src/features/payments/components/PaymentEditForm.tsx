@@ -39,7 +39,6 @@ export const PaymentEditForm = ({ payment, onSubmit }: PaymentFormProps) => {
   return (
     <FormBuilder
       title="Payment"
-      backLink={ROUTES.PAYMENTS.DETAILS(payment._id)}
       mode="edit"
       // fieldStateMap={fieldStates}
       fieldsConfig={paymentFields}

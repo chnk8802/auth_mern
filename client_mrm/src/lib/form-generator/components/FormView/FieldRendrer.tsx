@@ -15,9 +15,10 @@ import { AddressInput } from "@/components/form/AddressInput";
 import { SignatureInput } from "@/components/form/SignatureInput";
 import { LocationInput } from "@/components/form/LocationInput";
 import { FileInput } from "@/components/form/FileInput";
-import { formatDateTime, FormatLookup, formatTime, toDate } from "@/lib/utils";
+import { FormatLookup, toDate } from "@/lib/utils";
 import { SubformInputGrid } from "@/components/form/SubFormInputGrid";
 import { TimePicker } from "@/components/form/TimePicker";
+import { SubformInputModal } from "@/components/form/SubformInputModal";
 
 interface FieldRendererProps {
   formMode?: "create" | "edit";
@@ -224,30 +225,25 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
 
       // ---------------- BASIC DATE/TIME ----------------
       case "date":
-    return (
-      <DateInput
-        field={field}
-        value={value ? toDate(value) : undefined} // convert server string to Date
-        onChange={(val) => onChange(val?.toISOString().split("T")[0] ?? "")} // keep ISO yyyy-MM-dd for server
-      />
-    );
+        return (
+          <DateInput
+            field={field}
+            value={value ? toDate(value) : undefined} // convert server string to Date
+            onChange={(val) => onChange(val?.toISOString().split("T")[0] ?? "")} // keep ISO yyyy-MM-dd for server
+          />
+        );
 
-  case "time":
-    return (
-      <TimePicker
-        field={field}
-        value={value} // format server string for TimePicker
-        onChange={onChange}
-      />
-    );
+      case "time":
+        return (
+          <TimePicker
+            field={field}
+            value={value} // format server string for TimePicker
+            onChange={onChange}
+          />
+        );
 
-  case "datetime":
-    return (
-      <DateTimePicker
-        field={field}
-        value={value}
-      />
-    );
+      case "datetime":
+        return <DateTimePicker field={field} value={value} />;
 
       // ---------------- ADVANCED ----------------
       case "address":
@@ -263,21 +259,25 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
 
       case "subform":
         return (
-          <SubformInputGrid
+          <SubformInputModal
             field={field}
             value={value ?? []}
             onChange={onChange}
             disabled={disabled}
           />
         );
+      // return (
+      //   <SubformInputGrid
+      //     field={field}
+      //     value={value ?? []}
+      //     onChange={onChange}
+      //     disabled={disabled}
+      //   />
+      // );
 
       case "signature":
         return (
-          <SignatureInput
-            field={field}
-            value={value}
-            onChange={onChange}
-          />
+          <SignatureInput field={field} value={value} onChange={onChange} />
         );
 
       case "map":

@@ -39,7 +39,6 @@ export const SupplierEditForm = ({ supplier, onSubmit }: SupplierFormProps) => {
   return (
     <FormBuilder
       title="Supplier"
-      backLink={ROUTES.SUPPLIERS.DETAILS(supplier._id)}
       mode="edit"
       // fieldStateMap={fieldStates}
       fieldsConfig={supplierConfig}

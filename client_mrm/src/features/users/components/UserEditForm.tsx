@@ -41,7 +41,6 @@ export function EditUserForm({ user, onSubmit }: EditUserFormProps) {
   return (
     <FormBuilder
       title="Edit User"
-      backLink={ROUTES.USERS.DETAILS(user._id)}
       mode="edit"
       fieldsConfig={userFields}
       formData={formValues}

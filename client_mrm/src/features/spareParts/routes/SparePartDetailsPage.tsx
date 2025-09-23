@@ -64,7 +64,6 @@ export function SparePartDetailPage() {
     <>
       <DetailsBuilder
         title="Spare Part Details"
-        backLink={ROUTES.SPARE_PARTS.LIST}
         fieldConfig={sparePartConfig}
         data={sparePart}
         onDelete={handleDelete}

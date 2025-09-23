@@ -94,7 +94,7 @@ export function MultiSelectCombobox({
             aria-expanded={open}
             type="button"
             variant="secondary"
-            size="sm"
+            
             className="border-none"
             disabled={disabled}
           >

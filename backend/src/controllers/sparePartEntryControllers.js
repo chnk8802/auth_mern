@@ -13,10 +13,13 @@ import flattenObject from "../utils/flattenObject.js";
 
 const createSparePartEntry = async (req, res, next) => {
   try {
-    const { error, value } = createSparePartEntryValidation.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
+    const { error, value } = createSparePartEntryValidation.validate(
+      req.body,
+      {
+        abortEarly: false,
+        stripUnknown: true,
+      }
+    );
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
@@ -145,14 +148,18 @@ const getSparePartEntryById = async (req, res, next) => {
 const updateSparePartEntry = async (req, res, next) => {
   try {
     const sparePartEntryId = req.params.id;
-
-    const { error, value } = updateSparePartEntryValidation.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
+    
+    const { error, value } = updateSparePartEntryValidation.validate(
+      req.body,
+      {
+        abortEarly: false,
+        stripUnknown: true,
+      }
+    );
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
+    console.log(value)
     const sparePartEntryData = value.data[0];
     const existingEntry = await SparePartEntry.findById(sparePartEntryId);
     if (!existingEntry) {

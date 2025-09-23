@@ -37,7 +37,6 @@ export const SparePartEditForm = ({ sparePart, onSubmit }: SparePartFormProps) =
   return (
     <FormBuilder
       title="Spare Part"
-      backLink={ROUTES.SPARE_PARTS.DETAILS(sparePart._id)}
       mode="edit"
       fieldStateMap={fieldStates}
       fieldsConfig={sparePartConfig}

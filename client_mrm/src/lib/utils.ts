@@ -92,10 +92,21 @@ export function formatDateTime(value: string | Date | undefined): string {
   return `${formatDate(date)} ${formatTime(date)}`;
 }
 
+export function formatLabel(input: string): string {
+  if (!input) return "";
 
-export function formatSnakeCaseLabel(input: string): string {
-  return input.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
+  // 1. Convert camelCase to space: e.g. "camelCaseField" → "camel Case Field"
+  const fromCamel = input.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
+
+  // 2. Replace underscores with spaces
+  const withSpaces = fromCamel.replace(/_/g, " ");
+
+  // 3. Capitalize first letter of each word
+  const formatted = withSpaces.replace(/\b\w/g, (char) => char.toUpperCase());
+
+  return formatted;
 }
+
 
 export function cleanObject<T extends object>(obj: T): T {
   const cleaned = {} as T;

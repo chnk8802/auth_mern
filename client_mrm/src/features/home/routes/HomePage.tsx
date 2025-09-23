@@ -38,16 +38,16 @@ export function HomePage() {
             <div className="flex items-center gap-4">
               {user ? (
                 <>
-                  <Button size="sm" asChild>
+                  <Button  asChild>
                     <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline"  asChild>
                     <Link to={ROUTES.GUEST_PATHS.LOGIN}>Login</Link>
                   </Button>
-                  <Button size="sm" asChild>
+                  <Button  asChild>
                     <Link to={ROUTES.GUEST_PATHS.REGISTER}>Register</Link>
                   </Button>
                 </>
@@ -79,7 +79,7 @@ export function HomePage() {
             thousands of customers for quick, affordable, and guaranteed
             repairs.
           </motion.p>
-          <Button size="lg" variant="default">
+          <Button variant="default">
             Book a Repair Now
           </Button>
         </section>
@@ -139,7 +139,7 @@ export function HomePage() {
             Get your smartphone or tablet repaired quickly by trusted
             professionals.
           </p>
-          <Button size="lg" variant="secondary">
+          <Button variant="secondary">
             Contact Us
           </Button>
         </section>

@@ -29,7 +29,6 @@ export const SparePartAddForm = ({ onSubmit }: SparePartFormProps) => {
   return (
     <FormBuilder
       title="Spare Part"
-      backLink={ROUTES.SPARE_PARTS.LIST}
       mode="create"
       fieldStateMap={fieldStates}
       fieldsConfig={sparePartConfig}

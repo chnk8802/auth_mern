@@ -34,7 +34,7 @@ export const SearchDrawer = ({
       onOpenChange={setOpen}
     >
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline">
           <Search />
         </Button>
       </DialogTrigger>

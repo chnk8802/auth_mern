@@ -2,7 +2,7 @@ import { ArrowUpDown } from "lucide-react";
 import {
   formatCurrency,
   formatDate,
-  formatSnakeCaseLabel,
+  formatLabel
 } from "@/lib/utils";
 import type { ModuleField } from "@/lib/form-generator/types/field-types";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ export function renderColumn<T>(field: ModuleField): ColumnDef<T> | undefined {
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        {field.label || formatSnakeCaseLabel(field.id)}
+        {field.label || formatLabel(field.id)}
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),

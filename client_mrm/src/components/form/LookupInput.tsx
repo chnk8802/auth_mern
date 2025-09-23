@@ -11,21 +11,17 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import type { LookupField } from "@/lib/form-generator/types/field-types";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import pluralize from "pluralize";
 
 type Props = {
   field: LookupField;
   value: string;
-  onChange: (val: string | number) => void;
+  onChange: (val: string | number | null) => void;
 };
 
-export function LookupInput({
-  field,
-  value,
-  onChange,
-}: Props) {
+export function LookupInput({ field, value, onChange }: Props) {
   const [options, setOptions] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
@@ -40,7 +36,7 @@ export function LookupInput({
           criteria: field.criteria,
           search,
         });
-        
+
         setOptions(Array.isArray(res?.data) ? res.data : []);
       } catch (error) {
         console.error("Failed to fetch lookup data:", error);
@@ -54,6 +50,7 @@ export function LookupInput({
 
   return (
     <div className="space-y-1">
+      {/* hidden input to preserve form validation */}
       <input
         type="text"
         tabIndex={-1}
@@ -68,14 +65,31 @@ export function LookupInput({
           pointerEvents: "none",
         }}
       />
+
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-full justify-between overflow-hidden"
+            className="w-full justify-between overflow-hidden relative"
             disabled={field.disabled}
           >
-            {selectedLabel || field.placeholder || "Select"}
+            <span className="truncate">
+              {selectedLabel || field.placeholder || "Select"}
+            </span>
+
+            {/* Show clear button if a value is selected */}
+            {value && (
+              <span
+                className="absolute right-2 flex items-center"
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent popover opening
+                  e.preventDefault(); // prevent triggering PopoverTrigger
+                  onChange(null);
+                }}
+              >
+                <X className="h-4 w-4 text-muted-foreground hover:text-destructive cursor-pointer" />
+              </span>
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="min-w-[280px] p-2" align="start">
@@ -85,6 +99,7 @@ export function LookupInput({
             onChange={(e) => setSearch(e.target.value)}
             className="mb-2"
           />
+
           {/* Scrollable list */}
           <ScrollArea className="h-60 flex-1">
             <div className="space-y-1">
@@ -110,7 +125,13 @@ export function LookupInput({
 
           {/* Fixed footer button */}
           <div className="pt-2 border-t mt-2">
-            <Button variant="outline" className="w-full" onClick={() => {navigate(`/dashboard/${pluralize(field.module)}/new`);}}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                navigate(`/dashboard/${pluralize(field.module)}/new`);
+              }}
+            >
               <Plus className="mr-2 h-4 w-4" /> Add New
             </Button>
           </div>

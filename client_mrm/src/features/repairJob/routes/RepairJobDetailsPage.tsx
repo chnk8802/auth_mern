@@ -64,7 +64,6 @@ export function RepairJobDetailPage() {
     <>
       <DetailsBuilder
         title="Repair Job Details"
-        backLink={ROUTES.REPAIR_JOBS.LIST}
         fieldConfig={repairJobFields}
         data={repairJob}
         onDelete={handleDelete}

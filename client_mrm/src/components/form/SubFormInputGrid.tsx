@@ -107,7 +107,7 @@ export function SubformInputGrid({
               <Button
                 type="button"
                 variant="destructive"
-                size="icon"
+               
                 onClick={() => removeRow(rowIndex)}
                 disabled={value.length <= field.minRows}
                 className="absolute top-2 right-2"

@@ -18,7 +18,7 @@ export const PermissionDenied = () => {
       <p className="text-muted-foreground text-lg mb-6">
         You do not have permission to perform this action.
       </p>
-      <Button size="lg" onClick={() => navigate(-1)}>Go back</Button>
+      <Button onClick={() => navigate(-1)}>Go back</Button>
     </div>
   );
 };

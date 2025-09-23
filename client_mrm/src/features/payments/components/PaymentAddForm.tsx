@@ -31,7 +31,6 @@ export function PaymentAddForm({ onSubmit }: AddPaymentFormProps) {
   return (
     <FormBuilder
       title="Payment"
-      backLink={ROUTES.PAYMENTS.LIST}
       mode="create"
       // fieldStateMap={fieldStates}
       fieldsConfig={paymentFields}

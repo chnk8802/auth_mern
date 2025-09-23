@@ -81,7 +81,7 @@ export function SubformInput({
                 <Button
                 type="button"
                 variant="destructive"
-                size="icon"
+               
                 onClick={() => removeRow(rowIndex)}
                 disabled={value.length <= minRows}
               >

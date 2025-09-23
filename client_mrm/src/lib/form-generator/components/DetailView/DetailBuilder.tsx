@@ -8,7 +8,6 @@ import type { FieldConfig } from "@/lib/form-generator/types/field-types";
 
 type Props = {
   title: string;
-  backLink: string;
   fieldConfig: FieldConfig;
   data: Record<string, any>;
   onDelete?: () => void;
@@ -17,7 +16,6 @@ type Props = {
 
 export function DetailsBuilder({
   title,
-  backLink,
   fieldConfig,
   data,
   onDelete,
@@ -29,13 +27,12 @@ export function DetailsBuilder({
       <div className="pb-4">
         <DetailsPageHeader
           title={title}
-          backLink={backLink}
           onEdit={onEdit}
           more={
             <DetailActionButton
               onDownloadPdf={() =>
                 console.log(
-                  `Download PDF for: ${title} ${data._id} ${backLink}`
+                  `Download PDF for: ${title} ${data._id}`
                 )
               }
               onPrint={() => console.log(`Print: ${title}`)}

@@ -40,7 +40,7 @@ export function DetailActionButton({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline">
           <Ellipsis />
         </Button>
       </DropdownMenuTrigger>

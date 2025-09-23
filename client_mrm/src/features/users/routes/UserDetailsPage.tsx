@@ -64,7 +64,6 @@ export function UserDetailPage() {
     <>
       <DetailsBuilder
         title="User Details"
-        backLink={ROUTES.USERS.LIST}
         fieldConfig={userFields}
         data={user}
         onDelete={handleDelete}

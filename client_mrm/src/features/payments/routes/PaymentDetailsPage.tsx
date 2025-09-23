@@ -64,7 +64,6 @@ export function PaymentDetailPage() {
   return (
     <DetailsBuilder
       title="Payment Details"
-      backLink={ROUTES.PAYMENTS.LIST}
       fieldConfig={paymentFields}
       data={payment}
       onDelete={handleDelete}

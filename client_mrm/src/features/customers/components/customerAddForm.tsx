@@ -29,7 +29,6 @@ export const CustomerAddForm = ({ onSubmit }: CustomerFormProps) => {
   return (
     <FormBuilder
       title="Customer"
-      backLink={ROUTES.CUSTOMERS.LIST}
       mode="create"
       fieldStateMap={fieldStates}
       fieldsConfig={customerFields}

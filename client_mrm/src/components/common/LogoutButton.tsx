@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react"
 export function LogoutButton() {
     const dispatch = useAppDispatch()
   return (
-    <Button variant="destructive" size="sm" className="gap-2" onClick={() => {
+    <Button variant="destructive" className="gap-2" onClick={() => {
         dispatch(logout())
     }}>
         <LogOut className="h-4 w-4" />

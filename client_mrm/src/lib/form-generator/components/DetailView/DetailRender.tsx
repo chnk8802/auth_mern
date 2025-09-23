@@ -1,5 +1,5 @@
 "use client";
-import { formatCurrency, formatDate, formatSnakeCaseLabel } from "@/lib/utils";
+import { formatCurrency, formatDate, formatLabel } from "@/lib/utils";
 import type {
   ModuleField,
   SubformField,
@@ -32,11 +32,11 @@ export function DetailsRenderer({ fields, data }: Props) {
         return Array.isArray(value) ? value.join(", ") : value ? "Yes" : "No";
       case "radio":
       case "select":
-        return typeof value === "string" ? formatSnakeCaseLabel(value) : "-";
+        return typeof value === "string" ? formatLabel(value) : "-";
       case "multiselect":
         return Array.isArray(value)
           ? value
-              .map((v) => (typeof v === "string" ? formatSnakeCaseLabel(v) : v))
+              .map((v) => (typeof v === "string" ? formatLabel(v) : v))
               .join(", ")
           : "-";
       case "address":
@@ -44,10 +44,10 @@ export function DetailsRenderer({ fields, data }: Props) {
           value?.street,
           value?.city,
           typeof value?.state === "string"
-            ? formatSnakeCaseLabel(value?.state)
+            ? formatLabel(value?.state)
             : value?.state,
           typeof value?.country === "string"
-            ? formatSnakeCaseLabel(value?.country)
+            ? formatLabel(value?.country)
             : value?.country,
           ,
           value?.zip,

@@ -7,8 +7,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 type DetailsPageHeaderProps = {
   title: React.ReactNode;
-  subtitle?: React.ReactNode;
-  backLink?: string;
   actions?: React.ReactNode;
   more?: React.ReactNode;
   onEdit?: () => void;
@@ -16,7 +14,6 @@ type DetailsPageHeaderProps = {
 
 export function DetailsPageHeader({
   title,
-  backLink,
   onEdit,
   more,
 }: DetailsPageHeaderProps) {
@@ -26,15 +23,13 @@ export function DetailsPageHeader({
   return (
     <div className="flex items-center justify-between gap-4 pt-4">
       <div className="flex gap-2">
-        {backLink && (
-          <Button
+          {/* <Button
             variant="outline"
-            size="icon"
-            onClick={() => navigate(backLink)}
+           
+            onClick={() => navigate(-1)}
           >
             <ChevronLeft />
-          </Button>
-        )}
+          </Button> */}
         <Label className="text-xl font-bold pl-2">{title}</Label>
       </div>
       <div className="flex gap-2">

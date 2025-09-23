@@ -30,7 +30,6 @@ export function AddRepairJobForm({ onSubmit }: AddRepairJobFormProps) {
   return (
     <FormBuilder
       title="Repair Job"
-      backLink={ROUTES.REPAIR_JOBS.LIST}
       mode="create"
       // fieldStateMap={fieldStates}
       fieldsConfig={repairJobFields}

@@ -25,7 +25,7 @@ export const LiveFormData: React.FC<LiveFormDataProps> = ({ data }) => {
         <Database />
         <Label className="text-lg font-semibold">Live Form Data</Label>
         <Button
-          size="sm"
+          
           variant="outline"
           className="cursor-pointer"
           onClick={(e) => {

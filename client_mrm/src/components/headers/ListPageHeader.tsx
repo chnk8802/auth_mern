@@ -5,7 +5,6 @@ import { Label } from "../ui/label";
 
 type ListPageHeaderProps = {
   title: string;
-  backLink?: string;
   actions?: React.ReactNode;
   filters?: React.ReactNode;
   more?: React.ReactNode;
@@ -13,7 +12,6 @@ type ListPageHeaderProps = {
 
 export function ListPageHeader({
   title,
-  backLink,
   actions,
   filters,
   more,
@@ -22,15 +20,13 @@ export function ListPageHeader({
   return (
     <div className="flex items-center justify-between gap-4 pt-4">
       <div className="flex gap-2 items-center">
-        {backLink && (
-          <Button
+        {/* <Button
             variant="outline"
-            size="icon"
-            onClick={() => navigate(backLink)}
+           
+            onClick={() => navigate(-1)}
           >
             <ChevronLeft />
-          </Button>
-        )}
+          </Button> */}
         <Label className="text-xl font-bold pl-2">{title}</Label>
       </div>
       <div className="flex flex-wrap gap-2 items-center justify-between">

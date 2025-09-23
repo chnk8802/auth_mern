@@ -11,7 +11,6 @@ import { AnimatedSection, Section } from "@/components/layout/main/sectionLayout
 
 interface FormBuilderProps {
   title?: string;
-  backLink: string;
   mode: "create" | "edit";
 
   fieldsConfig: FieldConfig;
@@ -26,7 +25,6 @@ interface FormBuilderProps {
 
 export const FormBuilder: React.FC<FormBuilderProps> = ({
   title,
-  backLink,
   mode,
   fieldsConfig,
   formData,
@@ -48,7 +46,6 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
       <div className="pb-4">
         <FormHeader
           title={title ?? ""}
-          backLink={backLink}
           actions={
             <FormActionButtons
               mode={mode}

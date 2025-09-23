@@ -37,7 +37,6 @@ export const CustomerEditForm = ({ customer, onSubmit }: CustomerFormProps) => {
   return (
     <FormBuilder
       title="Customer"
-      backLink={ROUTES.CUSTOMERS.DETAILS(customer._id)}
       mode="edit"
       fieldStateMap={fieldStates}
       fieldsConfig={customerFields}

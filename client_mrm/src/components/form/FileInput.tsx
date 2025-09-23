@@ -71,7 +71,7 @@ export const FileInput: React.FC<FileInputProps> = ({
           <Button
             type="button"
             variant="ghost"
-            size="icon"
+           
             onClick={() => onChange([])}
             className="h-4 w-4 p-0 hover:text-destructive"
           >

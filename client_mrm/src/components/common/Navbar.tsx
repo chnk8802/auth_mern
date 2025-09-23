@@ -25,7 +25,7 @@ export const Navbar = () => {
         </Link>
       </div>
       <Link to={ROUTES.GUEST_PATHS.LOGIN}>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" >
           Login
         </Button>
       </Link>

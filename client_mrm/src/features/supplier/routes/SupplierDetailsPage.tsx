@@ -63,7 +63,6 @@ export function SupplierDetailPage() {
   return (
     <DetailsBuilder
       title="Supplier Details"
-      backLink={ROUTES.SUPPLIERS.LIST}
       fieldConfig={supplierConfig}
       data={supplier}
       onDelete={handleDelete}

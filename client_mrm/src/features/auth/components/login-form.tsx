@@ -93,7 +93,7 @@ export function LoginForm({
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? <Loading size="sm" /> : "Login"}
+          {loading ? <Loading  /> : "Login"}
         </Button>
       </div>
       <div className="text-center text-sm">

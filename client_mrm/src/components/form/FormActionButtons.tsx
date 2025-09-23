@@ -31,14 +31,14 @@ export function FormActionButtons({
   return (
     <div className="flex gap-2 justify-end">
       {/* Primary Action */}
-      <Button onClick={onSave} disabled={isSubmitting}>
+      <Button onClick={onSave} disabled={isSubmitting} >
         {mode === "create" ? "Save" : "Update"}
       </Button>
 
       {/* Secondary actions in a menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon">
+          <Button variant="outline" >
             <MoreVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>

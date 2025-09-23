@@ -52,9 +52,8 @@ import { useSidebar } from "./sidebar";
 import { cn } from "@/lib/utils";
 import { ListPageHeader } from "../headers/ListPageHeader";
 import { SearchDrawer } from "../listView/SearchDrawer";
-import { ROUTES } from "@/constants/routes.constants";
 import { LiveFormData } from "../debugging/LiveFormData";
-import { entries } from "lodash";
+import { ScrollArea } from "./scroll-area";
 
 interface DataTableProps<TData extends { _id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -155,7 +154,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon">
+          <Button variant="outline">
             <Ellipsis />
           </Button>
         </DropdownMenuTrigger>
@@ -163,7 +162,8 @@ export function DataTable<TData extends { _id: string }, TValue>({
           <DropdownMenuGroup>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>Columns</DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
+              <DropdownMenuSubContent >
+                <ScrollArea className="h-48">
                 {table
                   .getAllColumns()
                   .filter((column) => column.getCanHide())
@@ -179,6 +179,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
                       {column.id}
                     </DropdownMenuCheckboxItem>
                   ))}
+                  </ScrollArea>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
             <DropdownMenuSeparator />
@@ -203,7 +204,6 @@ export function DataTable<TData extends { _id: string }, TValue>({
     <div>
       <ListPageHeader
         title={pluralize(moduleName || "")}
-        backLink={ROUTES.DASHBOARD}
         actions={
           <Button
             onClick={() =>
@@ -317,7 +317,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
         <div className="flex space-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" >
                 {limit} Records
               </Button>
             </DropdownMenuTrigger>
@@ -347,7 +347,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
           </DropdownMenu>
           <Button
             variant="outline"
-            size="sm"
+            
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -355,7 +355,7 @@ export function DataTable<TData extends { _id: string }, TValue>({
           </Button>
           <Button
             variant="outline"
-            size="sm"
+            
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >

@@ -15,7 +15,11 @@ export const createSparePartEntry = Joi.object({
     then: Joi.string().trim().required(),
     otherwise: Joi.forbidden(),
   }),
-  supplier: joiObjectId().required(),
+  supplier: Joi.when("sourceType", {
+    is: "external",
+    then: joiObjectId().required(),
+    otherwise: Joi.forbidden(),
+  }),
   unitCost: Joi.number().min(0).required(),
   isPaid: Joi.boolean().optional()
 });
@@ -32,7 +36,7 @@ export const updateSparePartEntry = Joi.object({
     then: Joi.string().trim(),
     otherwise: Joi.forbidden(),
   }),
-  supplier: joiObjectId(),
+  supplier: joiObjectId().allow("", null).optional(),
   unitCost: Joi.number().optional(),
   isPaid: Joi.boolean().optional()
 });

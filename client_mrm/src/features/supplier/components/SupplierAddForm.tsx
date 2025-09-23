@@ -31,7 +31,6 @@ export const SupplierAddForm = ({ onSubmit }: SupplierFormProps) => {
   return (
     <FormBuilder
       title="Supplier"
-      backLink={ROUTES.SUPPLIERS.LIST}
       mode="create"
       // fieldStateMap={fieldStates}
       fieldsConfig={supplierConfig}

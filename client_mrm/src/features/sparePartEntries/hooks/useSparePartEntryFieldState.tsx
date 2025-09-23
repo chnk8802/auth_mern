@@ -1,34 +1,43 @@
 import { useMemo } from "react";
 import { type FieldState } from "@/lib/form-generator/types/default-field-state";
 
-export function useCustomerFieldStates(formData: Record<string, any>) {
+export function useSparePartEntryFieldStates(formData: Record<string, any>) {
   return useMemo<Record<string, FieldState>>(() => {
     const state: Record<string, FieldState> = {};
-    const customerType = formData.customerType;
 
-    // Make phone field required only for business customers
-    if (customerType === "business") {
-      state.phone = {
-        required: true,
-        reason: "Business customers must provide a phone number",
+    if (formData.sourceType === undefined || formData.sourceType === "") {
+      state.sparePart = {
+        visible: false,
+        reason: "Please select a supplier first",
         overridden: true,
       };
-    }
-
-    // Lock fullName if it's already filled
-    // if (formData.fullName) {
-    //   state.fullName = {
-    //     readOnly: true,
-    //     reason: "Full name cannot be changed once set",
-    //     overridden: true,
-    //   };
-    // }
-
-    // Hide address for individual customers
-    if (customerType === "individual") {
-      state.address = {
+      state.supplier = {
         visible: false,
-        reason: "Address not required for individual customers",
+        reason:
+          "Supplier and Spare Part selector are only visible if source type is In-house",
+        overridden: true,
+      };
+      state.externalPartName = {
+        visible: false,
+        reason: "Please select a supplier first",
+        overridden: true,
+      };
+    } else if (formData.sourceType && formData.sourceType === "external") {
+      state.sparePart = {
+        visible: false,
+        reason: "Please select a supplier first",
+        overridden: true,
+      };
+    } else {
+      state.supplier = {
+        visible: false,
+        reason:
+          "Supplier and Spare Part selector are only visible if source type is In-house",
+        overridden: true,
+      };
+      state.externalPartName = {
+        visible: false,
+        reason: "Please select a supplier first",
         overridden: true,
       };
     }

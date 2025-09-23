@@ -38,7 +38,6 @@ export const RepairJobEditForm = ({ repairJob, onSubmit }: RepairJobFormProps) =
   return (
     <FormBuilder
       title="Repair Job"
-      backLink={ROUTES.REPAIR_JOBS.DETAILS(repairJob._id)}
       mode="edit"
       fieldStateMap={fieldStates}
       fieldsConfig={repairJobFields}

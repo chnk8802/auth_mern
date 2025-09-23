@@ -38,7 +38,6 @@ export const TestForm: React.FC<TestFormProps> = ({
         mode={mode}
         fieldsConfig={fieldsConfig}
         formData={formData}
-        backLink={ROUTES.DASHBOARD}
         // fieldStateMap={testStateMap}
         onChange={onChange}
         onSubmit={() => {

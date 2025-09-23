@@ -18,7 +18,7 @@ export const NotFound = () => {
       <p className="text-muted-foreground text-lg mb-6">
         The page you’re looking for doesn’t exist or was moved.
       </p>
-      <Button size="lg" onClick={() => navigate("/")}>Go back</Button>
+      <Button onClick={() => navigate("/")}>Go back</Button>
     </div>
   );
 };

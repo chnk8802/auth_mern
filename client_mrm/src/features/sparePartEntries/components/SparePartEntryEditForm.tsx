@@ -4,7 +4,7 @@ import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilde
 import { ROUTES } from "@/constants/routes.constants";
 import type { SparePartEntry } from "@/features/sparePartEntries/types";
 import { useForm, useWatch } from "react-hook-form";
-// import { useSparePartEntryFieldStates } from "@/features/sparePartEntries/hooks/useSparePartEntryFieldState";
+import { useSparePartEntryFieldStates } from "../hooks/useSparePartEntryFieldState";
 
 export interface SparePartEntryFormProps {
   sparePartEntry: SparePartEntry;
@@ -24,7 +24,7 @@ export const SparePartEntryEditForm = ({
   });
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  // const fieldStates = useSparePartEntryFieldStates(formValues);
+  const fieldStates = useSparePartEntryFieldStates(formValues);
 
   const handleChange = (fieldId: string, value: any) => {
     form.setValue(fieldId as keyof SparePartEntry, value, {
@@ -42,9 +42,8 @@ export const SparePartEntryEditForm = ({
   return (
     <FormBuilder
       title="Spare Part Entry"
-      backLink={ROUTES.SPARE_PART_ENTRIES.DETAILS(sparePartEntry._id)}
       mode="edit"
-      // fieldStateMap={fieldStates}
+      fieldStateMap={fieldStates}
       fieldsConfig={sparePartEntryFields}
       formData={formValues}
       onChange={handleChange}

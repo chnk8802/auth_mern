@@ -20,14 +20,14 @@ export function MobileMenu() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline">
           <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-64">
         <SheetHeader>
           <SheetTitle className="text-xl font-bold">
-            <Logo size="sm" />
+            <Logo  />
           </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-4">
@@ -47,7 +47,7 @@ export function MobileMenu() {
           <ModeToggle />
           {!user && <LoginButton />}
           {user && (
-            <Button asChild size="sm">
+            <Button asChild >
               <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
             </Button>
           )}
