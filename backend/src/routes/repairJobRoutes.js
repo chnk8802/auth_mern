@@ -7,14 +7,6 @@ import { openTransaction } from '../utils/transactionSession.js';
 
 const router = express.Router();
 
-router.post('/sparepartentries', auth, permit(['admin', 'manager']), sparePartEntryControllers.createSparePartEntry);
-router.get('/sparepartentries', auth, permit(['admin', 'manager']), sparePartEntryControllers.getAllSparePartEntries);
-router.get('/sparepartentries/:id', auth, permit(['admin', 'manager']), sparePartEntryControllers.getSparePartEntryById);
-router.patch('/sparepartentries/:id', auth, permit(['admin', 'manager']), sparePartEntryControllers.updateSparePartEntry);
-router.delete('/sparepartentries/:id', auth, permit(['admin', 'manager']), sparePartEntryControllers.deleteSparePartEntry);
-
-
-
 router.post('/', auth, permit(["admin", "manager"]), repairJobController.createRepairJob);
 router.get('/', auth, permit(["admin", "manager", "technician"]), repairJobController.getAllRepairJobs);
 router.get('/search', auth, permit(["admin", "manager", "technician"]), repairJobController.searchRepairJobs);

@@ -2,7 +2,10 @@
 
 import { DetailActionButton } from "@/components/detailsView/DetailActionButton";
 import { DetailsPageHeader } from "@/components/headers/DetailsHeader";
-import { AnimatedSection, Section } from "@/components/layout/main/sectionLayouts/Sections";
+import {
+  AnimatedSection,
+  Section,
+} from "@/components/layout/main/sectionLayouts/Sections";
 import { DetailsRenderer } from "@/lib/form-generator/components/DetailView/DetailRender";
 import type { FieldConfig } from "@/lib/form-generator/types/field-types";
 
@@ -21,7 +24,6 @@ export function DetailsBuilder({
   onDelete,
   onEdit,
 }: Props) {
-
   return (
     <>
       <div className="pb-4">
@@ -31,9 +33,7 @@ export function DetailsBuilder({
           more={
             <DetailActionButton
               onDownloadPdf={() =>
-                console.log(
-                  `Download PDF for: ${title} ${data._id}`
-                )
+                console.log(`Download PDF for: ${title} ${data._id}`)
               }
               onPrint={() => console.log(`Print: ${title}`)}
               onDelete={() => onDelete?.()}
@@ -42,6 +42,10 @@ export function DetailsBuilder({
         />
       </div>
       {fieldConfig.map((section) => {
+        const visibleFields = section.fields.filter(
+          (f) => f.showInDetails !== false
+        );
+        if (visibleFields.length === 0) return null;
         const col = section.col;
         const sectionType = section.sectionType || "animated";
 

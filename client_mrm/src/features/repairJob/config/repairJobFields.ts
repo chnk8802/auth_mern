@@ -14,8 +14,9 @@ export const repairJobFields: FieldConfig = [
         label: "Repair Job Code",
         type: "text",
         required: false,
-        readOnly: true, // auto-generated
+        readOnly: true,
         placeholder: "Auto-generated",
+        showInForm: false,
       },
       {
         id: "repairStatus",
@@ -112,6 +113,8 @@ export const repairJobFields: FieldConfig = [
         displayFields: ["sparePartName", "unitCost", "supplier"],
         minRows: 1,
         maxRows: 10,
+        showInForm: true,
+        showInTable: false,
         fields: [
           {
             id: "sourceType",
@@ -159,6 +162,8 @@ export const repairJobFields: FieldConfig = [
         type: "currency",
         placeholder: "0.00",
         readOnly: true,
+        showInForm: false,
+        showInDetails: false,showInTable: false,
       },
       {
         id: "totalReceivable",
@@ -166,6 +171,7 @@ export const repairJobFields: FieldConfig = [
         type: "currency",
         placeholder: "0.00",
         readOnly: true,
+        showInForm: false, showInDetails: false,showInTable: false,
       },
       {
         id: "profit",
@@ -173,6 +179,7 @@ export const repairJobFields: FieldConfig = [
         type: "currency",
         placeholder: "0.00",
         readOnly: true,
+        showInForm: false, showInDetails: false,showInTable: false,
       },
       {
         id: "paymentStatus",
@@ -180,6 +187,7 @@ export const repairJobFields: FieldConfig = [
         type: "select",
         options: PAYMENT_STATUSES,
         placeholder: "Select Payment Status",
+        showInForm: false, showInDetails: false,showInTable: false,
       },
       {
         id: "amountReceived",
@@ -187,6 +195,7 @@ export const repairJobFields: FieldConfig = [
         type: "currency",
         placeholder: "0.00",
         min: 0,
+        showInForm: false, showInDetails: false,showInTable: false,
       },
       {
         id: "amountDue",
@@ -194,11 +203,13 @@ export const repairJobFields: FieldConfig = [
         type: "currency",
         placeholder: "0.00",
         min: 0,
+        showInForm: false, showInDetails: false,showInTable: false,
       },
       {
         id: "pickedAt",
         label: "Picked At",
         type: "datetime",
+        showInForm: false, showInDetails: false ,showInTable: false,
       },
     ],
   },

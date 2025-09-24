@@ -13,7 +13,7 @@ type Props = {
 };
 
 export function DetailsRenderer({ fields, data }: Props) {
-  const visibleFields = fields.filter((field) => field.showInDetails !== false);
+  const visibleFields = fields.filter((field) => field.showInDetails !== false );
 
   const renderValue = (field: ModuleField, value: any) => {
     if (value == null) return "-";

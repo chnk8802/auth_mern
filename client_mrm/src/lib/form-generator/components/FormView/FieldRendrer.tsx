@@ -39,6 +39,11 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   disabled,
   readOnly,
 }) => {
+
+  if (!field.showInForm) return null;
+  if (formMode === "create" && field.hiddenInCreate) return null;
+  if (formMode === "edit" && field.hiddenInEdit) return null;
+
   const renderInput = () => {
     switch (field.type) {
       // ---------------- BASIC FIELDS ----------------
@@ -297,10 +302,6 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
         return <div>Unsupported field type: {(field as any).type}</div>;
     }
   };
-
-  if (!field.showInForm) return null;
-  if (formMode === "create" && field.hiddenInCreate) return null;
-  if (formMode === "edit" && field.hiddenInEdit) return null;
 
   const cssClass = clsx("space-y-1", {
     "sm:w-64": field.type !== "subform",

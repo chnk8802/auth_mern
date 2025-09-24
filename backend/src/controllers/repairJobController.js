@@ -12,75 +12,98 @@ import { getPaginationOptions } from "../utils/pagination.js";
 import { listRepairJobs } from "../services/repairJobServices.js";
 import flattenObject from "../utils/flattenObject.js";
 
-const createRepairJob = async (req, res, next) => {
+export const createRepairJob = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  console.log("REQ BODY:", req.body, typeof req.body);
+
   try {
+    // Validate payload
     const { error, value } = createRepairJobValidation.validate(req.body, {
       abortEarly: true,
       stripUnknown: true,
     });
+    console.log(JSON.stringify(value));
+
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    console.log("value", value);
     const repairJobData = flattenObject(value.data[0]);
 
-    const customerExists = await Customer.findById(repairJobData.customer);
+    // Ensure customer exists
+    const customerExists = await Customer.findById(repairJobData.customer).session(session);
     if (!customerExists) {
       throw createError(404, "Customer not found");
     }
 
+    // Step 1: Create RepairJob
     const newRepairJob = new RepairJob(repairJobData);
-    const savedRepairJob = await newRepairJob.save();
-    if (!savedRepairJob) {
-      throw createError(500, "Failed to create repair job");
+    const savedRepairJob = await newRepairJob.save({ session });
+
+    // Step 2: Create SparePartEntries (if any)
+    if (repairJobData.sparePartEntries?.length) {
+      const sparePartEntries = await SparePartEntry.insertMany(
+        repairJobData.sparePartEntries.map(entry => ({
+          ...entry,
+          repairJob: savedRepairJob._id,
+        })),
+        { session }
+      );
+
+      // Link spare parts to repair job
+      savedRepairJob.sparePartEntries.push(...sparePartEntries.map(e => e._id));
+      await savedRepairJob.save({ session });
     }
 
-    response(res, savedRepairJob, "Repair job created successfully", {
-      code: 201,
-    });
-  } catch (error) {
-    next(error);
+    // Commit transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    response(res, savedRepairJob, "Repair job created successfully", { code: 201 });
+  } catch (err) {
+    // Rollback transaction
+    await session.abortTransaction();
+    session.endSession();
+    next(err);
   }
 };
 
 const getAllRepairJobs = async (req, res, next) => {
   try {
     const { page, limit, skip, sort } = getPaginationOptions(req.query);
+    const [repairJobs, totalRecords] = await Promise.all([
+      RepairJob.find({})
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .populate([
+          {
+            path: "customer",
+            select: "customerCode fullName address.city",
+          },
+          {
+            path: "technician",
+            select: "userCode fullName",
+          },
+          {
+            path: "sparePartEntries",
+            populate: [
+              {
+                path: "sparePart",
+                select: "partCode partName brand model",
+              },
+              {
+                path: "supplier",
+                select: "supplierCode fullName",
+              },
+            ],
+          },
+        ])
+        .lean(),
+      RepairJob.countDocuments({}),
+    ]);
 
-    const repairJobs = await RepairJob.find({})
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-      .populate([
-        {
-          path: "customer",
-          // select: "customerCode fullName address.city",
-        },
-        {
-          path: "technician",
-          // select: "userCode fullName",
-        },
-        {
-          path: "sparePartEntries",
-          // populate: [
-          //   {
-          //     path: "sparePart",
-          //     select: "partCode",
-          //   },
-          //   {
-          //     path: "supplier",
-          //     select: "supplierCode fullName",
-          //   },
-          // ],
-        },
-      ]);
-
-    if (!repairJobs || repairJobs.length === 0) {
-      throw createError(404, "No repair jobs found");
-    }
-
-    const totalRecords = await RepairJob.countDocuments({});
-    response(res, repairJobs, "Repair jobs retrieved successfully", {
+    return response(res, repairJobs, "Repair jobs retrieved successfully", {
       pagination: {
         page,
         limit,

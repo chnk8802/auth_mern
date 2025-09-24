@@ -8,25 +8,22 @@ import { ROUTES } from "@/constants/routes.constants";
 export function RepairJobAddPage() {
   const navigate = useNavigate();
 
-  const handleAdd = (repairJobData: Omit<RepairJob, "_id">) => {
+  const handleAdd = async (repairJobData: Omit<RepairJob, "_id">) => {
     const payload = { data: [repairJobData] };
 
-    const submitAdd = async () => {
-      try {
-        const result = await createRepairJob(payload);
-        toast.success("Reair Job added successfully");
-          navigate(ROUTES.REPAIR_JOBS.DETAILS(result.data[0]._id))
-      } catch (error: any) {
-        toast.error(`Unable to add repair job ${error?.response?.data?.message}`);
+    try {
+      const result = await createRepairJob(payload);
+      toast.success("Repair Job added successfully");
+      const newRepairJobId = result.data[0]?._id;
+      if (newRepairJobId) {
+        navigate(ROUTES.REPAIR_JOBS.DETAILS(newRepairJobId));
       }
-    };
-
-    submitAdd();
+    } catch (error: any) {
+      toast.error(
+        `Unable to add repair job: ${error?.response?.data?.message || error.message}`
+      );
+    }
   };
 
-  return (
-    <>
-      <AddRepairJobForm onSubmit={handleAdd} />
-    </>
-  );
+  return <AddRepairJobForm onSubmit={handleAdd} />;
 }
