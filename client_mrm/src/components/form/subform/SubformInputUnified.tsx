@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, MoreHorizontal } from "lucide-react";
+import { Plus } from "lucide-react";
 import { FieldRenderer } from "@/lib/form-generator/components/FormView/FieldRendrer";
 import { type ModuleField } from "@/lib/form-generator/types/field-types";
+import pluralize from "pluralize";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
 import {
   Table,
   TableHeader,
@@ -19,37 +20,38 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from "../ui/table";
+} from "@/components/ui/table";
 import { formatLabel } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "../ui/dropdown-menu";
-import pluralize from "pluralize";
+import { SubformRowAction } from "./SubformRowAction";
 
 type Props = {
   field: Record<string, any>;
   value: any[];
   onChange: (val: any[]) => void;
   disabled?: boolean;
+  minRows?: number;
+  maxRows?: number;
 };
 
-export function SubformInputModal({
+export function SubformInputUnified({
   field,
   value = [],
   onChange,
   disabled,
+  minRows = 0,
+  maxRows = Infinity,
 }: Props) {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [rowDraft, setRowDraft] = useState<any>({});
 
-  const openModal = (index: number | null) => {
-    if (index === null) setRowDraft({});
-    else setRowDraft({ ...value[index] });
+  const removeRow = (index: number) => {
+    if (value.length <= minRows) return;
+    onChange(value.filter((_, i) => i !== index));
+  };
 
+  const openModal = (index: number | null) => {
+    setRowDraft(index === null ? {} : { ...value[index] });
     setEditingIndex(index);
     setModalOpen(true);
   };
@@ -58,34 +60,22 @@ export function SubformInputModal({
     const updated = [...value];
     if (editingIndex === null) updated.push(rowDraft);
     else updated[editingIndex] = rowDraft;
-
     onChange(updated);
     setModalOpen(false);
   };
 
-  const removeRow = (index: number) => {
-    if (value.length <= field.minRows) return;
-    const updated = value.filter((_, i) => i !== index);
-    onChange(updated);
-  };
-
   return (
     <>
-      {/* Table */}
       <div className="space-y-4 overflow-x-auto border rounded-md">
         <Table className="w-full">
           <TableHeader>
             <TableRow>
-              {/* Sticky Actions Column */}
-              <TableHead className="sticky left-0 bg-background z-10">
-                
-              </TableHead>
+              <TableHead className="sticky left-0 bg-background z-10"></TableHead>
               {field.fields.map((f: ModuleField) => (
                 <TableHead key={f.id}>{f.label}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
-
           <TableBody>
             {value.length === 0 && (
               <TableRow>
@@ -97,47 +87,41 @@ export function SubformInputModal({
                 </TableCell>
               </TableRow>
             )}
-
             {value.map((row, index) => (
               <TableRow key={index}>
-                {/* Sticky Actions Column with Dropdown */}
-                <TableCell className="sticky left-0 bg-background z-10">
-                  {!disabled && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => openModal(index)}>
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => removeRow(index)}>
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
-                </TableCell>
-
+                {!disabled && (
+                  <TableCell className="sticky left-0 bg-background z-10">
+                    <SubformRowAction
+                      index={index}
+                      openModal={openModal}
+                      removeRow={removeRow}
+                      disabled={disabled}
+                    />
+                  </TableCell>
+                )}
                 {field.fields.map((f: ModuleField) => (
-                  <TableCell key={f.id}>{String(row[f.id] ?? "")}</TableCell>
+                  <TableCell key={f.id}>
+                    <FieldRenderer
+                      field={f}
+                      value={row[f.id]}
+                      onChange={() => {}}
+                      showLabel={false}
+                    />
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-      {/* Add Row Button */}
-      {!disabled && value.length < field.maxRows && (
-        <Button type="button" onClick={() => openModal(null)} >
-          <Plus className="w-4 h-4" />
-          Add {pluralize.singular(formatLabel(field.id))}
+
+      {!disabled && value.length < maxRows && (
+        <Button type="button" onClick={() => openModal(null)}>
+          <Plus className="w-4 h-4" /> Add{" "}
+          {pluralize.singular(formatLabel(field.id))}
         </Button>
       )}
 
-      {/* Modal */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>

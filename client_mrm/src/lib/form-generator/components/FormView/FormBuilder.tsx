@@ -3,23 +3,17 @@ import { FieldRenderer } from "@/lib/form-generator/components/FormView/FieldRen
 import { FormActionButtons } from "@/components/form/FormActionButtons";
 import { FormHeader } from "@/components/headers/FormHeader";
 import { LiveFormData } from "@/components/debugging/LiveFormData";
-import type { FieldState } from "@/lib/form-generator/types/default-field-state";
-import type { FieldConfig } from "@/lib/form-generator/types/field-types";
+import type { FieldConfig, ModuleField } from "@/lib/form-generator/types/field-types";
 import { normalizeFieldConfig } from "../../utils/normalizeFields";
 import { Loading } from "@/components/common/Loading";
 import { AnimatedSection, Section } from "@/components/layout/main/sectionLayouts/Sections";
+import { useFormBuilder } from "../../hooks/useFormBuilder";
 
 interface FormBuilderProps {
   title?: string;
   mode: "create" | "edit";
-
   fieldsConfig: FieldConfig;
-  formData: Record<string, any>;
-  fieldStateMap?: Record<string, FieldState>;
-
-  onChange: (fieldId: string, value: any) => void;
   onSubmit: () => void;
-  onReset?: () => void;
   isSubmitting?: boolean;
 }
 
@@ -27,19 +21,17 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   title,
   mode,
   fieldsConfig,
-  formData,
-  fieldStateMap,
-  onChange,
   onSubmit,
-  onReset,
-  isSubmitting,
+  isSubmitting, // to disable save button untill saving / updating finishes
 }) => {
+  const allFields: ModuleField[] = fieldsConfig.flatMap((section) => section.fields);
+
+  const { formData, fieldStates, updateValue, resetForm } = useFormBuilder(allFields);
   const [showLiveData, setShowLiveData] = React.useState(false);
+
   if (!fieldsConfig) return <Loading fullscreen={true} />;
-  const normalizedFields = React.useMemo(
-    () => normalizeFieldConfig(fieldsConfig),
-    [fieldsConfig]
-  );
+
+  const normalizedFields = React.useMemo(() => normalizeFieldConfig(fieldsConfig), [fieldsConfig]);
 
   return (
     <>
@@ -53,42 +45,36 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
               onSave={onSubmit}
               onSaveAndNew={() => {
                 onSubmit();
-                onReset?.();
+                resetForm();
               }}
-              onReset={onReset}
+              onReset={() => resetForm()}
               showLiveData={showLiveData}
               onToggleLiveData={() => setShowLiveData((prev) => !prev)}
             />
           }
         />
       </div>
+
       <form>
         {normalizedFields.map((section) => {
           const visibleFields = section.fields.filter(
-            (f) =>
-              f.showInForm !== false && fieldStateMap?.[f.id]?.visible !== false
+            (f) => f.showInForm !== false && fieldStates[f.id]?.visible !== false
           );
           if (visibleFields.length === 0) return null;
 
-          const Wrapper =
-            section.sectionType === "basic" ? Section : AnimatedSection;
+          const Wrapper = section.sectionType === "basic" ? Section : AnimatedSection;
 
           return (
-            <Wrapper
-              key={section.section}
-              title={section.section}
-              col={section.col}
-            >
+            <Wrapper key={section.section} title={section.section} col={section.col}>
               {visibleFields.map((field) => {
-                let state = fieldStateMap?.[field.id];
-
+                const state = fieldStates[field.id];
                 return (
                   <FieldRenderer
                     key={field.id}
                     formMode={mode}
                     field={field}
                     value={formData[field.id]}
-                    onChange={(val) => onChange(field.id, val)}
+                    onChange={(val) => updateValue(field.id, val)}
                     disabled={state?.disabled}
                     readOnly={state?.readOnly}
                   />

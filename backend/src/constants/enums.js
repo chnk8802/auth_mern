@@ -44,7 +44,7 @@ export const COUNTRIES = ["india"];
 export const CUSTOMER_TYPES = ["individual", "business", "bulk"];
  
 // Repair Job
-export const REPAIR_STATUS = ["pending", "in-progress", "incomplete", "complete", "picked"];
+export const REPAIR_STATUS = ["pending", "in_progress", "incomplete", "complete", "picked"];
 export const REPAIR_TYPE = ["hardware", "software", "both"];
 export const DEVICE_COMPONENTS = ["sim_tray", "screen", "front_camera", "back_camera", "battery"];
 // Spare Parts

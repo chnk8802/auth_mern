@@ -3,7 +3,7 @@ import {inputDataWrapper, joiObjectId } from "../../custom/custom.validators.js"
 import { SPARE_PART_SOURCE_TYPE } from "../../../constants/enums.js";
 
 export const createSparePartEntry = Joi.object({
-  repairJob: joiObjectId().required(),
+  // repairJob: joiObjectId().required(),
   sourceType: Joi.string().valid(...SPARE_PART_SOURCE_TYPE).required(),
   sparePart: Joi.when("sourceType", {
     is: "in_house",

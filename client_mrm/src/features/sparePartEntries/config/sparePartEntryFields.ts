@@ -17,14 +17,6 @@ export const sparePartEntryFields: FieldConfig = [{
     readOnly: true,
   },
   {
-    id: "repairJob",
-    label: "Repair Job",
-    type: "lookup",
-    module: "repairJob",
-    displayField: "repairJobCode",
-    required: true,
-  },
-  {
     id: "sourceType",
     label: "Source Type",
     type: "select",

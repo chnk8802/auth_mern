@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { FieldRenderer } from "@/lib/form-generator/components/FormView/FieldRendrer";
 import { type ModuleField } from "@/lib/form-generator/types/field-types";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 
 type Props = {
   field: Record<string, any>;

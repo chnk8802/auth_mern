@@ -320,10 +320,6 @@ export interface FileField extends BaseField {
 export interface SubformField extends BaseField {
   type: "subform";
   /**
-   * Layout
-   */
-  layout: "grid" | "row";
-  /**
    * Module
    */
   module: string;

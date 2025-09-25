@@ -6,7 +6,7 @@ import {
   REPAIR_STATUS,
   REPAIR_TYPE,
 } from "../../constants/enums.js";
-import { createSparePartEntry } from "./sparePartEntry/sparePartEntry.validation.js";
+import { createSparePartEntry, updateSparePartEntry } from "./sparePartEntry/sparePartEntry.validation.js";
 
 export const createRepairJob = Joi.object({
   repairStatus: Joi.string()
@@ -56,20 +56,14 @@ export const updateRepairJob = Joi.object({
   discount: Joi.number().optional(),
   notes: Joi.string().optional().allow(null, ""),
 
-  // totalSparePartsCost: Joi.number().optional(),
-
-  // sparePartEntries: Joi.array().items(updateSparePartEntryValidation).optional(),
-
-  // totalReceivable: Joi.number().optional(),
-
-  // profit: Joi.number().optional(),
+  sparePartEntries: Joi.array()
+    .items(updateSparePartEntry).optional(),
 
   paymentStatus: Joi.string()
     .valid(...PAYMENT_STATUSES)
     .default("unpaid"),
   amountReceived: Joi.number().optional(),
   amountDue: Joi.number().optional(),
-
   pickedAt: Joi.date().optional().allow(null),
 });
 

@@ -16,9 +16,8 @@ import { SignatureInput } from "@/components/form/SignatureInput";
 import { LocationInput } from "@/components/form/LocationInput";
 import { FileInput } from "@/components/form/FileInput";
 import { FormatLookup, toDate } from "@/lib/utils";
-import { SubformInputGrid } from "@/components/form/SubFormInputGrid";
 import { TimePicker } from "@/components/form/TimePicker";
-import { SubformInputModal } from "@/components/form/SubformInputModal";
+import { SubformInputUnified } from "@/components/form/subform/SubformInputUnified";
 
 interface FieldRendererProps {
   formMode?: "create" | "edit";
@@ -28,6 +27,7 @@ interface FieldRendererProps {
   defaultValue?: any;
   disabled?: boolean;
   readOnly?: boolean;
+  showLabel?: boolean;
 }
 
 export const FieldRenderer: React.FC<FieldRendererProps> = ({
@@ -38,8 +38,8 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   defaultValue,
   disabled,
   readOnly,
+  showLabel,
 }) => {
-
   if (!field.showInForm) return null;
   if (formMode === "create" && field.hiddenInCreate) return null;
   if (formMode === "edit" && field.hiddenInEdit) return null;
@@ -264,21 +264,14 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
 
       case "subform":
         return (
-          <SubformInputModal
+          <SubformInputUnified
             field={field}
             value={value ?? []}
             onChange={onChange}
-            disabled={disabled}
+            minRows={0}
+            maxRows={10}
           />
         );
-      // return (
-      //   <SubformInputGrid
-      //     field={field}
-      //     value={value ?? []}
-      //     onChange={onChange}
-      //     disabled={disabled}
-      //   />
-      // );
 
       case "signature":
         return (
@@ -309,10 +302,12 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
 
   return (
     <div className={cssClass}>
-      <Label htmlFor={field.id} className="font-semibold pb-1">
-        {field.label}{" "}
-        {field.required && <span className="text-red-500">*</span>}
-      </Label>
+      {showLabel && (
+        <Label htmlFor={field.id} className="font-semibold pb-1">
+          {field.label}{" "}
+          {field.required && <span className="text-red-500">*</span>}
+        </Label>
+      )}
       {renderInput()}
       {field.helpText && (
         <p className="text-xs text-muted-foreground">{field.helpText}</p>

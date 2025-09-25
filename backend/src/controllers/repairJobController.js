@@ -11,64 +11,181 @@ import { createError } from "../utils/errorHandler.js";
 import { getPaginationOptions } from "../utils/pagination.js";
 import { listRepairJobs } from "../services/repairJobServices.js";
 import flattenObject from "../utils/flattenObject.js";
+import SparePartEntry from "../models/sparePartEntryModel.js"
 
 export const createRepairJob = async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-  console.log("REQ BODY:", req.body, typeof req.body);
 
   try {
-    // Validate payload
     const { error, value } = createRepairJobValidation.validate(req.body, {
       abortEarly: true,
       stripUnknown: true,
     });
-    console.log(JSON.stringify(value));
-
     if (error) {
       throw createError(400, error.details.map((d) => d.message).join(", "));
     }
-    const repairJobData = flattenObject(value.data[0]);
+
+    const { sparePartEntries = [], ...repairJobCore } = value.data[0];
 
     // Ensure customer exists
-    const customerExists = await Customer.findById(repairJobData.customer).session(session);
+    const customerExists = await Customer.findById(repairJobCore.customer).session(session);
     if (!customerExists) {
       throw createError(404, "Customer not found");
     }
 
     // Step 1: Create RepairJob
-    const newRepairJob = new RepairJob(repairJobData);
-    const savedRepairJob = await newRepairJob.save({ session });
+    const repairJob = await RepairJob.create([repairJobCore], { session });
+    const savedRepairJob = repairJob[0];
 
-    // Step 2: Create SparePartEntries (if any)
-    if (repairJobData.sparePartEntries?.length) {
-      const sparePartEntries = await SparePartEntry.insertMany(
-        repairJobData.sparePartEntries.map(entry => ({
-          ...entry,
-          repairJob: savedRepairJob._id,
-        })),
-        { session }
-      );
-
-      // Link spare parts to repair job
-      savedRepairJob.sparePartEntries.push(...sparePartEntries.map(e => e._id));
-      await savedRepairJob.save({ session });
+    // Step 2: Create SparePartEntries (so pre('save') runs)
+    const createdSpareParts = [];
+    for (const entry of sparePartEntries) {
+      const partDoc = new SparePartEntry({
+        ...entry,
+        repairJob: savedRepairJob._id,
+      });
+      await partDoc.save({ session }); // <-- triggers pre('save') hook
+      createdSpareParts.push(partDoc);
     }
 
-    // Commit transaction
-    await session.commitTransaction();
-    session.endSession();
+    if (createdSpareParts.length) {
+      await RepairJob.updateOne(
+        { _id: savedRepairJob._id },
+        { $push: { sparePartEntries: { $each: createdSpareParts.map((e) => e._id) } } },
+        { session }
+      );
+    }
 
-    response(res, savedRepairJob, "Repair job created successfully", { code: 201 });
+    await session.commitTransaction();
+
+    const populated = await RepairJob.findById(savedRepairJob._id)
+      .populate("sparePartEntries")
+      .populate("customer");
+
+    response(res, populated, "Repair job created successfully", { code: 201 });
   } catch (err) {
-    // Rollback transaction
     await session.abortTransaction();
-    session.endSession();
     next(err);
+  } finally {
+    session.endSession();
   }
 };
 
-const getAllRepairJobs = async (req, res, next) => {
+export const updateRepairJob = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const repairJobId = req.params.id;
+
+    const { error, value } = updateRepairJobValidation.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+    if (error) {
+      throw createError(400, error.details.map((d) => d.message).join(", "));
+    }
+
+    const { sparePartEntries = [], ...repairJobUpdates } = value.data[0];
+
+    // --- enrich repairJobUpdates with extra computed fields ---
+    if (repairJobUpdates.repairStatus === "picked") {
+      repairJobUpdates.pickedAt = new Date();
+    }
+    if (repairJobUpdates?.customer) {
+      const customerExists = await Customer.findById(repairJobUpdates.customer).session(session);
+      if (!customerExists) throw createError(404, "customer not found");
+    }
+    if (repairJobUpdates?.technician) {
+      const technicianExists = await User.findById(repairJobUpdates.technician).session(session);
+      if (!technicianExists) throw createError(404, "Technician not found");
+    }
+
+    // --- Step 1: Update RepairJob core fields ---
+    const updatedRepairJob = await RepairJob.findByIdAndUpdate(
+      repairJobId,
+      { $set: repairJobUpdates },
+      { new: true, session }
+    );
+    if (!updatedRepairJob) throw createError(404, "Repair job not found");
+
+    // --- Step 2: Handle SparePartEntries ---
+    // Fetch existing entries linked to this job
+    const existingEntries = await SparePartEntry.find({ repairJob: repairJobId }).session(session);
+    const existingIds = existingEntries.map((e) => e._id.toString());
+
+    const incomingIds = sparePartEntries.filter((e) => e._id).map((e) => e._id.toString());
+
+    // Determine operations
+    const toDelete = existingIds.filter((id) => !incomingIds.includes(id));
+    const toUpdate = sparePartEntries.filter((e) => e._id);
+    const toAdd = sparePartEntries.filter((e) => !e._id);
+
+    // 🔹 Delete removed entries
+    if (toDelete.length) {
+      await SparePartEntry.deleteMany({ _id: { $in: toDelete } }, { session });
+    }
+
+    // 🔹 Update existing entries
+    for (const entry of toUpdate) {
+      await SparePartEntry.findByIdAndUpdate(
+        entry._id,
+        { $set: { ...entry } },
+        { session }
+      );
+    }
+
+    // 🔹 Add new entries (so pre('save') runs)
+    const addedEntries = [];
+    for (const entry of toAdd) {
+      const newPart = new SparePartEntry({ ...entry, repairJob: repairJobId });
+      await newPart.save({ session }); // pre('save') runs here
+      addedEntries.push(newPart);
+    }
+
+    // --- Step 3: Sync sparePartEntries array in RepairJob ---
+    const finalEntryIds = [
+      ...incomingIds, // still active ones
+      ...addedEntries.map((e) => e._id), // newly added
+    ];
+
+    updatedRepairJob.sparePartEntries = finalEntryIds;
+    await updatedRepairJob.save({ session });
+
+    // --- Commit transaction ---
+    await session.commitTransaction();
+
+    // --- Populate response ---
+    const populated = await RepairJob.findById(repairJobId)
+      .populate({
+        path: "customer",
+        select: "customerCode fullName email phone address",
+      })
+      .populate({
+        path: "technician",
+        select: "userCode fullName email phone",
+      })
+      .populate({
+        path: "sparePartEntries",
+        populate: [
+          {
+            path: "sparePart",
+            select: "partCode brand model partName partType unitPrice stockQty",
+          },
+          { path: "supplier", select: "supplierCode fullName" },
+        ],
+      });
+
+    response(res, populated, "Repair job updated successfully");
+  } catch (error) {
+    await session.abortTransaction();
+    next(error);
+  } finally {
+    session.endSession();
+  }
+};
+
+export const getAllRepairJobs = async (req, res, next) => {
   try {
     const { page, limit, skip, sort } = getPaginationOptions(req.query);
     const [repairJobs, totalRecords] = await Promise.all([
@@ -116,7 +233,7 @@ const getAllRepairJobs = async (req, res, next) => {
   }
 };
 
-const getRepairJobById = async (req, res, next) => {
+export const getRepairJobById = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
     const repairJob = await RepairJob.findById(repairJobId).populate([
@@ -130,6 +247,13 @@ const getRepairJobById = async (req, res, next) => {
       },
       {
         path: "sparePartEntries",
+        populate: [
+          {
+            path: "sparePart",
+            select: "partCode",
+          },
+          { path: "supplier", select: "supplierCode fullName" },
+        ],
       },
     ]);
 
@@ -142,81 +266,8 @@ const getRepairJobById = async (req, res, next) => {
   }
 };
 
-const updateRepairJob = async (req, res, next) => {
-  try {
-    const repairJobId = req.params.id;
 
-    const { error, value } = updateRepairJobValidation.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
-    if (error) {
-      throw createError(400, error.details.map((d) => d.message).join(", "));
-    }
-
-    const repairJobUpdates = flattenObject(value.data[0]);
-    if (repairJobUpdates.repairStatus === "picked") {
-      repairJobUpdates.pickedAt = new Date();
-    }
-    if (repairJobUpdates?.customer) {
-      const customerExists = await Customer.findById(
-        repairJobUpdates.customer,
-        { customerCode: 1 }
-      );
-      if (!customerExists) {
-        throw createError(404, "customer not found");
-      }
-    }
-    if (repairJobUpdates?.technician) {
-      const technicianExists = await User.findById(
-        repairJobUpdates.technician,
-        { userCode: 1 }
-      );
-      if (!technicianExists) {
-        throw createError(404, "Technician not found");
-      }
-    }
-    // flattenObjects(value)
-    const updates = {};
-    if (Object.keys(repairJobUpdates).length > 0) {
-      updates.$set = repairJobUpdates;
-    }
-
-    const updatedRepairJob = await RepairJob.findByIdAndUpdate(
-      repairJobId,
-      updates,
-      { new: true }
-    ).populate([
-      {
-        path: "customer",
-        select: "customerCode fullName email phone address",
-      },
-      {
-        path: "technician",
-        select: "userCode fullName email phone",
-      },
-      {
-        path: "sparePartEntries",
-        populate: [
-          {
-            path: "sparePart",
-            select: "partCode brand model partName partType costPrice stockQty",
-          },
-          { path: "supplier", select: "supplierCode fullName" },
-        ],
-      },
-    ]);
-
-    if (!updatedRepairJob) {
-      throw createError(404, "Repair job not found");
-    }
-    response(res, updatedRepairJob, "Repair job updated successfully");
-  } catch (error) {
-    next(error);
-  }
-};
-
-const updateRepairJobStatus = async (req, res, next) => {
+export const updateRepairJobStatus = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
     const { repairStatus } = req.body;
@@ -253,7 +304,7 @@ const updateRepairJobStatus = async (req, res, next) => {
   }
 };
 
-const deleteRepairJobs = async (req, res, next) => {
+export const deleteRepairJobs = async (req, res, next) => {
   try {
     const repairJobIds = req.body.ids;
     if (!repairJobIds || !Array.isArray(repairJobIds)) {
@@ -274,7 +325,7 @@ const deleteRepairJobs = async (req, res, next) => {
   }
 };
 
-const deleteRepairJob = async (req, res, next) => {
+export const deleteRepairJob = async (req, res, next) => {
   try {
     const repairJobId = req.params.id;
     if (!repairJobId) {
@@ -295,7 +346,7 @@ const deleteRepairJob = async (req, res, next) => {
   }
 };
 
-const searchRepairJobs = async (req, res, next) => {
+export const searchRepairJobs = async (req, res, next) => {
   try {
     const { search } = req.query;
     const { page, limit, skip, sort } = getPaginationOptions(req.query);
@@ -329,15 +380,4 @@ const searchRepairJobs = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
-
-export default {
-  createRepairJob,
-  getAllRepairJobs,
-  getRepairJobById,
-  updateRepairJobStatus,
-  updateRepairJob,
-  deleteRepairJobs,
-  deleteRepairJob,
-  searchRepairJobs,
 };
