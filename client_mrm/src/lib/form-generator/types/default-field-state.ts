@@ -4,6 +4,7 @@ export interface FieldState {
   readOnly?: boolean;
   required?: boolean;
   reason?: string;
+  overridden?: boolean;
 }
 
 export type FormData = Record<string, any>;

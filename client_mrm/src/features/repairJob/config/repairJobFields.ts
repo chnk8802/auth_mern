@@ -131,6 +131,7 @@ export const repairJobFields: FieldConfig = [
             id: "externalPartName",
             label: "External Part",
             type: "text",
+            placeholder: "External Part"
           },
           {
             id: "unitCost",

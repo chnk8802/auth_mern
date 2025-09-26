@@ -11,16 +11,16 @@ import { Loading } from "@/components/common/Loading";
 export function RepairJobEditPage() {
   const navigate = useNavigate();
   const { repairJobId } = useParams();
-  const [repairJob, setRepairJob] = useState<RepairJob | null>(null);
+  const [data, setData] = useState<RepairJob | null>(null);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     if (!repairJobId) return;
-
     const fetchRepairJob = async () => {
       try {
         const res = await getRepairjobById(repairJobId);
-        setRepairJob(res.data[0]);
+        setData(res.data[0]);
       } catch (err) {
         toast.error("Failed to fetch repair job");
       } finally {
@@ -31,17 +31,19 @@ export function RepairJobEditPage() {
     fetchRepairJob();
   }, [repairJobId]);
 
-  const handleEdit = (data: RepairJob) => {
-    if (!repairJobId || !repairJob) {
+  const handleEdit = (updatedData: RepairJob) => {
+    console.log("data", data, "repairJob", data)
+    if (!repairJobId || !data) {
       toast.error("Repair Job ID or original data is missing");
       return;
     }
-    const changedFields = getChangedFields(data, repairJob);
+    const changedFields = getChangedFields(updatedData, data);
     if (Object.keys(changedFields).length === 0) {
       toast.info("No changes detected");
       return;
     }
     const payload = { data: [{ ...changedFields }] };
+    
     const submitUpdate = async () => {
       try {
         const result = await updateRepairJob(repairJobId, payload);
@@ -61,12 +63,12 @@ export function RepairJobEditPage() {
   };
 
   if (loading) return <Loading fullscreen={true} />;
-  if (!repairJob)
+  if (!data)
     return <div className="p-2 text-center">Customer not found</div>;
 
   return (
     <>
-      <RepairJobEditForm repairJob={repairJob} onSubmit={handleEdit}/>
+      <RepairJobEditForm data={data} onSubmit={handleEdit}/>
     </>
   );
 }

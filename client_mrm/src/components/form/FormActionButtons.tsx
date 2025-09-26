@@ -12,7 +12,7 @@ type FormMode = "create" | "edit";
 type FormActionButtonsProps = {
   mode: FormMode;
   isSubmitting: boolean;
-  onSave: () => void;
+  onSave: (formData: Record<string, any>) => void;
   onSaveAndNew?: () => void;
   onReset?: () => void;
   showLiveData: boolean;

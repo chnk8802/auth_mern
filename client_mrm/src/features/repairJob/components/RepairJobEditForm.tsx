@@ -1,50 +1,33 @@
-import React from "react";
+"use client";
+
+import * as React from "react";
 import { repairJobFields } from "../config/repairJobFields";
 import { FormBuilder } from "@/lib/form-generator/components/FormView/FormBuilder";
-import { ROUTES } from "@/constants/routes.constants";
-import { type RepairJob } from "../types";
-import { useForm, useWatch } from "react-hook-form";
-import { useRepairJobFieldStates } from "../hooks/useRepairJobFieldStates";
-
+import type { RepairJob } from "../types";
 
 export interface RepairJobFormProps {
-  repairJob: RepairJob;
-  onSubmit: (data: any) => void;
+  data: RepairJob;
+  onSubmit: (data: RepairJob) => void;
 }
 
-export const RepairJobEditForm = ({ repairJob, onSubmit }: RepairJobFormProps) => {
-  const form = useForm<RepairJob>({
-    defaultValues: repairJob,
-  });
-  const formValues = useWatch({
-    control: form.control,
-  });
+export const RepairJobEditForm = ({ data, onSubmit }: RepairJobFormProps) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const fieldStates = useRepairJobFieldStates(formValues);
 
-  const handleChange = (fieldId: string, value: any) => {
-    form.setValue(fieldId as keyof RepairJob, value, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = (formData: RepairJob) => {
     setIsSubmitting(true);
-    onSubmit(form.getValues());
-    setTimeout(() => setIsSubmitting(false), 300);
+    console.log("formData", formData)
+    onSubmit(formData);
+    setIsSubmitting(false);
   };
 
   return (
     <FormBuilder
       title="Repair Job"
       mode="edit"
-      fieldStateMap={fieldStates}
       fieldsConfig={repairJobFields}
-      formData={formValues}
-      onChange={handleChange}
       onSubmit={handleSubmit}
       isSubmitting={isSubmitting}
+      initialValues={data}
     />
   );
 };

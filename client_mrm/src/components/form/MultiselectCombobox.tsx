@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -43,7 +43,9 @@ export function MultiSelectCombobox({
     onChange(updated);
   };
 
-  const selectedOptions = options.filter((opt) => value.includes(opt.value));
+  const selectedOptions = options.filter((opt) => {
+    value.includes(opt.value)
+  });
 
   return (
     <div

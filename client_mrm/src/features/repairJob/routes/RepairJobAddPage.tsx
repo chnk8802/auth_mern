@@ -20,10 +20,13 @@ export function RepairJobAddPage() {
       }
     } catch (error: any) {
       toast.error(
-        `Unable to add repair job: ${error?.response?.data?.message || error.message}`
+        `Unable to add repair job: ${
+          error?.response?.data?.message || error.message
+        }`
       );
     }
   };
+
 
   return <AddRepairJobForm onSubmit={handleAdd} />;
 }

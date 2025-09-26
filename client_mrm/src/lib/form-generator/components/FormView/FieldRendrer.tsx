@@ -30,16 +30,8 @@ interface FieldRendererProps {
   showLabel?: boolean;
 }
 
-export const FieldRenderer: React.FC<FieldRendererProps> = ({
-  formMode,
-  field,
-  value,
-  onChange,
-  defaultValue,
-  disabled,
-  readOnly,
-  showLabel,
-}) => {
+export const FieldRenderer: React.FC<FieldRendererProps> = ({ formMode, field, value, onChange, defaultValue, disabled, readOnly, showLabel}) => {
+
   if (!field.showInForm) return null;
   if (formMode === "create" && field.hiddenInCreate) return null;
   if (formMode === "edit" && field.hiddenInEdit) return null;
@@ -266,8 +258,6 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
         return (
           <SubformInputUnified
             field={field}
-            value={value ?? []}
-            onChange={onChange}
             minRows={0}
             maxRows={10}
           />

@@ -13,7 +13,7 @@ export const SparePartEntryAddForm = ({ onSubmit }: SparePartEntryFormProps) => 
   const handleSubmit = () => {
     setIsSubmitting(true);
     onSubmit?.(formData);
-    setTimeout(() => setIsSubmitting(false), 300); // simulate delay
+    setTimeout(() => setIsSubmitting(false), 300);
   };
 
   return (
