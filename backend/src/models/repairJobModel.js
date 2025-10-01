@@ -48,13 +48,13 @@ const repairJobSchema = new mongoose.Schema(
     totalSparePartsCost: DecimalField,
     totalReceivable: DecimalField,
     profit: DecimalField,
+    amountReceived: DecimalField,
+    amountDue: DecimalField,
     paymentStatus: {
       type: String,
       enum: PAYMENT_STATUSES,
     },
-    amountReceived: DecimalField,
-    amountDue: DecimalField,
-    // Tobe auto calculated
+    // To be auto calculated
     notes: { type: String },
     pickedAt: { type: Date },
   },

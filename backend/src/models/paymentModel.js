@@ -1,45 +1,67 @@
 import mongoose from "mongoose";
 import { generateModuleId } from "../utils/generateModuleId.js";
-import { PAYMENT_METHODS, PAYMENT_TYPE, PAYMENT_STATUSES } from "../constants/enums.js";
+import { PAYMENT_METHODS, PAYMENT_TYPE } from "../constants/enums.js";
+import { createError } from "../utils/errorHandler.js";
+
+const allocationSchema = new mongoose.Schema(
+  {
+    sourceModule: {
+      type: String,
+      enum: ["RepairJob", "SparePartEntry"],
+      required: true,
+    },
+    sourceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: "allocations.sourceModule",
+      required: true,
+    },
+    allocatedAmount: {
+      type: mongoose.Types.Decimal128,
+      required: true,
+      validate: {
+        validator: function (v) {
+          return parseFloat(v.toString()) > 0;
+        },
+        message: "Allocated amount must be greater than 0",
+      },
+    },
+  },
+  { _id: false }
+);
 
 const paymentSchema = new mongoose.Schema(
   {
     paymentCode: { type: String, trim: true, unique: true, immutable: true },
 
-    // Receivable (incoming) or Payable (outgoing)
+    // Receivable (incoming from customer) or Payable (outgoing to supplier)
     paymentType: { type: String, enum: PAYMENT_TYPE, required: true },
 
-    // Dynamic reference (RepairJob, Customer, SparePartEntry, Supplier)
-    sourceModule: {
-      type: String,
-      enum: ["RepairJob", "Customer", "SparePartEntry", "Supplier"],
+    // Counterparty
+    customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
+    supplier: { type: mongoose.Schema.Types.ObjectId, ref: "Supplier" },
+
+    // Payment details
+    paymentAmount: {
+      type: mongoose.Types.Decimal128,
       required: true,
+      validate: {
+        validator: function (v) {
+          return parseFloat(v.toString()) > 0;
+        },
+        message: "Payment amount must be greater than 0",
+      },
     },
-    sourceId: {
-      type: mongoose.Schema.Types.ObjectId,
-      refPath: "sourceModule",
-      required: true,
-    },
-
-    // Amount handling
-    amountDue: { type: mongoose.Types.Decimal128, required: true }, // fetched from source
-    paymentAmount: { type: mongoose.Types.Decimal128, required: true }, // amount paid now
-    balanceAfter: { type: mongoose.Types.Decimal128 }, // auto-calc after payment
-
-    // Status (unpaid, partial, paid)
-    status: {
-      type: String,
-      enum: PAYMENT_STATUSES.map((s) => s.value),
-      default: "unpaid",
-    },
-
-    // Payment method
     paymentMethod: { type: String, enum: PAYMENT_METHODS, required: true },
-
-    // Optional note
     notes: { type: String, trim: true },
+
+    // Allocations for this payment
+    allocations: { type: [allocationSchema], default: [] },
+
+    // Bookkeeping helpers
+    totalAllocated: { type: mongoose.Types.Decimal128, default: 0 },
+    unallocatedAmount: { type: mongoose.Types.Decimal128, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 // Auto-generate payment code
@@ -47,53 +69,52 @@ paymentSchema.pre("save", async function (next) {
   if (this.isNew && !this.paymentCode) {
     this.paymentCode = await generateModuleId("payment", "PAY");
   }
+  next();
+});
 
-  // Auto-calc balance + status
-  if (this.isModified("paymentAmount") || this.isModified("amountDue")) {
-    const due = parseFloat(this.amountDue.toString());
-    const paid = parseFloat(this.paymentAmount.toString());
-    const balance = due - paid;
+// Pre-validate hook to enforce allocation rules
+paymentSchema.pre("validate", function (next) {
+  if (!this.paymentAmount) return next();
 
-    this.balanceAfter = balance;
+  const paymentAmount = parseFloat(this.paymentAmount.toString());
 
-    if (balance <= 0) this.status = "paid";
-    else if (paid > 0 && balance > 0) this.status = "partial";
-    else this.status = "unpaid";
+  // Sum allocations
+  const total = this.allocations.reduce(
+    (sum, a) => sum + parseFloat(a.allocatedAmount.toString()),
+    0
+  );
+
+  // Prevent over-allocation
+  if (total > paymentAmount) {
+    return next(
+      createError(
+        `Total allocated (${total}) cannot exceed payment amount (${paymentAmount})`
+      )
+    );
   }
+
+  this.totalAllocated = total;
+  this.unallocatedAmount = paymentAmount - total;
 
   next();
 });
 
+// Virtual: balance after this payment (for display only)
+paymentSchema.virtual("balanceAfter").get(function () {
+  const amount = parseFloat(this.paymentAmount?.toString() || 0);
+  const allocated = parseFloat(this.totalAllocated?.toString() || 0);
+  return amount - allocated;
+});
+
+// Virtual: status (derived from allocations)
+paymentSchema.virtual("status").get(function () {
+  const amount = parseFloat(this.paymentAmount?.toString() || 0);
+  const allocated = parseFloat(this.totalAllocated?.toString() || 0);
+
+  if (allocated === 0) return "unpaid";
+  if (allocated < amount) return "partial";
+  return "paid";
+});
+
 const Payment = mongoose.model("Payment", paymentSchema);
 export default Payment;
-
-
-// import mongoose from "mongoose";
-// import { generateModuleId } from "../utils/generateModuleId.js";
-// import { PAYMENT_METHODS, PAYMENT_TYPE } from "../constants/enums.js";
-// import PaymentEntry from "../models/paymentEntryModel.js";
-// import { paymentEntrySchema } from "../models/paymentEntryModel.js";
-
-// const paymentSchema = new mongoose.Schema(
-//   {
-//     paymentCode: { type: String, trim: true, unique: true, immutable: true },
-//     paymentType: { type: String, enum: PAYMENT_TYPE },
-//     /* customer or supplier based on payment type*/
-//     customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
-//     supplier: { type: mongoose.Schema.Types.ObjectId, ref: "Supplier" },
-//     paymentEntries: [paymentEntrySchema],
-//     totalAmount: { type: mongoose.Types.Decimal128 },
-//     paymentMethod: { type: String, enum: PAYMENT_METHODS },
-//   },
-//   { timestamps: true }
-// );
-
-// paymentSchema.pre("save", async function (next) {
-//   if (this.isNew && !this.paymentCode) {
-//     this.paymentCode = await generateModuleId("payment", "PAY");
-//   }
-//   next();
-// });
-
-// const Payment = mongoose.model("Payment", paymentSchema);
-// export default Payment;
