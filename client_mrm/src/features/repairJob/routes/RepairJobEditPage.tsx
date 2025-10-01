@@ -32,12 +32,13 @@ export function RepairJobEditPage() {
   }, [repairJobId]);
 
   const handleEdit = (updatedData: RepairJob) => {
-    console.log("data", data, "repairJob", data)
+    
     if (!repairJobId || !data) {
       toast.error("Repair Job ID or original data is missing");
       return;
     }
     const changedFields = getChangedFields(updatedData, data);
+    console.log({data, changedFields})
     if (Object.keys(changedFields).length === 0) {
       toast.info("No changes detected");
       return;

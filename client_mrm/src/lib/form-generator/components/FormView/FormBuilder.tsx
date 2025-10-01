@@ -65,8 +65,9 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
             <FormActionButtons
               mode={mode}
               isSubmitting={isSubmitting ?? false}
-              onSave={onSubmit}
+              onSave={() => onSubmit(formApi.formData)}
               onSaveAndNew={() => {
+                console.log({formApi})
                 onSubmit(formApi.formData);
                 formApi.resetForm();
               }}
